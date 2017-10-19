@@ -1,4 +1,4 @@
-package algo.sorting.topologicalSorting;
+package algo.sort;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,8 +6,9 @@ import java.util.Set;
 import algo.commons.Graph;
 import algo.commons.Vertex;
 import algo.sorting.Sort;
+import algo.sorting.TopologicalSorting;
 
-public class Demo {
+public class TopologicalSortingDemo {
 	public static void main(String[] args) {
 
 		Graph<Vertex<String>> graph = new HashableGraph<>();

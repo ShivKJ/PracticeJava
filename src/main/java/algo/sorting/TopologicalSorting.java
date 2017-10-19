@@ -1,4 +1,4 @@
-package algo.sorting.topologicalSorting;
+package algo.sorting;
 
 import static java.util.Collections.asLifoQueue;
 import static java.util.stream.Collectors.toList;
@@ -11,7 +11,6 @@ import java.util.Set;
 
 import algo.commons.Graph;
 import algo.commons.Vertex;
-import algo.sorting.Sort;
 
 public class TopologicalSorting<T> implements Sort<T> {
 	private final Set<Vertex<T>>	visitedNodes , allVertices;
