@@ -9,7 +9,8 @@ import algo.sorting.Sort;
 
 public class Demo {
 	public static void main(String[] args) {
-		Graph<String> graph = new HashableGraph<>();
+
+		Graph<Vertex<String>> graph = new HashableGraph<>();
 		Vertex<String> a = new HashableVertex<>("a");
 		Vertex<String> b = new HashableVertex<>("b");
 		Vertex<String> c = new HashableVertex<>("c");
@@ -32,6 +33,21 @@ public class Demo {
 		Sort<String> sort = new TopologicalSorting<>(graph);
 		System.out.println(sort.sort());
 	}
+}
+
+class HashableGraph<T extends Vertex<?>> implements Graph<T> {
+	private final Set<T> vertices;
+
+	public HashableGraph() {
+		this.vertices = new HashSet<>();
+	}
+
+	@Override
+	public Set<T> getVertices() {
+
+		return vertices;
+	}
+
 }
 
 class HashableVertex<T> implements Vertex<T> {
@@ -69,21 +85,8 @@ class HashableVertex<T> implements Vertex<T> {
 
 	@Override
 	public Set<Vertex<T>> adjacentVertices() {
+
 		return adja;
 	}
 
-}
-
-class HashableGraph<T> implements Graph<T> {
-	private final Set<Vertex<T>> vertices;
-
-	public HashableGraph() {
-		this.vertices = new HashSet<>();
-	}
-
-	@Override
-	public Set<Vertex<T>> getVertices() {
-
-		return vertices;
-	}
 }

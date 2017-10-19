@@ -2,14 +2,14 @@ package algo.commons;
 
 import java.util.Set;
 
-public interface Graph<T> {
-	Set<Vertex<T>> getVertices();
+public interface Graph<T extends Vertex<?>> {
+	Set<T> getVertices();
 
-	default void addVertex(Vertex<T> vertex) {
+	default void addVertex(T vertex) {
 		getVertices().add(vertex);
 	}
 
-	default void connectVertices(Vertex<T> from, Vertex<T> to) {
+	default <E> void connectVertices(Vertex<E> from, Vertex<E> to) {
 		from.addAdjacentVertex(to);
-	};
+	}
 }

@@ -17,7 +17,7 @@ public class TopologicalSorting<T> implements Sort<T> {
 	private final Set<Vertex<T>>	visitedNodes , allVertices;
 	private final Queue<Vertex<T>>	outputStack;
 
-	public TopologicalSorting(Graph<T> graph) {
+	public TopologicalSorting(Graph<Vertex<T>> graph) {
 		this.allVertices = new HashSet<>(graph.getVertices());
 		this.visitedNodes = new HashSet<>();
 		this.outputStack = asLifoQueue(new LinkedList<>());
@@ -28,7 +28,10 @@ public class TopologicalSorting<T> implements Sort<T> {
 		for (Vertex<T> vertex : allVertices)
 			if (!visitedNodes.contains(vertex))
 				handleVertex(vertex);
-		return outputStack.stream().map(Vertex::getData).collect(toList());
+
+		return outputStack.stream()
+				.map(Vertex::getData)
+				.collect(toList());
 	}
 
 	private void handleVertex(Vertex<T> sourceVertex) {
