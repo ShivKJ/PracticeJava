@@ -1,6 +1,7 @@
 package algo.sorting;
 
 import static java.util.Collections.asLifoQueue;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
 
 import java.util.HashSet;
@@ -17,7 +18,7 @@ public class TopologicalSorting<T> implements Sort<T> {
 	private final Queue<Vertex<T>>	outputStack;
 
 	public TopologicalSorting(Graph<Vertex<T>> graph) {
-		this.allVertices = new HashSet<>(graph.getVertices());
+		this.allVertices = unmodifiableSet(graph.getVertices());
 		this.visitedNodes = new HashSet<>();
 		this.outputStack = asLifoQueue(new LinkedList<>());
 	}
