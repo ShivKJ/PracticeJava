@@ -9,6 +9,8 @@ public interface Vertex<T> {
 
 	boolean equals(Object obj);
 
+	String toString();
+
 	Set<Vertex<T>> adjacentVertices();
 
 	default void addAdjacentVertex(Vertex<T> vertex) {
