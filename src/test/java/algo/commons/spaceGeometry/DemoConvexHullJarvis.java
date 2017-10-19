@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
+import algo.commons.spaceGeometry.ConvexHullJarvis.EmptyCollectionException;
+
 public class DemoConvexHullJarvis {
 	static Random random = new Random();
 
@@ -22,7 +24,7 @@ public class DemoConvexHullJarvis {
 		//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, EmptyCollectionException {
 		double std = 4 , mean = 0;
 		Supplier<XY> supplier = () -> new XY(getNext(mean, std), getNext(mean, std));
 
@@ -43,7 +45,7 @@ public class DemoConvexHullJarvis {
 		jsonWriter.close();
 
 		jsonWriter = new JsonWriter(new FileWriter("b.json"));
-		gson.toJson(convexHullJarvis.getHull(), List.class, jsonWriter);
+		gson.toJson(convexHullJarvis.getConvexHull(), List.class, jsonWriter);
 		jsonWriter.close();;
 	}
 }

@@ -1,6 +1,5 @@
 package algo.commons.spaceGeometry;
 
-import static java.util.Collections.addAll;
 import static java.util.Collections.min;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
@@ -10,6 +9,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.ToDoubleFunction;
 
 public class ConvexHullJarvis {
@@ -20,32 +20,38 @@ public class ConvexHullJarvis {
 		this.input = unmodifiableCollection(points);
 	}
 
-	public List<XY> getHull() {
-		if (input.size() <= 2)
-			return new LinkedList<>();
+	public List<XY> getConvexHull() throws EmptyCollectionException {
+		if (input.isEmpty())
+			throw new EmptyCollectionException("input can not be empty.");
 
 		List<XY> convexHull = new LinkedList<>();
 
-		XY[] firstTwoPoints = getFirstTwoPoints();
-		addAll(convexHull, firstTwoPoints);
+		XY o = min(input, comparing(XY::X));
+		convexHull.add(o);
 
-		XY o = firstTwoPoints[0] , p = firstTwoPoints[1] , baseLine = o.getLine(p);
+		Optional<XY> optionalP = getNextHullPoint(o, comparingDouble(sine(o)));
 
-		while (!p.equals(o)) {
-			XY nextHullPoint = getNextPoint(p, comparingDouble(cosine(p, baseLine)));
-			convexHull.add(nextHullPoint);
-			baseLine = p.getLine(nextHullPoint);
-			p = nextHullPoint;
+		if (optionalP.isPresent()) {
+			XY p = optionalP.get();
+			convexHull.add(p);
+
+			XY baseLine = o.getLine(p);
+
+			while (!p.equals(o)) {
+				XY x = getNextHullPoint(p, comparingDouble(cosine(p, baseLine))).get();
+				convexHull.add(x);
+				baseLine = p.getLine(x);
+				p = x;
+			}
 		}
 
 		return convexHull;
 	}
 
-	private XY getNextPoint(XY removePoint, Comparator<XY> comparator) {
+	private Optional<XY> getNextHullPoint(XY removePoint, Comparator<XY> comparator) {
 		return input.stream()
 				.filter(x -> !x.equals(removePoint))
-				.max(comparator)
-				.get();
+				.max(comparator);
 	}
 
 	private static ToDoubleFunction<XY> sine(XY o) {
@@ -64,11 +70,12 @@ public class ConvexHullJarvis {
 		};
 	}
 
-	private XY[] getFirstTwoPoints() {
-		XY o = min(input, comparing(XY::X));
-		XY p = getNextPoint(o, comparingDouble(sine(o)));
+	public static class EmptyCollectionException extends Exception {
 
-		return new XY[] { o, p };
+		private static final long serialVersionUID = -4143528867448348262L;
+
+		public EmptyCollectionException(String message) {
+			super(message);
+		}
 	}
-
 }
