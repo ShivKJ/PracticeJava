@@ -26,19 +26,19 @@ public class TopologicalSorting<T> implements Sort<T> {
 	public List<T> sort() {
 		for (Vertex<T> vertex : allVertices)
 			if (!visitedNodes.contains(vertex))
-				handleVertex(vertex);
+				processVertex(vertex);
 
 		return outputStack.stream()
 				.map(Vertex::getData)
 				.collect(toList());
 	}
 
-	private void handleVertex(Vertex<T> sourceVertex) {
+	private void processVertex(Vertex<T> sourceVertex) {
 		visitedNodes.add(sourceVertex);
 
 		for (Vertex<T> adjacentVertex : sourceVertex.adjacentVertices())
 			if (!visitedNodes.contains(adjacentVertex))
-				handleVertex(adjacentVertex);
+				processVertex(adjacentVertex);
 
 		outputStack.offer(sourceVertex);
 	}
