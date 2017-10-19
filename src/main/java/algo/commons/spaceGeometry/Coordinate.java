@@ -40,7 +40,7 @@ public interface Coordinate {
 		return new XYZ(x, y, z);
 	}
 
-	public default double getMagnitude() {
+	public default double magnitude() {
 		if (this instanceof XY)
 			return hypot(X(), Y());
 
