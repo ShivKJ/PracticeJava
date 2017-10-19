@@ -15,9 +15,11 @@ import com.google.gson.stream.JsonWriter;
 public class DemoConvexHullJarvis {
 	public static void main(String[] args) throws IOException {
 		Random random = new Random();
-		Set<XY> points = generate(() -> new XY(10 * random.nextGaussian(), 10 * random.nextGaussian()))
+		double std = 1 , mean = 3;
+		Set<XY> points = generate(() -> new XY(mean + std * random.nextGaussian(), mean + std * random.nextGaussian()))
 				.limit(200)
 				.collect(toSet());
+		points.add(new XY(0, 0));
 
 		ConvexHullJarvis convexHullJarvis = new ConvexHullJarvis(points);
 		Gson gson = new Gson();

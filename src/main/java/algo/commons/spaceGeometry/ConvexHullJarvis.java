@@ -33,7 +33,10 @@ public class ConvexHullJarvis {
 		XY line = firstTwoPoints[0].getLine(curr);
 
 		while (curr != firstTwoPoints[0]) {
-			XY tmp = input.stream().filter(getP(curr)).max(getComparator(curr, line)).get();
+			XY tmp = input.stream()
+					.filter(getP(curr))
+					.max(getComparator(curr, line))
+					.get();
 			convexHull.add(tmp);
 			line = curr.getLine(tmp);
 			curr = tmp;
