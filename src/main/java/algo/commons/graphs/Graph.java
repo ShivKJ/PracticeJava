@@ -1,4 +1,4 @@
-package algo.commons;
+package algo.commons.graphs;
 
 import java.util.Set;
 

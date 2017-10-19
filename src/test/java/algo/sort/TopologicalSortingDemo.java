@@ -3,8 +3,8 @@ package algo.sort;
 import java.util.HashSet;
 import java.util.Set;
 
-import algo.commons.Graph;
-import algo.commons.Vertex;
+import algo.commons.graphs.Graph;
+import algo.commons.graphs.Vertex;
 import algo.sorting.Sort;
 import algo.sorting.TopologicalSorting;
 

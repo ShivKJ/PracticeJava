@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import algo.commons.Graph;
-import algo.commons.Vertex;
+import algo.commons.graphs.Graph;
+import algo.commons.graphs.Vertex;
 
 public class TopologicalSorting<T> implements Sort<T> {
 	private final Set<Vertex<T>>	visitedNodes , allVertices;
