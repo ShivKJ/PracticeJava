@@ -1,6 +1,6 @@
-package algo.commons.spaceGeometry;
+package algo.spaceGeometry;
 
-import static algo.commons.spaceGeometry.Utils.isEqual;
+import static algo.spaceGeometry.Utils.isEqual;
 
 public class XYZ extends XY {
 	private final double z;

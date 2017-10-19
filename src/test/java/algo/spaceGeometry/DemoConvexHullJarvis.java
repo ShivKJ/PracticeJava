@@ -1,4 +1,4 @@
-package algo.commons.spaceGeometry;
+package algo.spaceGeometry;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
@@ -13,7 +13,9 @@ import java.util.function.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
-import algo.commons.spaceGeometry.ConvexHullJarvis.EmptyCollectionException;
+import algo.spaceGeometry.ConvexHullJarvis;
+import algo.spaceGeometry.XY;
+import algo.spaceGeometry.ConvexHullJarvis.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
 	static Random random = new Random();

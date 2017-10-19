@@ -1,4 +1,4 @@
-package algo.commons.spaceGeometry;
+package algo.spaceGeometry;
 
 import static java.util.Collections.min;
 import static java.util.Collections.unmodifiableCollection;

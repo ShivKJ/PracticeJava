@@ -1,6 +1,6 @@
-package algo.commons.spaceGeometry;
+package algo.spaceGeometry;
 
-import static algo.commons.spaceGeometry.Utils.isEqual;
+import static algo.spaceGeometry.Utils.isEqual;
 
 public class XY implements Coordinate {
 	protected final double x , y;

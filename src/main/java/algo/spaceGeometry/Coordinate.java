@@ -1,4 +1,4 @@
-package algo.commons.spaceGeometry;
+package algo.spaceGeometry;
 
 import static java.lang.Math.hypot;
 import static java.lang.Math.sqrt;
