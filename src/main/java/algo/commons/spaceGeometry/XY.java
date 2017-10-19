@@ -1,6 +1,6 @@
-package algo.commons.speceGeometry;
+package algo.commons.spaceGeometry;
 
-import static algo.commons.speceGeometry.Utils.isEqual;
+import static algo.commons.spaceGeometry.Utils.isEqual;
 
 public class XY implements Coordinate {
 	protected final double x , y;
@@ -30,6 +30,17 @@ public class XY implements Coordinate {
 		return obj instanceof XY
 				&& isEqual(((XY) obj).x, x, TOLERANCE)
 				&& isEqual(((XY) obj).y, y, TOLERANCE);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+
+		long temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ temp >>> 32);
+		temp = Double.doubleToLongBits(y);
+		return prime * result + (int) (temp ^ temp >>> 32);
 	}
 
 	@Override
