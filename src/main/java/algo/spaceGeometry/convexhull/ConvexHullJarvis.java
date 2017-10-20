@@ -1,4 +1,4 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.convexhull;
 
 import static algo.spaceGeometry.XY.E2;
 import static java.util.Collections.min;
@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+
+import algo.spaceGeometry.XY;
 
 public class ConvexHullJarvis {
 

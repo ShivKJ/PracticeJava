@@ -13,7 +13,8 @@ import java.util.function.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
-import algo.spaceGeometry.ConvexHullJarvis.EmptyCollectionException;
+import algo.spaceGeometry.convexhull.ConvexHullJarvis;
+import algo.spaceGeometry.convexhull.ConvexHullJarvis.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
 	static Random random = new Random();
