@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToDoubleFunction;
 
 public class ConvexHullJarvis {
 
@@ -31,7 +30,7 @@ public class ConvexHullJarvis {
 		convexHull.add(o);
 
 		XY baseLine = E2;
-		Optional<XY> optionalP = nextHullPoint(o, comparingDouble(cosine(o, baseLine)));
+		Optional<XY> optionalP = nextHullPoint(o, baseLine);
 
 		if (optionalP.isPresent()) {
 			XY p = optionalP.get();
@@ -40,29 +39,26 @@ public class ConvexHullJarvis {
 			baseLine = o.getLine(p);
 
 			while (!p.equals(o)) {
-				XY x = nextHullPoint(p, comparingDouble(cosine(p, baseLine))).get();
+				XY x = nextHullPoint(p, baseLine).get();
 				convexHull.add(x);
 				baseLine = p.getLine(x);
 				p = x;
 			}
 		}
-
 		return convexHull;
 	}
 
-	private Optional<XY> nextHullPoint(XY removePoint, Comparator<XY> comparator) {
+	private Optional<XY> nextHullPoint(XY source, XY baseLine) {
+		double AB = baseLine.magnitude();
+
+		Comparator<XY> cosineComparator = comparingDouble(c -> {
+			XY ac = source.getLine(c);
+			return ac.dotProduct(baseLine) / ac.magnitude() / AB;
+		});
+
 		return input.stream()
-				.filter(x -> !x.equals(removePoint))
-				.max(comparator);
-	}
-
-	private static ToDoubleFunction<XY> cosine(XY a, XY ab) {
-		double AB = ab.magnitude();
-
-		return c -> {
-			XY ac = a.getLine(c);
-			return ac.dotProduct(ab) / ac.magnitude() / AB;
-		};
+				.filter(x -> !x.equals(source))
+				.max(cosineComparator);
 	}
 
 	public static class EmptyCollectionException extends Exception {
