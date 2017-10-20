@@ -1,7 +1,7 @@
 package algo.spaceGeometry;
 
 public class XYHash extends XY {
-	private final int	hashcode;
+	private transient final int hashcode;
 
 	public XYHash(double x, double y) {
 		super(x, y);
