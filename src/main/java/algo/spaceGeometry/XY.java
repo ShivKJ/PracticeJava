@@ -48,5 +48,4 @@ public class XY implements Coordinate {
 	public double Z() {
 		throw new UnsupportedOperationException("This is XY Geometry.");
 	}
-
 }
