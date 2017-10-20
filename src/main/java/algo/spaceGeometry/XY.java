@@ -3,7 +3,8 @@ package algo.spaceGeometry;
 import static algo.spaceGeometry.Utils.isEqual;
 
 public class XY implements Coordinate {
-	protected final double x , y;
+	protected final double	x , y;
+	public static final XY	E1	= new XY(1, 0) , E2 = new XY(0, 1);
 
 	public XY(double x, double y) {
 		this.x = x;
