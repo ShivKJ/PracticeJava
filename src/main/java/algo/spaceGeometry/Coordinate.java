@@ -47,7 +47,7 @@ public interface Coordinate {
 		return sqrt(X() * X() + Y() * Y() + Z() * Z());
 	}
 
-	public default XYZ getLine(Coordinate b) {
+	public default XYZ to(Coordinate b) {
 		double x = b.X() - X() , y = b.Y() - Y() , z1 = 0 , z2 = z1;
 
 		try {

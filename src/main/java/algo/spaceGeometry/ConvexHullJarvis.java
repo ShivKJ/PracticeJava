@@ -26,38 +26,34 @@ public class ConvexHullJarvis {
 
 		List<XY> convexHull = new LinkedList<>();
 
-		XY o = min(input, comparing(XY::X));
-		convexHull.add(o);
+		XY origin = min(input, comparing(XY::X)) , src = origin , dst = null , baseLine = E2;
 
-		XY baseLine = E2;
-		Optional<XY> optionalP = nextHullPoint(o, baseLine);
+		convexHull.add(origin);
+		Optional<XY> optionalP = nextHullPoint(src, baseLine);
 
-		if (optionalP.isPresent()) {
-			XY p = optionalP.get();
-			convexHull.add(p);
-
-			baseLine = o.getLine(p);
-
-			while (!p.equals(o)) {
-				XY x = nextHullPoint(p, baseLine).get();
-				convexHull.add(x);
-				baseLine = p.getLine(x);
-				p = x;
-			}
+		while (optionalP.isPresent() && !(dst = optionalP.get()).equals(origin)) {
+			convexHull.add(dst);
+			baseLine = src.to(dst);
+			src = dst;
+			optionalP = nextHullPoint(src, baseLine);
 		}
+
+		if (convexHull.size() > 1)
+			convexHull.add(origin);// to close convex hull.
+
 		return convexHull;
 	}
 
-	private Optional<XY> nextHullPoint(XY source, XY baseLine) {
-		double AB = baseLine.magnitude();
+	private Optional<XY> nextHullPoint(XY src, XY baseLine) {
+		double BASE_LINE = baseLine.magnitude();
 
-		Comparator<XY> cosineComparator = comparingDouble(c -> {
-			XY ac = source.getLine(c);
-			return ac.dotProduct(baseLine) / ac.magnitude() / AB;
+		Comparator<XY> cosineComparator = comparingDouble(p -> {
+			XY srcToP = src.to(p);
+			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
 
 		return input.stream()
-				.filter(x -> !x.equals(source))
+				.filter(x -> !x.equals(src))
 				.max(cosineComparator);
 	}
 
