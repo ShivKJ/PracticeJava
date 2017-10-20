@@ -1,5 +1,6 @@
 package algo.spaceGeometry;
 
+import static algo.spaceGeometry.XY.E2;
 import static java.util.Collections.min;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
@@ -29,16 +30,17 @@ public class ConvexHullJarvis {
 		XY o = min(input, comparing(XY::X));
 		convexHull.add(o);
 
-		Optional<XY> optionalP = getNextHullPoint(o, comparingDouble(sine(o)));
+		XY baseLine = E2;
+		Optional<XY> optionalP = nextHullPoint(o, comparingDouble(cosine(o, baseLine)));
 
 		if (optionalP.isPresent()) {
 			XY p = optionalP.get();
 			convexHull.add(p);
 
-			XY baseLine = o.getLine(p);
+			baseLine = o.getLine(p);
 
 			while (!p.equals(o)) {
-				XY x = getNextHullPoint(p, comparingDouble(cosine(p, baseLine))).get();
+				XY x = nextHullPoint(p, comparingDouble(cosine(p, baseLine))).get();
 				convexHull.add(x);
 				baseLine = p.getLine(x);
 				p = x;
@@ -48,17 +50,10 @@ public class ConvexHullJarvis {
 		return convexHull;
 	}
 
-	private Optional<XY> getNextHullPoint(XY removePoint, Comparator<XY> comparator) {
+	private Optional<XY> nextHullPoint(XY removePoint, Comparator<XY> comparator) {
 		return input.stream()
 				.filter(x -> !x.equals(removePoint))
 				.max(comparator);
-	}
-
-	private static ToDoubleFunction<XY> sine(XY o) {
-		return p -> {
-			XY op = o.getLine(p);
-			return op.y / op.magnitude();
-		};
 	}
 
 	private static ToDoubleFunction<XY> cosine(XY a, XY ab) {

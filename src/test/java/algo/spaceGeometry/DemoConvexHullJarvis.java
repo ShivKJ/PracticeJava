@@ -13,8 +13,6 @@ import java.util.function.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
-import algo.spaceGeometry.ConvexHullJarvis;
-import algo.spaceGeometry.XY;
 import algo.spaceGeometry.ConvexHullJarvis.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
