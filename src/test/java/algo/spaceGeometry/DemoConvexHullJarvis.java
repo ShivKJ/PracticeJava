@@ -18,7 +18,7 @@ import algo.spaceGeometry.convexhull.EmptyCollectionException;
 import algo.spaceGeometry.convexhull.OptimisedJarvis;
 
 public class DemoConvexHullJarvis {
-	static Random random = new Random(10L);
+	static Random random = new Random();
 
 	public static double getNext(double mean, double std) {
 		return mean + std * random.nextGaussian();
@@ -32,23 +32,23 @@ public class DemoConvexHullJarvis {
 		Supplier<XY> supplier = () -> new XY(getNext(mean, std), getNext(mean, std));
 
 		Collection<XY> points = generate(supplier)
-				.limit(2_00_000)
+				.limit(10_000)
 				.collect(toList());
-		//		points.add(new XY(0, 0));
-		//		points.add(new XY(10, 10));
-		//		points.add(new XY(10, -5));
-		//		points.add(new XY(10, -1));
+		//				points.add(new XY(0, 0));
+		//				points.add(new XY(10, 10));
+		//				points.add(new XY(10, -5));
+		//				points.add(new XY(10, -1));
 
 		ConvexHull convexHullJarvis = new OptimisedJarvis(points);
 		//		ConvexHull convexHullJarvis = new ConvexHullJarvis(points);
 
 		Gson gson = new Gson();
 
-		JsonWriter jsonWriter = new JsonWriter(new FileWriter("/home/administrator/work/learning_git/basics/exp/udamy/a.json"));
+		JsonWriter jsonWriter = new JsonWriter(new FileWriter("a.json"));
 		gson.toJson(points, points.getClass(), jsonWriter);
 		jsonWriter.close();
 
-		jsonWriter = new JsonWriter(new FileWriter("/home/administrator/work/learning_git/basics/exp/udamy/b.json"));
+		jsonWriter = new JsonWriter(new FileWriter("b.json"));
 		gson.toJson(convexHullJarvis.getConvexHull(), List.class, jsonWriter);
 		jsonWriter.close();
 

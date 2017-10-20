@@ -1,5 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.XY.E2;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
@@ -14,68 +15,61 @@ import algo.spaceGeometry.XY;
 import algo.spaceGeometry.XYHash;
 
 public class OptimisedJarvis extends ConvexHull {
-	private Set<XY>	convexHull;
-	private XY		a , b , baseLine;
+	private final Set<XY>	convexHull;
+	private XY				a , b;
 
 	public OptimisedJarvis(Collection<XY> input) throws EmptyCollectionException {
 		super(input.stream().map(XYHash::new).collect(toSet()));
+		this.convexHull = new LinkedHashSet<>();
 	}
 
 	@Override
 	public List<XY> getConvexHull() {
-		if (input.size() <= 2)
-			return new ArrayList<>(input);
-
-		convexHull = new LinkedHashSet<>();
 		convexHull.add(origin);
 
-		baseLine = new XYHash(XY.E2);
-		a = nextHullPoint(origin, baseLine).get();
-		convexHull.add(a);
+		a = origin;
+		XY baseLine = new XYHash(E2);
 
-		baseLine = origin.to(a);
-		b = nextHullPoint(a, baseLine).get();
-		convexHull.add(b);
+		Optional<XY> optionalB = null;
+		Predicate<XY> shouldRemove = shouldRemove();
 
-		input.removeIf(shouldRemove());
-
-		baseLine = a.to(b);
-		Optional<XY> optionalB = nextHullPoint(b, baseLine);
-		XY c = null;
-
-		while (optionalB.isPresent() && (c = optionalB.get()) != origin) {
-			baseLine = b.to(c);
-			a = b;
-			b = c;
+		while ((optionalB = nextHullPoint(a, baseLine)).isPresent() && (b = optionalB.get()) != origin) {
 			convexHull.add(b);
-
-			input.removeIf(shouldRemove());
-			optionalB = nextHullPoint(b, baseLine);
+			input.removeIf(shouldRemove);
+			baseLine = a.to(b);
+			a = b;
 		}
 
+		return output();
+	}
+
+	private List<XY> output() {
 		List<XY> output = new ArrayList<>(convexHull);
-		output.add(origin);// closing convexhull
+
+		if (output.size() != 1)
+			output.add(origin);// closing convexhull
 
 		return output;
-	}
-
-	public void initialize() {
-
-	}
-
-	private Predicate<XY> shouldRemove() {
-
-		return x -> {
-			if (convexHull.contains(x))
-				return false;
-			XY xa = x.to(origin) , xb = x.to(a) , xc = x.to(b);
-			boolean ab = isPositive(xa, xb) , bc = isPositive(xb, xc) , ca = isPositive(xc, xa);
-			return ab == bc && bc == ca;
-		};
 	}
 
 	private static boolean isPositive(XY a, XY b) {
 		return a.X() * b.Y() > a.Y() * b.X();
 	}
 
+	private Predicate<XY> shouldRemove() {
+		return x -> {
+			if (!convexHull.contains(x)) {
+				XY xo = x.to(origin) ,
+						xa = x.to(a) ,
+						xb = x.to(b);
+
+				boolean oa = isPositive(xo, xa) ,
+						ab = isPositive(xa, xb) ,
+						bo = isPositive(xb, xo);
+
+				return oa == ab && ab == bo;
+			}
+			return false;
+		};
+	}
 }

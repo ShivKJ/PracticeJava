@@ -23,13 +23,12 @@ public class ConvexHullJarvis extends ConvexHull {
 
 		XY src = origin , dst = null , baseLine = E2;
 
-		Optional<XY> optionalP = nextHullPoint(src, baseLine);
+		Optional<XY> optionalP = null;
 
-		while (optionalP.isPresent() && !(dst = optionalP.get()).equals(origin)) {
+		while ((optionalP = nextHullPoint(src, baseLine)).isPresent() && !(dst = optionalP.get()).equals(origin)) {
 			convexHull.add(dst);
 			baseLine = src.to(dst);
 			src = dst;
-			optionalP = nextHullPoint(src, baseLine);
 		}
 
 		if (convexHull.size() > 1)
