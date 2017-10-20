@@ -52,7 +52,7 @@ public class OptimisedJarvis extends ConvexHull {
 		return output;
 	}
 
-	private static boolean isPositive(XY a, XY b) {
+	private static boolean isCrossProductPositive(XY a, XY b) {
 		return a.X() * b.Y() > a.Y() * b.X();
 	}
 
@@ -63,11 +63,9 @@ public class OptimisedJarvis extends ConvexHull {
 						xa = x.to(a) ,
 						xb = x.to(b);
 
-				boolean oa = isPositive(xo, xa) ,
-						ab = isPositive(xa, xb) ,
-						bo = isPositive(xb, xo);
+				boolean ab = isCrossProductPositive(xa, xb);
 
-				return oa == ab && ab == bo;
+				return isCrossProductPositive(xo, xa) == ab && ab == isCrossProductPositive(xb, xo);
 			}
 			return false;
 		};
