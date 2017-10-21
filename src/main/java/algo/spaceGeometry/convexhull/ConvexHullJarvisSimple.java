@@ -19,9 +19,9 @@ public class ConvexHullJarvisSimple extends ConvexHullJarvis {
 	@Override
 	public List<XY> getConvexHull() {
 		List<XY> convexHull = new LinkedList<>();
-
-		XY origin = firstPoint() , src = origin , dst = null , baseLine = E2;
 		convexHull.add(origin);
+
+		XY src = origin , dst = null , baseLine = E2;
 
 		Optional<XY> nextDST = null;
 

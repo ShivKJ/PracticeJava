@@ -14,25 +14,25 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
 import algo.spaceGeometry.convexhull.ConvexHull;
-import algo.spaceGeometry.convexhull.EmptyCollectionException;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
+import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
-	static Random random = new Random();
+	static Random random = new Random(10L);
 
 	public static double getNext(double mean, double std) {
-		//		return mean + std * random.nextGaussian();
-		return (int) (mean + std * random.nextGaussian());
-		//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
+		//				return mean + std * random.nextGaussian();
+		//		return (int) (mean + std * random.nextGaussian());
+		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
 	public static void main(String[] args) throws IOException, EmptyCollectionException {
 		long start = System.currentTimeMillis();
-		double std = 10 , mean = 0;
+		double std = 100 , mean = 0;
 		Supplier<XY> supplier = () -> new XY(getNext(mean, std), getNext(mean, std));
 
 		Collection<XY> points = generate(supplier)
-				.limit(10_000)
+				.limit(100_000)
 				.collect(toList());
 		//				points.add(new XY(0, 0));
 		//				points.add(new XY(10, 10));
@@ -40,17 +40,21 @@ public class DemoConvexHullJarvis {
 		//				points.add(new XY(10, -1));
 
 		ConvexHull convexHullJarvis = new ConvexHullJarvisOptimised(points);
-		//		ConvexHull convexHullJarvis = new ConvexHullJarvis(points);
+		//		ConvexHull convexHullJarvis = new ConvexHullJarvisSimple(points);
 
 		Gson gson = new Gson();
-
-		JsonWriter jsonWriter = new JsonWriter(new FileWriter("a.json"));
+		String path = "";
+		String inputPath = path + "a.json";
+		String outputPath = path + "b.json";
+		JsonWriter jsonWriter = new JsonWriter(new FileWriter(inputPath));
 		gson.toJson(points, points.getClass(), jsonWriter);
 		jsonWriter.close();
 
-		jsonWriter = new JsonWriter(new FileWriter("b.json"));
-		gson.toJson(convexHullJarvis.getConvexHull(), List.class, jsonWriter);
+		jsonWriter = new JsonWriter(new FileWriter(outputPath));
+		List<XY> convexHull = convexHullJarvis.getConvexHull();
+		gson.toJson(convexHull, List.class, jsonWriter);
 		jsonWriter.close();
+		System.out.println("convexhull size: " + convexHull.size());
 
 		System.out.println(System.currentTimeMillis() - start);
 	}
