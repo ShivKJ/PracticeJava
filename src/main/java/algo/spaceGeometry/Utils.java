@@ -29,7 +29,8 @@ public final class Utils {
 
 	public static PointLocation pointWrtConvexHull(List<XY> convexHull, XY p) {
 		/*
-		 * Each point in convex hull should be distinct and on line segment formed by any two point does not contain a
+		 * Each point in convex hull should be distinct, except for start and end points in case size of list is greater
+		 * than 2 and on line segment formed by any two point does not contain a
 		 * point from convex hull, And hull should be non empty.
 		 */
 
@@ -49,7 +50,7 @@ public final class Utils {
 		if (direction == UNDEFINED)
 			return pointLocWRTLineSegment(ab, pa, pb);
 
-		if (size == 2)
+		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;
 
 		for (; iter.hasNext();) {
@@ -65,6 +66,7 @@ public final class Utils {
 			b = x;
 			pb = px;
 		}
+		
 		return INSIDE;
 	}
 

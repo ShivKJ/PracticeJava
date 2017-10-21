@@ -19,8 +19,8 @@ public class DemoConvexHullJarvis {
 
 	public static double getNext(double mean, double std) {
 		//						return mean + std * random.nextGaussian();
-		//				return (int) (mean + std * random.nextGaussian());
-		return Math.min((int) (mean + std * random.nextGaussian()), 4);
+						return (int) (mean + std * random.nextGaussian());
+//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
 	public static void main(String[] args) throws IOException, EmptyCollectionException {
