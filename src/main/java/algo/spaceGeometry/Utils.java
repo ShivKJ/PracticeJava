@@ -63,7 +63,7 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean pointInTriangle(XY a, XY b, XY c, XY p) {
+	public static boolean pointInOrOnTriangle(XY a, XY b, XY c, XY p) {
 		XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
 
 		ZDirection bc = crossProductZDirection(pb, pc);

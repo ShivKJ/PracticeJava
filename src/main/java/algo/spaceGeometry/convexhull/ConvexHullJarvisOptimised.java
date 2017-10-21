@@ -1,6 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
-import static algo.spaceGeometry.Utils.pointInTriangle;
+import static algo.spaceGeometry.Utils.pointInOrOnTriangle;
 import static algo.spaceGeometry.XY.E2;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
@@ -75,7 +75,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	}
 
 	private boolean pointInTriangleOAB(XY x) {
-		return !convexHull.contains(x) && pointInTriangle(origin, a, b, x);
+		return !convexHull.contains(x) && pointInOrOnTriangle(origin, a, b, x);
 	}
 
 }

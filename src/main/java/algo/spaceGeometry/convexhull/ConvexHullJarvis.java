@@ -1,7 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
 import static java.util.Collections.min;
-import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingDouble;
 
 import java.util.Collection;
@@ -39,6 +38,6 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 	}
 
 	protected XY originPoint() {
-		return min(input, comparing(XY::X));
+		return min(input, comparingDouble(XY::X).thenComparingDouble(XY::Y));
 	}
 }
