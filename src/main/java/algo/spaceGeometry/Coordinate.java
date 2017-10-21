@@ -12,7 +12,7 @@ public interface Coordinate {
 
 	double Z();
 
-	public default double dotProduct( Coordinate coords2) {
+	public default double dotProduct(Coordinate coords2) {
 		double res = X() * coords2.X() + Y() * coords2.Y();
 
 		try {

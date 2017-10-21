@@ -1,5 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.Utils.pointInTriangle;
 import static algo.spaceGeometry.XY.E2;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
@@ -74,18 +75,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	}
 
 	private boolean pointInTriangleOAB(XY x) {
-		if (!convexHull.contains(x)) {
-			XY xo = x.to(origin) , xa = x.to(a) , xb = x.to(b);
-
-			boolean ab = isCrossProductPositive(xa, xb);
-
-			return isCrossProductPositive(xo, xa) == ab && ab == isCrossProductPositive(xb, xo);
-		}
-
-		return false;
+		return !convexHull.contains(x) && pointInTriangle(origin, a, b, x);
 	}
 
-	private static boolean isCrossProductPositive(XY a, XY b) {
-		return a.X() * b.Y() > a.Y() * b.X();
-	}
 }
