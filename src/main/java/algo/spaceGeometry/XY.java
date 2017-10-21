@@ -1,8 +1,14 @@
 package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Utils.isEqual;
+import static java.lang.Math.cos;
+import static java.lang.Math.hypot;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 
-public class XY implements Coordinate {
+import org.apache.commons.math3.ml.clustering.Clusterable;
+
+public class XY implements Clusterable {
 	protected final double	x , y;
 	public static final XY	E1	= new XY(1, 0) , E2 = new XY(0, 1);
 
@@ -11,12 +17,15 @@ public class XY implements Coordinate {
 		this.y = y;
 	}
 
-	@Override
+	public final static XY rTheta(double r, double theta) {
+		theta = toRadians(theta);
+		return new XY(r * cos(theta), r * sin(theta));
+	}
+
 	public double X() {
 		return x;
 	}
 
-	@Override
 	public double Y() {
 		return y;
 	}
@@ -29,8 +38,8 @@ public class XY implements Coordinate {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof XY
-				&& isEqual(((XY) obj).x, x, TOLERANCE)
-				&& isEqual(((XY) obj).y, y, TOLERANCE);
+				&& isEqual(((XY) obj).x, x)
+				&& isEqual(((XY) obj).y, y);
 	}
 
 	@Override
@@ -44,8 +53,32 @@ public class XY implements Coordinate {
 		return prime * result + (int) (temp ^ temp >>> 32);
 	}
 
-	@Override
-	public double Z() {
-		throw new UnsupportedOperationException("This is XY Geometry.");
+	public double dotProduct(XY coords2) {
+		double res = X() * coords2.X() + Y() * coords2.Y();
+
+		return res;
 	}
+
+	public double magnitude() {
+		return hypot(X(), Y());
+
+	}
+
+	public XY to(XY b) {
+		double x = b.X() - X() , y = b.Y() - Y();
+
+		return new XY(x, y);
+	}
+
+	public XY unitVector() {
+		double mag = magnitude();
+		return new XY(X() / mag, Y() / mag);
+	}
+
+	@Override
+	public double[] getPoint() {
+
+		return new double[] { x, y };
+	}
+
 }

@@ -3,26 +3,23 @@ package algo.spaceGeometry;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
-
+import algo.io.IO;
 import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
-	static Random random = new Random(10L);
+	static Random random = new Random();
 
 	public static double getNext(double mean, double std) {
-		//				return mean + std * random.nextGaussian();
-		//		return (int) (mean + std * random.nextGaussian());
+		//						return mean + std * random.nextGaussian();
+		//				return (int) (mean + std * random.nextGaussian());
 		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
@@ -42,18 +39,13 @@ public class DemoConvexHullJarvis {
 		ConvexHull convexHullJarvis = new ConvexHullJarvisOptimised(points);
 		//		ConvexHull convexHullJarvis = new ConvexHullJarvisSimple(points);
 
-		Gson gson = new Gson();
-		String path = "";
-		String inputPath = path + "a.json";
-		String outputPath = path + "b.json";
-		JsonWriter jsonWriter = new JsonWriter(new FileWriter(inputPath));
-		gson.toJson(points, points.getClass(), jsonWriter);
-		jsonWriter.close();
+		String inputPath = Config.PATH + "a.json";
+		String outputPath = Config.PATH + "b.json";
+		IO.toJson(points, inputPath);
 
-		jsonWriter = new JsonWriter(new FileWriter(outputPath));
 		List<XY> convexHull = convexHullJarvis.getConvexHull();
-		gson.toJson(convexHull, List.class, jsonWriter);
-		jsonWriter.close();
+		IO.toJson(convexHull, outputPath);
+
 		System.out.println("convexhull size: " + convexHull.size());
 
 		System.out.println(System.currentTimeMillis() - start);

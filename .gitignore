@@ -9,4 +9,4 @@ target/
 *.class
 *.txt
 *#*
-
+*Config*

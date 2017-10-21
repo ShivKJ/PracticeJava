@@ -12,7 +12,7 @@ import algo.spaceGeometry.XY;
 
 public class ConvexHullJarvisSimple extends ConvexHullJarvis {
 
-	public ConvexHullJarvisSimple(Collection<XY> points) throws EmptyCollectionException {
+	public ConvexHullJarvisSimple(Collection<? extends XY> points) throws EmptyCollectionException {
 		super(unmodifiableCollection(points));
 	}
 
@@ -23,7 +23,7 @@ public class ConvexHullJarvisSimple extends ConvexHullJarvis {
 
 		XY src = origin , dst = null , baseLine = E2;
 
-		Optional<XY> nextDST = null;
+		Optional<? extends XY> nextDST = null;
 
 		while ((nextDST = nextHullPoint(src, baseLine)).isPresent() && !(dst = nextDST.get()).equals(origin)) {
 			convexHull.add(dst);

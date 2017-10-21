@@ -1,15 +1,21 @@
 package algo.spaceGeometry;
 
-import static algo.spaceGeometry.Coordinate.TOLERANCE;
+import static algo.spaceGeometry.Config.TOLERANCE;
+import static algo.spaceGeometry.PointLocation.INSIDE;
+import static algo.spaceGeometry.PointLocation.ON;
+import static algo.spaceGeometry.PointLocation.OUTSIDE;
 import static algo.spaceGeometry.ZDirection.DOWN;
 import static algo.spaceGeometry.ZDirection.UNDEFINED;
 import static algo.spaceGeometry.ZDirection.UP;
 import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class Utils {
+public final class Utils {
 
 	private Utils() {}
 
@@ -21,12 +27,11 @@ public class Utils {
 		return isEqual(x1, x2, TOLERANCE);
 	}
 
-	public static boolean pointInConvexHull(List<XY> convexHull, XY p) {
+	public static PointLocation pointWrtConvexHull(List<XY> convexHull, XY p) {
 		/*
-		 * Each point in convex hull should be distinct.
+		 * Each point in convex hull should be distinct and on line segment formed by any two point does not contain a
+		 * point from convex hull, And hull should be non empty.
 		 */
-		if (convexHull.isEmpty())
-			return false;
 
 		int size = convexHull.size();
 
@@ -35,17 +40,17 @@ public class Utils {
 		XY a = iter.next();
 
 		if (size == 1)
-			return a.equals(p);
+			return a.equals(p) ? ON : OUTSIDE;
 
 		XY b = iter.next() , ab = a.to(b) , pa = p.to(a) , pb = p.to(b);
 
 		ZDirection direction = crossProductZDirection(pa, pb);
 
-		if (direction == UNDEFINED && isPointOnLineSegment(ab, pa, pb))
-			return true;
+		if (direction == UNDEFINED)
+			return pointLocWRTLineSegment(ab, pa, pb);
 
 		if (size == 2)
-			return false;
+			return OUTSIDE;
 
 		for (; iter.hasNext();) {
 			XY x = iter.next() , px = p.to(x);
@@ -53,22 +58,43 @@ public class Utils {
 			ZDirection bCrossX = crossProductZDirection(pb, px);
 
 			if (bCrossX == UNDEFINED)
-				return isPointOnLineSegment(b.to(x), pb, px);
+				return pointLocWRTLineSegment(b.to(x), pb, px);
 			else if (direction != bCrossX)
-				return false;
+				return OUTSIDE;
 
 			b = x;
 			pb = px;
 		}
-		return true;
+		return INSIDE;
 	}
 
-	public static boolean pointInOrOnTriangle(XY a, XY b, XY c, XY p) {
+	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, XY p) {
 		XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
 
+		ZDirection ab = crossProductZDirection(pa, pb);
 		ZDirection bc = crossProductZDirection(pb, pc);
+		ZDirection ca = crossProductZDirection(pc, pa);
 
-		return crossProductZDirection(pa, pb) == bc && bc == crossProductZDirection(pc, pa);
+		if (ab == UNDEFINED && bc == UNDEFINED && ca == UNDEFINED) {
+			double AB = a.to(b).magnitude() , BC = b.to(c).magnitude() , CA = c.to(a).magnitude();
+			if (isEqual(AB, BC + CA))
+				return pointLocWRTLineSegment(a.to(b), pa, pb);
+			if (isEqual(BC, CA + AB))
+				return pointLocWRTLineSegment(b.to(c), pb, pc);
+
+			return pointLocWRTLineSegment(c.to(a), pc, pa);
+		}
+
+		if (ab == UNDEFINED)
+			return pointLocWRTLineSegment(a.to(b), pa, pb);
+
+		if (bc == UNDEFINED)
+			return pointLocWRTLineSegment(b.to(c), pb, pc);
+
+		if (ca == UNDEFINED)
+			return pointLocWRTLineSegment(c.to(a), pc, pa);
+
+		return ab == bc && bc == ca ? INSIDE : OUTSIDE;
 	}
 
 	private static ZDirection crossProductZDirection(XY a, XY b) {
@@ -80,8 +106,13 @@ public class Utils {
 		return left > right ? UP : DOWN;
 	}
 
-	private static boolean isPointOnLineSegment(XY ab, XY pa, XY pb) {
-		return isEqual(abs(ab.x), abs(pa.x) + abs(pb.x)) && isEqual(abs(ab.y), abs(pa.y) + abs(pb.y));
+	private static PointLocation pointLocWRTLineSegment(XY ab, XY pa, XY pb) {
+		return isEqual(abs(ab.x), abs(pa.x) + abs(pb.x)) && isEqual(abs(ab.y), abs(pa.y) + abs(pb.y)) ? ON : OUTSIDE;
 	}
 
+	public static XY rotate(XY vector, double theta) {
+		theta = toRadians(theta);
+		double x = vector.X() , y = vector.Y();
+		return new XY(x * cos(theta) - y * sin(theta), x * sin(theta) + y * cos(theta));
+	}
 }

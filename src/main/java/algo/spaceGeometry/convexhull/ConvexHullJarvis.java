@@ -13,16 +13,16 @@ import algo.spaceGeometry.XY;
 public abstract class ConvexHullJarvis extends ConvexHull {
 	protected final XY origin;
 
-	public ConvexHullJarvis(Collection<XY> input) throws EmptyCollectionException {
+	public ConvexHullJarvis(Collection<? extends XY> input) throws EmptyCollectionException {
 		super(input);
 		this.origin = originPoint();
 	}
 
-	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
+	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
 		return nextHullPoint(src, baseLine, x -> !x.equals(src));
 	}
 
-	protected Optional<XY> nextHullPoint(XY src, XY baseLine, Predicate<XY> filter) {
+	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine, Predicate<XY> filter) {
 		double BASE_LINE = baseLine.magnitude();
 
 		Comparator<XY> cosineComparator = comparingDouble((XY p) -> {
@@ -33,7 +33,7 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 		return bestPoint(filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 
-	protected Optional<XY> bestPoint(Predicate<XY> filter, Comparator<XY> comp) {
+	protected Optional<? extends XY> bestPoint(Predicate<? super XY> filter, Comparator<? super XY> comp) {
 		return input.stream().filter(filter).max(comp);
 	}
 

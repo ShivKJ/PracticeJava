@@ -6,9 +6,9 @@ import java.util.List;
 import algo.spaceGeometry.XY;
 
 public abstract class ConvexHull {
-	protected final Collection<XY> input;
+	protected final Collection<? extends XY> input;
 
-	public ConvexHull(Collection<XY> input) throws EmptyCollectionException {
+	public ConvexHull(Collection<? extends XY> input) throws EmptyCollectionException {
 		if (input.isEmpty())
 			throw new EmptyCollectionException("input can not be empty.");
 
