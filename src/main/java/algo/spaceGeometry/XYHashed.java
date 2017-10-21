@@ -1,14 +1,14 @@
 package algo.spaceGeometry;
 
-public class XYHash extends XY {
+public class XYHashed extends XY {
 	private transient final int hashcode;
 
-	public XYHash(double x, double y) {
+	public XYHashed(double x, double y) {
 		super(x, y);
 		this.hashcode = super.hashCode();
 	}
 
-	public XYHash(XY point) {
+	public XYHashed(XY point) {
 		this(point.x, point.y);
 	}
 

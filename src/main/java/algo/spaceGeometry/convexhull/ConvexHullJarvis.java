@@ -41,5 +41,4 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 	protected XY originPoint() {
 		return min(input, comparing(XY::X));
 	}
-
 }

@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
 import algo.spaceGeometry.convexhull.ConvexHull;
-import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
+import algo.spaceGeometry.convexhull.ConvexHullJarvisSimple;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class DemoConvexHullJarvis {
@@ -39,8 +39,8 @@ public class DemoConvexHullJarvis {
 		//				points.add(new XY(10, -5));
 		//				points.add(new XY(10, -1));
 
-		ConvexHull convexHullJarvis = new ConvexHullJarvisOptimised(points);
-		//		ConvexHull convexHullJarvis = new ConvexHullJarvisSimple(points);
+		//		ConvexHull convexHullJarvis = new ConvexHullJarvisOptimised(points);
+		ConvexHull convexHullJarvis = new ConvexHullJarvisSimple(points);
 
 		Gson gson = new Gson();
 		String path = "";

@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.XYHash;
+import algo.spaceGeometry.XYHashed;
 
 public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private final Set<XY>	convexHull;
 	private XY				a , b;
 
 	public ConvexHullJarvisOptimised(Collection<XY> input) throws EmptyCollectionException {
-		super(input.stream().map(XYHash::new).collect(toSet()));
+		super(input.stream().map(XYHashed::new).collect(toSet()));
 		this.convexHull = new LinkedHashSet<>();
 		this.a = this.origin;
 	}
@@ -29,7 +29,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	@Override
 	public List<XY> getConvexHull() {
 		convexHull.add(origin);
-		XY baseLine = new XYHash(E2);
+		XY baseLine = new XYHashed(E2);
 
 		Optional<XY> nextB = null;
 		Predicate<XY> inTriangleOAB = this::pointInTriangleOAB;
@@ -51,17 +51,17 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 	@Override
 	protected Optional<XY> bestPoint(Predicate<XY> filter, Comparator<XY> comp) {
-		XY a = null;
+		XY bestPoint = null;
 
-		for (XY xy : input)
-			if (filter.test(xy))
-				if (a == null) {
-					a = xy;
+		for (XY currentPoint : input)
+			if (filter.test(currentPoint))
+				if (bestPoint == null) {
+					bestPoint = currentPoint;
 					continue;
-				} else if (comp.compare(a, xy) < 0)
-					a = xy;
+				} else if (comp.compare(bestPoint, currentPoint) < 0)
+					bestPoint = currentPoint;
 
-		return ofNullable(a);
+		return ofNullable(bestPoint);
 	}
 
 	private List<XY> output() {
@@ -75,14 +75,13 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 	private boolean pointInTriangleOAB(XY x) {
 		if (!convexHull.contains(x)) {
-			XY xo = x.to(origin) ,
-					xa = x.to(a) ,
-					xb = x.to(b);
+			XY xo = x.to(origin) , xa = x.to(a) , xb = x.to(b);
 
 			boolean ab = isCrossProductPositive(xa, xb);
 
 			return isCrossProductPositive(xo, xa) == ab && ab == isCrossProductPositive(xb, xo);
 		}
+
 		return false;
 	}
 
