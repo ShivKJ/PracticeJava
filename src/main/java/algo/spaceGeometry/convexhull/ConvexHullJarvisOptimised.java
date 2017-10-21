@@ -14,11 +14,12 @@ import java.util.function.Predicate;
 import algo.spaceGeometry.XY;
 import algo.spaceGeometry.XYHash;
 
-public class OptimisedJarvis extends ConvexHullJarvis {
+public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private final Set<XY>	convexHull;
-	private XY				origin , a , b;
+	private final XY		origin;
+	private XY				a , b;
 
-	public OptimisedJarvis(Collection<XY> input) throws EmptyCollectionException {
+	public ConvexHullJarvisOptimised(Collection<XY> input) throws EmptyCollectionException {
 		super(input.stream().map(XYHash::new).collect(toSet()));
 		this.convexHull = new LinkedHashSet<>();
 		this.origin = this.a = firstPoint();
@@ -27,7 +28,6 @@ public class OptimisedJarvis extends ConvexHullJarvis {
 	@Override
 	public List<XY> getConvexHull() {
 		convexHull.add(origin);
-
 		XY baseLine = new XYHash(E2);
 
 		Optional<XY> nextB = null;

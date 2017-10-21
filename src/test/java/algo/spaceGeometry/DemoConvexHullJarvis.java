@@ -15,20 +15,20 @@ import com.google.gson.stream.JsonWriter;
 
 import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
-import algo.spaceGeometry.convexhull.OptimisedJarvis;
+import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 
 public class DemoConvexHullJarvis {
 	static Random random = new Random();
 
 	public static double getNext(double mean, double std) {
-		return mean + std * random.nextGaussian();
-		//				return (int) (mean + std * random.nextGaussian());
+		//		return mean + std * random.nextGaussian();
+		return (int) (mean + std * random.nextGaussian());
 		//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
 	public static void main(String[] args) throws IOException, EmptyCollectionException {
 		long start = System.currentTimeMillis();
-		double std = 4 , mean = 0;
+		double std = 10 , mean = 0;
 		Supplier<XY> supplier = () -> new XY(getNext(mean, std), getNext(mean, std));
 
 		Collection<XY> points = generate(supplier)
@@ -39,7 +39,7 @@ public class DemoConvexHullJarvis {
 		//				points.add(new XY(10, -5));
 		//				points.add(new XY(10, -1));
 
-		ConvexHull convexHullJarvis = new OptimisedJarvis(points);
+		ConvexHull convexHullJarvis = new ConvexHullJarvisOptimised(points);
 		//		ConvexHull convexHullJarvis = new ConvexHullJarvis(points);
 
 		Gson gson = new Gson();
