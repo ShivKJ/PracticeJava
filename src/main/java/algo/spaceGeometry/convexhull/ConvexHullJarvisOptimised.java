@@ -19,21 +19,21 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private XY a , b;
 
 	public ConvexHullJarvisOptimised(Collection<? extends XY> input) throws EmptyCollectionException {
-		super(unmodifiableCollection(input.stream().map(XYHashed::new).distinct().collect(toList())));
+		super(unmodifiableCollection(input.stream().map(LabeledXY::new).distinct().collect(toList())));
 		this.a = this.origin;
 	}
 
-	private final static class XYHashed extends XY {
+	private final static class LabeledXY extends XY {
 		transient final int	hashcode;
 		transient boolean	inSystem;
 
-		XYHashed(double x, double y) {
+		LabeledXY(double x, double y) {
 			super(x, y);
 			this.hashcode = super.hashCode();
 			this.inSystem = true;
 		}
 
-		XYHashed(XY point) {
+		LabeledXY(XY point) {
 			this(point.X(), point.Y());
 		}
 
@@ -50,8 +50,8 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 		@Override
 		public boolean add(XY e) {
-			if (e instanceof XYHashed)
-				((XYHashed) e).inSystem = false;
+			if (e instanceof LabeledXY)
+				((LabeledXY) e).inSystem = false;
 
 			return super.add(e);
 		}
@@ -62,7 +62,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		List<XY> convexHull = new LabeledList();
 		convexHull.add(origin);
 
-		XY baseLine = new XYHashed(E2);
+		XY baseLine = E2;
 
 		Optional<? extends XY> nextB = null;
 		Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
@@ -84,7 +84,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 	@Override
 	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
-		return nextHullPoint(src, baseLine, x -> ((XYHashed) x).inSystem);
+		return nextHullPoint(src, baseLine, x -> ((LabeledXY) x).inSystem);
 	}
 
 	private final class ElementLabeler {
@@ -111,10 +111,9 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		}
 
 		void label(XY x) {
-			XYHashed point = (XYHashed) x;
+			LabeledXY point = (LabeledXY) x;
 			if (point.inSystem && pointNotOutside(x))
 				point.inSystem = false;
 		}
-
 	}
 }
