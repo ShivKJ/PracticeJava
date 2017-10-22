@@ -1,7 +1,14 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.PointLocation.INSIDE;
+import static algo.spaceGeometry.PointLocation.ON;
 import static algo.spaceGeometry.PointLocation.OUTSIDE;
+import static algo.spaceGeometry.Utils.area;
+import static algo.spaceGeometry.Utils.crossProductZDirection;
+import static algo.spaceGeometry.Utils.isZero;
+import static algo.spaceGeometry.Utils.pointLocWRTLineSegment;
 import static algo.spaceGeometry.XY.E2;
+import static algo.spaceGeometry.ZDirection.UNDEFINED;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 
@@ -14,8 +21,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import algo.spaceGeometry.PointLocation;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.XYHashed;
+import algo.spaceGeometry.ZDirection;
 
 public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private final Set<XY>	convexHull;
@@ -27,25 +35,42 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		this.a = this.origin;
 	}
 
+	private final static class XYHashed extends XY {
+		private transient final int hashcode;
+
+		XYHashed(double x, double y) {
+			super(x, y);
+			this.hashcode = super.hashCode();
+		}
+
+		XYHashed(XY point) {
+			this(point.X(), point.Y());
+		}
+
+		@Override
+		public int hashCode() {
+			return hashcode;
+		}
+
+	}
+
 	@Override
 	public List<XY> getConvexHull() {
 		convexHull.add(origin);
 		XY baseLine = new XYHashed(E2);
 
 		Optional<? extends XY> nextB = null;
+		LocationFindingTriangle triangle = new LocationFindingTriangle();
 
 		while ((nextB = nextHullPoint(a, baseLine)).isPresent() && (b = nextB.get()) != origin) {
+			triangle.recalculateArea();
 			convexHull.add(b);
-			input.removeIf(pointNotOutside(new LocationFindingTriangle(origin, a, b)));
+			input.removeIf(pointNotOutside(triangle));
 			baseLine = a.to(b);
 			a = b;
 		}
 
 		return output();
-	}
-
-	private Predicate<? super XY> pointNotOutside(LocationFindingTriangle triangle) {
-		return x -> !convexHull.contains(x) && triangle.getPointLocation(x) != OUTSIDE;
 	}
 
 	@Override
@@ -77,4 +102,43 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		return output;
 	}
 
+	private Predicate<? super XY> pointNotOutside(LocationFindingTriangle triangle) {
+		return x -> !convexHull.contains(x) && triangle.getPointLocation(x) != OUTSIDE;
+	}
+
+	private final class LocationFindingTriangle {
+
+		double area;
+
+		LocationFindingTriangle() {
+			this.area = 0;
+		}
+
+		void recalculateArea() {
+			this.area = area(origin, a, b);
+		}
+
+		PointLocation getPointLocation(XY p) {
+			XY pa = p.to(a) , pb = p.to(b) , pc = p.to(origin);
+			if (isZero(area))
+				return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(origin), pb, pc) == ON
+						? ON
+						: OUTSIDE;
+
+			ZDirection ab = crossProductZDirection(pa, pb);
+			if (ab == UNDEFINED)
+				return pointLocWRTLineSegment(a.to(b), pa, pb);
+
+			ZDirection bc = crossProductZDirection(pb, pc);
+			if (bc == UNDEFINED)
+				return pointLocWRTLineSegment(b.to(origin), pb, pc);
+
+			ZDirection ca = crossProductZDirection(pc, pa);
+			if (ca == UNDEFINED)
+				return pointLocWRTLineSegment(origin.to(a), pc, pa);
+
+			return ab == bc && bc == ca ? INSIDE : OUTSIDE;
+		}
+
+	}
 }

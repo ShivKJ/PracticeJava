@@ -1,6 +1,7 @@
 package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Utils.isEqual;
+import static java.lang.Double.doubleToLongBits;
 import static java.lang.Math.cos;
 import static java.lang.Math.hypot;
 import static java.lang.Math.sin;
@@ -52,9 +53,9 @@ public class XY implements Clusterable {
 		final int prime = 31;
 		int result = 1;
 
-		long temp = Double.doubleToLongBits(x);
+		long temp = doubleToLongBits(x);
 		result = prime * result + (int) (temp ^ temp >>> 32);
-		temp = Double.doubleToLongBits(y);
+		temp = doubleToLongBits(y);
 		return prime * result + (int) (temp ^ temp >>> 32);
 	}
 

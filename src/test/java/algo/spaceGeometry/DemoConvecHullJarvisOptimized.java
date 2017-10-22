@@ -14,7 +14,7 @@ import algo.spaceGeometry.convexhull.EmptyCollectionException;
 public class DemoConvecHullJarvisOptimized {
 	public static void main(String[] args) throws EmptyCollectionException {
 		Collection<XY> points = new LinkedList<>();
-		points.addAll(PointGeneration.pointsOnCircle(1, 1.1, 1000));
+		points.addAll(PointGeneration.pointsOnCircle(1, 1.1, 200));
 		XY a = new XY(0, 0) , b = new XY(2, 0) , c = new XY(2, 0.5) , d = new XY(2, .5);
 		points.addAll(PointGeneration.pointsOnPolygon(asList(a, b, c, d), 0.1, 200));
 		IO.toJson(points, Config.PATH + "a.json");

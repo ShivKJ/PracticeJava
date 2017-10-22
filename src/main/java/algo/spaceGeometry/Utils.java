@@ -23,12 +23,12 @@ public final class Utils {
 		return abs(x1 - x2) <= tol;
 	}
 
-	public static boolean isZero(double x) {
-		return isEqual(x, 0);
-	}
-
 	public static boolean isEqual(double x1, double x2) {
 		return isEqual(x1, x2, TOLERANCE);
+	}
+
+	public static boolean isZero(double x) {
+		return abs(x) <= TOLERANCE;
 	}
 
 	public static PointLocation pointWrtConvexHull(List<XY> convexHull, XY p) {
@@ -99,5 +99,9 @@ public final class Utils {
 
 	public static XY linearCombination(double a, XY A, double b, XY B) {
 		return new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
+	}
+
+	public static double area(XY a, XY b, XY c) {
+		return abs(crossProduct(a.to(b), a.to(c)));
 	}
 }

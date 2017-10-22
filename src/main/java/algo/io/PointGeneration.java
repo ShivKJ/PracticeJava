@@ -17,9 +17,13 @@ import algo.spaceGeometry.Utils;
 import algo.spaceGeometry.XY;
 
 public final class PointGeneration {
-	private final static Random random = new Random(10L);
+	private final static Random random = new Random();
 
 	private PointGeneration() {}
+
+	public static void setSeed(long seed) {
+		random.setSeed(seed);
+	}
 
 	public static final Collection<XY> pointsOnCircle(XY center, double r1, double r2, double theta1, double theta2, int noPoints) {
 		Collection<XY> points = new ArrayList<>(noPoints);
@@ -84,7 +88,6 @@ public final class PointGeneration {
 		}
 
 		static List<LineSegement> getLineSegs(List<XY> polys) {
-			// polygon length must be grater than 1
 			List<LineSegement> lineSegements = new ArrayList<>(polys.size() - 1);
 			Iterator<XY> iter = polys.iterator();
 
@@ -101,6 +104,7 @@ public final class PointGeneration {
 	public static final Collection<XY> pointsOnPolygon(List<XY> polygon, double width, int noPoints) {
 		if (polygon.isEmpty())
 			return emptyList();
+
 		if (polygon.size() == 1)
 			return asList(polygon.get(0));
 
