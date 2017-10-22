@@ -1,20 +1,21 @@
 package algo.spaceGeometry.pointLocation;
 
 import static algo.spaceGeometry.Utils.area;
-import static algo.spaceGeometry.Utils.crossProductZDirection;
+import static algo.spaceGeometry.Utils.crossProduct;
+import static algo.spaceGeometry.Utils.isEqual;
 import static algo.spaceGeometry.Utils.isZero;
-import static algo.spaceGeometry.ZDirection.UNDEFINED;
 import static algo.spaceGeometry.pointLocation.PointLocation.INSIDE;
 import static algo.spaceGeometry.pointLocation.PointLocation.ON;
 import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
+import static algo.spaceGeometry.pointLocation.ZDirection.DOWN;
+import static algo.spaceGeometry.pointLocation.ZDirection.UNDEFINED;
+import static algo.spaceGeometry.pointLocation.ZDirection.UP;
 import static java.lang.Math.abs;
 
 import java.util.Iterator;
 import java.util.List;
 
-import algo.spaceGeometry.Utils;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.ZDirection;
 
 public final class PointLocUtils {
 
@@ -36,10 +37,10 @@ public final class PointLocUtils {
 
 		XY b = iter.next() , ab = a.to(b) , pa = p.to(a) , pb = p.to(b);
 
-		ZDirection direction = Utils.crossProductZDirection(pa, pb);
+		ZDirection direction = crossProductZDirection(pa, pb);
 
 		if (direction == UNDEFINED)
-			return PointLocUtils.pointLocWRTLineSegment(ab, pa, pb);
+			return pointLocWRTLineSegment(ab, pa, pb);
 
 		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;
@@ -47,10 +48,10 @@ public final class PointLocUtils {
 		while (iter.hasNext()) {
 			XY x = iter.next() , px = p.to(x);
 
-			ZDirection bCrossX = Utils.crossProductZDirection(pb, px);
+			ZDirection bCrossX = crossProductZDirection(pb, px);
 
 			if (bCrossX == UNDEFINED)
-				return PointLocUtils.pointLocWRTLineSegment(b.to(x), pb, px);
+				return pointLocWRTLineSegment(b.to(x), pb, px);
 			else if (direction != bCrossX)
 				return OUTSIDE;
 
@@ -62,29 +63,38 @@ public final class PointLocUtils {
 	}
 
 	public static PointLocation pointLocWRTLineSegment(XY ab, XY pa, XY pb) {
-		return Utils.isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && Utils.isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) ? ON : OUTSIDE;
+		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) ? ON : OUTSIDE;
 	}
 
 	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, double area, XY p) {
 		XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
 		if (isZero(area))
-			return PointLocUtils.pointLocWRTLineSegment(a.to(b), pa, pb) == ON || PointLocUtils.pointLocWRTLineSegment(b.to(c), pb, pc) == ON
+			return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(c), pb, pc) == ON
 					? ON
 					: OUTSIDE;
 
 		ZDirection ab = crossProductZDirection(pa, pb);
 		if (ab == UNDEFINED)
-			return PointLocUtils.pointLocWRTLineSegment(a.to(b), pa, pb);
+			return pointLocWRTLineSegment(a.to(b), pa, pb);
 
 		ZDirection bc = crossProductZDirection(pb, pc);
 		if (bc == UNDEFINED)
-			return PointLocUtils.pointLocWRTLineSegment(b.to(c), pb, pc);
+			return pointLocWRTLineSegment(b.to(c), pb, pc);
 
 		ZDirection ca = crossProductZDirection(pc, pa);
 		if (ca == UNDEFINED)
-			return PointLocUtils.pointLocWRTLineSegment(c.to(a), pc, pa);
+			return pointLocWRTLineSegment(c.to(a), pc, pa);
 
 		return ab == bc && bc == ca ? INSIDE : OUTSIDE;
+	}
+
+	public static ZDirection crossProductZDirection(XY a, XY b) {
+		double crossProduct = crossProduct(a, b);
+
+		if (isZero(crossProduct))
+			return UNDEFINED;
+
+		return crossProduct > 0 ? UP : DOWN;
 	}
 
 	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, XY p) {

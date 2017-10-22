@@ -1,13 +1,17 @@
 package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Config.TOLERANCE;
-import static algo.spaceGeometry.ZDirection.DOWN;
-import static algo.spaceGeometry.ZDirection.UNDEFINED;
-import static algo.spaceGeometry.ZDirection.UP;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
+import static java.util.Comparator.comparingDouble;
+import static java.util.Optional.ofNullable;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public final class Utils {
 
@@ -23,15 +27,6 @@ public final class Utils {
 
 	public static boolean isZero(double x) {
 		return abs(x) <= TOLERANCE;
-	}
-
-	public static ZDirection crossProductZDirection(XY a, XY b) {
-		double crossProduct = crossProduct(a, b);
-
-		if (isZero(crossProduct))
-			return UNDEFINED;
-
-		return crossProduct > 0 ? UP : DOWN;
 	}
 
 	public static double crossProduct(XY a, XY b) {
@@ -50,5 +45,26 @@ public final class Utils {
 
 	public static double area(XY a, XY b, XY c) {
 		return abs(crossProduct(a.to(b), a.to(c)));
+	}
+
+	public static Optional<? extends XY> bestPoint(Collection<? extends XY> points, Predicate<? super XY> filteration, Comparator<? super XY> comp) {
+		XY best = null;
+
+		for (XY tmp : points)
+			if (filteration.test(tmp))
+				if (best == null)
+					best = tmp;
+				else if (comp.compare(tmp, best) > 0)
+					best = tmp;
+
+		return ofNullable(best);
+	}
+
+	public static Optional<? extends XY> getFarthestPoint(Collection<? extends XY> points, double angle, Comparator<? super XY> resolveConflict) {
+		return bestPoint(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
+	}
+
+	public static Optional<? extends XY> getFarthestPoint(Collection<? extends XY> points, double angle) {
+		return bestPoint(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
 	}
 }

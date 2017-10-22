@@ -1,4 +1,4 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.pointLocation;
 
 public enum ZDirection {
 	UP, UNDEFINED, DOWN

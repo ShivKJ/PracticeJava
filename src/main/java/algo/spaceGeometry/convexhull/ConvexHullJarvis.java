@@ -1,8 +1,8 @@
 package algo.spaceGeometry.convexhull;
 
-import static java.util.Collections.min;
+import static algo.spaceGeometry.Utils.bestPoint;
+import static algo.spaceGeometry.Utils.getFarthestPoint;
 import static java.util.Comparator.comparingDouble;
-import static java.util.Optional.ofNullable;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -29,26 +29,12 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 		Comparator<XY> cosineComparator = comparingDouble((XY p) -> {
 			XY srcToP = src.to(p);
 			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
-		});
-
-		return bestPoint(filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
-	}
-
-	protected Optional<? extends XY> bestPoint(Predicate<? super XY> filter, Comparator<? super XY> comp) {
-		XY bestPoint = null;
-
-		for (XY currentPoint : input)
-			if (filter.test(currentPoint))
-				if (bestPoint == null) {
-					bestPoint = currentPoint;
-					continue;
-				} else if (comp.compare(bestPoint, currentPoint) < 0)
-					bestPoint = currentPoint;
-
-		return ofNullable(bestPoint);
+		});;
+		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 
 	protected XY originPoint() {
-		return min(input, comparingDouble(XY::X).thenComparingDouble(XY::Y));
+		return getFarthestPoint(input, -180, comparingDouble(XY::Y).reversed()).get();
 	}
+
 }
