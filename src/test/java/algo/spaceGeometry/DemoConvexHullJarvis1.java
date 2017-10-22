@@ -14,7 +14,7 @@ import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
-public class DemoConvexHullJarvis {
+public class DemoConvexHullJarvis1 {
 	static Random random = new Random();
 
 	public static double getNext(double mean, double std) {

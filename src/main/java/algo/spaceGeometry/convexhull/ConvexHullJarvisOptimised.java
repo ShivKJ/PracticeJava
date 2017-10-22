@@ -1,8 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
-import static algo.spaceGeometry.PointLocation.INSIDE;
-import static algo.spaceGeometry.PointLocation.ON;
-import static algo.spaceGeometry.Utils.pointLocWrtToTriangle;
+import static algo.spaceGeometry.PointLocation.OUTSIDE;
 import static algo.spaceGeometry.XY.E2;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
@@ -16,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import algo.spaceGeometry.PointLocation;
 import algo.spaceGeometry.XY;
 import algo.spaceGeometry.XYHashed;
 
@@ -36,16 +33,19 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		XY baseLine = new XYHashed(E2);
 
 		Optional<? extends XY> nextB = null;
-		Predicate<? super XY> notOutsideTriangleOAB = this::pointNotOutsideTriangleOAB;
 
 		while ((nextB = nextHullPoint(a, baseLine)).isPresent() && (b = nextB.get()) != origin) {
 			convexHull.add(b);
-			input.removeIf(notOutsideTriangleOAB);
+			input.removeIf(pointNotOutside(new LocationFindingTriangle(origin, a, b)));
 			baseLine = a.to(b);
 			a = b;
 		}
 
 		return output();
+	}
+
+	private Predicate<? super XY> pointNotOutside(LocationFindingTriangle triangle) {
+		return x -> !convexHull.contains(x) && triangle.getPointLocation(x) != OUTSIDE;
 	}
 
 	@Override
@@ -77,8 +77,4 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		return output;
 	}
 
-	private boolean pointNotOutsideTriangleOAB(XY x) {
-		PointLocation location = pointLocWrtToTriangle(origin, a, b, x);
-		return !convexHull.contains(x) && (location == ON || location == INSIDE);
-	}
 }

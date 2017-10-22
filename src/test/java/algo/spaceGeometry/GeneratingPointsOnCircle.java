@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import algo.io.IO;
+import algo.io.PointGeneration;
 import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;

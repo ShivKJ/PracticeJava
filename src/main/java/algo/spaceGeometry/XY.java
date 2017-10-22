@@ -9,8 +9,9 @@ import static java.lang.Math.toRadians;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
 public class XY implements Clusterable {
-	protected final double	x , y;
-	public static final XY	E1	= new XY(1, 0) , E2 = new XY(0, 1);
+	public static final XY E1 = new XY(1, 0) , E2 = new XY(0, 1) , ZERO = new XY(0, 0);
+
+	protected final double x , y;
 
 	public XY(double x, double y) {
 		this.x = x;
@@ -18,8 +19,12 @@ public class XY implements Clusterable {
 	}
 
 	public final static XY rTheta(double r, double theta) {
+		return rTheta(ZERO, r, theta);
+	}
+
+	public final static XY rTheta(XY center, double r, double theta) {
 		theta = toRadians(theta);
-		return new XY(r * cos(theta), r * sin(theta));
+		return new XY(center.x + r * cos(theta), center.y + r * sin(theta));
 	}
 
 	public double X() {
@@ -54,20 +59,20 @@ public class XY implements Clusterable {
 	}
 
 	public double dotProduct(XY coords2) {
-		double res = X() * coords2.X() + Y() * coords2.Y();
+		return X() * coords2.X() + Y() * coords2.Y();
 
-		return res;
 	}
 
 	public double magnitude() {
 		return hypot(X(), Y());
+	}
 
+	public double distanceTo(XY to) {
+		return hypot(x - to.x, y - to.y);
 	}
 
 	public XY to(XY b) {
-		double x = b.X() - X() , y = b.Y() - Y();
-
-		return new XY(x, y);
+		return new XY(b.X() - X(), b.Y() - Y());
 	}
 
 	public XY unitVector() {

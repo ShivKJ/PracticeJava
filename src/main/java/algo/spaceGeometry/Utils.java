@@ -23,6 +23,10 @@ public final class Utils {
 		return abs(x1 - x2) <= tol;
 	}
 
+	public static boolean isZero(double x) {
+		return isEqual(x, 0);
+	}
+
 	public static boolean isEqual(double x1, double x2) {
 		return isEqual(x1, x2, TOLERANCE);
 	}
@@ -66,49 +70,24 @@ public final class Utils {
 			b = x;
 			pb = px;
 		}
-		
+
 		return INSIDE;
 	}
 
-	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, XY p) {
-		XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
+	public static ZDirection crossProductZDirection(XY a, XY b) {
+		double crossProduct = crossProduct(a, b);
 
-		ZDirection ab = crossProductZDirection(pa, pb);
-		ZDirection bc = crossProductZDirection(pb, pc);
-		ZDirection ca = crossProductZDirection(pc, pa);
-
-		if (ab == UNDEFINED && bc == UNDEFINED && ca == UNDEFINED) {
-			double AB = a.to(b).magnitude() , BC = b.to(c).magnitude() , CA = c.to(a).magnitude();
-			if (isEqual(AB, BC + CA))
-				return pointLocWRTLineSegment(a.to(b), pa, pb);
-			if (isEqual(BC, CA + AB))
-				return pointLocWRTLineSegment(b.to(c), pb, pc);
-
-			return pointLocWRTLineSegment(c.to(a), pc, pa);
-		}
-
-		if (ab == UNDEFINED)
-			return pointLocWRTLineSegment(a.to(b), pa, pb);
-
-		if (bc == UNDEFINED)
-			return pointLocWRTLineSegment(b.to(c), pb, pc);
-
-		if (ca == UNDEFINED)
-			return pointLocWRTLineSegment(c.to(a), pc, pa);
-
-		return ab == bc && bc == ca ? INSIDE : OUTSIDE;
-	}
-
-	private static ZDirection crossProductZDirection(XY a, XY b) {
-		double left = a.X() * b.Y() , right = a.Y() * b.X();
-
-		if (isEqual(left, right))
+		if (isZero(crossProduct))
 			return UNDEFINED;
 
-		return left > right ? UP : DOWN;
+		return crossProduct > 0 ? UP : DOWN;
 	}
 
-	private static PointLocation pointLocWRTLineSegment(XY ab, XY pa, XY pb) {
+	public static double crossProduct(XY a, XY b) {
+		return a.X() * b.Y() - a.Y() * b.X();
+	}
+
+	public static PointLocation pointLocWRTLineSegment(XY ab, XY pa, XY pb) {
 		return isEqual(abs(ab.x), abs(pa.x) + abs(pb.x)) && isEqual(abs(ab.y), abs(pa.y) + abs(pb.y)) ? ON : OUTSIDE;
 	}
 
@@ -116,5 +95,9 @@ public final class Utils {
 		theta = toRadians(theta);
 		double x = vector.X() , y = vector.Y();
 		return new XY(x * cos(theta) - y * sin(theta), x * sin(theta) + y * cos(theta));
+	}
+
+	public static XY linearCombination(double a, XY A, double b, XY B) {
+		return new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
 	}
 }
