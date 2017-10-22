@@ -9,6 +9,7 @@ import static algo.spaceGeometry.Utils.isZero;
 import static algo.spaceGeometry.Utils.pointLocWRTLineSegment;
 import static algo.spaceGeometry.XY.E2;
 import static algo.spaceGeometry.ZDirection.UNDEFINED;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private XY a , b;
 
 	public ConvexHullJarvisOptimised(Collection<? extends XY> input) throws EmptyCollectionException {
-		super(input.stream().map(XYHashed::new).distinct().collect(toList()));
+		super(unmodifiableCollection(input.stream().map(XYHashed::new).distinct().collect(toList())));
 		this.a = this.origin;
 	}
 
