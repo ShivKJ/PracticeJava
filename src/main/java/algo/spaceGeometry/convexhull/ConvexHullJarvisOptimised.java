@@ -9,38 +9,34 @@ import static algo.spaceGeometry.Utils.isZero;
 import static algo.spaceGeometry.Utils.pointLocWRTLineSegment;
 import static algo.spaceGeometry.XY.E2;
 import static algo.spaceGeometry.ZDirection.UNDEFINED;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 
 import algo.spaceGeometry.PointLocation;
 import algo.spaceGeometry.XY;
 import algo.spaceGeometry.ZDirection;
 
 public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
-	private final Set<XY>	convexHull;
-	private XY				a , b;
+	private XY a , b;
 
 	public ConvexHullJarvisOptimised(Collection<? extends XY> input) throws EmptyCollectionException {
-		super(input.stream().map(XYHashed::new).collect(toSet()));
-		this.convexHull = new LinkedHashSet<>();
+		super(input.stream().map(XYHashed::new).distinct().collect(toList()));
 		this.a = this.origin;
 	}
 
 	private final static class XYHashed extends XY {
-		private transient final int hashcode;
+		transient final int	hashcode;
+		transient boolean	inSystem;
 
 		XYHashed(double x, double y) {
 			super(x, y);
 			this.hashcode = super.hashCode();
+			this.inSystem = true;
 		}
 
 		XYHashed(XY point) {
@@ -54,65 +50,60 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 	}
 
+	private final static class LabeledList extends ArrayList<XY> {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean add(XY e) {
+			if (e instanceof XYHashed)
+				((XYHashed) e).inSystem = false;
+
+			return super.add(e);
+		}
+	}
+
 	@Override
 	public List<XY> getConvexHull() {
+		List<XY> convexHull = new LabeledList();
 		convexHull.add(origin);
+
 		XY baseLine = new XYHashed(E2);
 
 		Optional<? extends XY> nextB = null;
-		LocationFindingTriangle triangle = new LocationFindingTriangle();
-		Predicate<? super XY> pointNotOutside = pointNotOutside(triangle);
+		Consumer<? super XY> labelPointsIfNotOutsideTriangle = labelPointsNotOusideTriangle(new LocationFindingTriangle());
 
-		while ((nextB = nextHullPoint(a, baseLine)).isPresent() && (b = nextB.get()) != origin) {
-			triangle.recalculateArea();
-
+		while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
+			b = nextB.get();
 			convexHull.add(b);
 
-			input.removeIf(pointNotOutside);
-
+			input.forEach(labelPointsIfNotOutsideTriangle);
 			baseLine = a.to(b);
 			a = b;
 		}
 
-		return output();
+		if (convexHull.size() > 1)
+			convexHull.add(origin);
+
+		return convexHull;
+	}
+
+	private Consumer<? super XY> labelPointsNotOusideTriangle(LocationFindingTriangle triangle) {
+		return x -> {
+			XYHashed point = (XYHashed) x;
+			if (point.inSystem && triangle.pointNotOutside(x))
+				point.inSystem = false;
+		};
 	}
 
 	@Override
 	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
-		return nextHullPoint(src, baseLine, x -> x != src);
-	}
-
-	@Override
-	protected Optional<? extends XY> bestPoint(Predicate<? super XY> filter, Comparator<? super XY> comp) {
-		XY bestPoint = null;
-
-		for (XY currentPoint : input)
-			if (filter.test(currentPoint))
-				if (bestPoint == null) {
-					bestPoint = currentPoint;
-					continue;
-				} else if (comp.compare(bestPoint, currentPoint) < 0)
-					bestPoint = currentPoint;
-
-		return ofNullable(bestPoint);
-	}
-
-	private List<XY> output() {
-		List<XY> output = new ArrayList<>(convexHull);
-
-		if (output.size() > 1)
-			output.add(origin);// closing convex hull
-
-		return output;
-	}
-
-	private Predicate<? super XY> pointNotOutside(LocationFindingTriangle triangle) {
-		return x -> !convexHull.contains(x) && triangle.pointNotOutside(x);
+		return nextHullPoint(src, baseLine, x -> ((XYHashed) x).inSystem);
 	}
 
 	private final class LocationFindingTriangle {
-
-		double area;
+		XY		b;
+		double	area;
 
 		LocationFindingTriangle() {
 			this.area = 0;
@@ -123,6 +114,13 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		}
 
 		PointLocation getPointLocation(XY p) {
+			XY outerClassB = ConvexHullJarvisOptimised.this.b;
+
+			if (this.b != outerClassB) {
+				this.b = outerClassB;
+				recalculateArea();
+			}
+
 			XY pa = p.to(a) , pb = p.to(b) , pc = p.to(origin);
 			if (isZero(area))
 				return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(origin), pb, pc) == ON
