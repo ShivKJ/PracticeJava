@@ -2,6 +2,7 @@ package algo.spaceGeometry.convexhull;
 
 import static java.util.Collections.min;
 import static java.util.Comparator.comparingDouble;
+import static java.util.Optional.ofNullable;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,7 +35,17 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 	}
 
 	protected Optional<? extends XY> bestPoint(Predicate<? super XY> filter, Comparator<? super XY> comp) {
-		return input.stream().filter(filter).max(comp);
+		XY bestPoint = null;
+
+		for (XY currentPoint : input)
+			if (filter.test(currentPoint))
+				if (bestPoint == null) {
+					bestPoint = currentPoint;
+					continue;
+				} else if (comp.compare(bestPoint, currentPoint) < 0)
+					bestPoint = currentPoint;
+
+		return ofNullable(bestPoint);
 	}
 
 	protected XY originPoint() {
