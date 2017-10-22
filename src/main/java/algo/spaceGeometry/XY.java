@@ -59,13 +59,13 @@ public class XY implements Clusterable {
 		return prime * result + (int) (temp ^ temp >>> 32);
 	}
 
-	public double dotProduct(XY coords2) {
-		return X() * coords2.X() + Y() * coords2.Y();
+	public double dotProduct(XY b) {
+		return x * b.x + y * b.y;
 
 	}
 
 	public double magnitude() {
-		return hypot(X(), Y());
+		return hypot(x, y);
 	}
 
 	public double distanceTo(XY to) {
@@ -73,12 +73,12 @@ public class XY implements Clusterable {
 	}
 
 	public XY to(XY b) {
-		return new XY(b.X() - X(), b.Y() - Y());
+		return new XY(b.x - x, b.y - y);
 	}
 
 	public XY unitVector() {
 		double mag = magnitude();
-		return new XY(X() / mag, Y() / mag);
+		return new XY(x / mag, y / mag);
 	}
 
 	@Override
