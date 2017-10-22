@@ -56,7 +56,7 @@ public final class Utils {
 					best = tmp;
 				else if (comp.compare(tmp, best) > 0)
 					best = tmp;
-
+		
 		return ofNullable(best);
 	}
 
@@ -67,4 +67,5 @@ public final class Utils {
 	public static Optional<XY> getFarthestPoint(Collection<? extends XY> points, double angle) {
 		return bestPoint(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
 	}
+	
 }

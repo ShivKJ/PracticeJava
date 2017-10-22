@@ -1,4 +1,4 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.convexhull;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.generate;
@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import algo.io.IO;
+import algo.spaceGeometry.Config;
+import algo.spaceGeometry.XY;
 import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;

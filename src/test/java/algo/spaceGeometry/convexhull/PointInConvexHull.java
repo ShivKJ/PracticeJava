@@ -1,8 +1,10 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.convexhull;
 
 import java.util.List;
 
 import algo.io.IO;
+import algo.spaceGeometry.Config;
+import algo.spaceGeometry.XY;
 import algo.spaceGeometry.pointLocation.PointLocUtils;
 
 public class PointInConvexHull {

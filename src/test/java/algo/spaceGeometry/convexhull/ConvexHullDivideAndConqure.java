@@ -1,4 +1,4 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.convexhull;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.stream.Collectors.toCollection;
@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import algo.io.IO;
 import algo.io.PointGeneration;
+import algo.spaceGeometry.Config;
+import algo.spaceGeometry.XY;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
@@ -19,7 +21,7 @@ public class ConvexHullDivideAndConqure {
 	public static void main(String[] args) throws EmptyCollectionException {
 		PointGeneration.setSeed(10L);
 		List<Collection<XY>> points = new ArrayList<>();
-		int pts = 10000;
+		int pts = 40000;
 
 		points.add(PointGeneration.pointsOnCircle(new XY(0, 1), 0.5, 0.1, pts));
 		points.add(PointGeneration.pointsOnCircle(new XY(-1, 0), 0.5, 0.1, pts));

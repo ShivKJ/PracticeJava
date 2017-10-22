@@ -20,16 +20,14 @@ import algo.spaceGeometry.XY;
 
 public final class PointLocUtils {
 
-	public static PointLocation pointWrtConvexHull(List<XY> convexHull, XY p) {
+	public static PointLocation pointWrtConvexHull(List<? extends XY> convexHull, XY p) {
 		/*
-		 * Each point in convex hull should be distinct, except for start and end points in case size of list is greater
-		 * than 2 and on line segment formed by any two point does not contain a
-		 * point from convex hull, And hull should be non empty.
+		 * Each point in convex hull should be distinct and area of it should be defined and non zero.
 		 */
 
 		int size = convexHull.size();
 
-		Iterator<XY> iter = convexHull.iterator();
+		Iterator<? extends XY> iter = convexHull.iterator();
 
 		XY a = iter.next();
 
@@ -69,16 +67,16 @@ public final class PointLocUtils {
 
 	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, double area, XY p) {
 		if (isZero(area)) {
-			XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
-			return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(c), pb, pc) == ON
+			XY pb = p.to(b);
+			return pointLocWRTLineSegment(a.to(b), p.to(a), pb) == ON || pointLocWRTLineSegment(b.to(c), pb, p.to(c)) == ON
 					? ON
 					: OUTSIDE;
 		}
-		
+
 		return pointWrtConvexHull(asList(a, b, c, a), p);
 	}
 
-	public static ZDirection crossProductZDirection(XY a, XY b) {
+	private static ZDirection crossProductZDirection(XY a, XY b) {
 		double crossProduct = crossProduct(a, b);
 
 		if (isZero(crossProduct))

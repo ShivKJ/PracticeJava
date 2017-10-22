@@ -1,4 +1,4 @@
-package algo.spaceGeometry;
+package algo.spaceGeometry.convexhull;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import algo.io.IO;
 import algo.io.PointGeneration;
+import algo.spaceGeometry.Config;
+import algo.spaceGeometry.XY;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
 import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
