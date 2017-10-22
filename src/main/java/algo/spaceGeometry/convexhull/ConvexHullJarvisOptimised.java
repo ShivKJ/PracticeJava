@@ -61,11 +61,15 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 		Optional<? extends XY> nextB = null;
 		LocationFindingTriangle triangle = new LocationFindingTriangle();
+		Predicate<? super XY> pointNotOutside = pointNotOutside(triangle);
 
 		while ((nextB = nextHullPoint(a, baseLine)).isPresent() && (b = nextB.get()) != origin) {
 			triangle.recalculateArea();
+
 			convexHull.add(b);
-			input.removeIf(pointNotOutside(triangle));
+
+			input.removeIf(pointNotOutside);
+
 			baseLine = a.to(b);
 			a = b;
 		}
@@ -103,7 +107,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	}
 
 	private Predicate<? super XY> pointNotOutside(LocationFindingTriangle triangle) {
-		return x -> !convexHull.contains(x) && triangle.getPointLocation(x) != OUTSIDE;
+		return x -> !convexHull.contains(x) && triangle.pointNotOutside(x);
 	}
 
 	private final class LocationFindingTriangle {
@@ -138,6 +142,10 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 				return pointLocWRTLineSegment(origin.to(a), pc, pa);
 
 			return ab == bc && bc == ca ? INSIDE : OUTSIDE;
+		}
+
+		boolean pointNotOutside(XY p) {
+			return getPointLocation(p) != OUTSIDE;
 		}
 
 	}

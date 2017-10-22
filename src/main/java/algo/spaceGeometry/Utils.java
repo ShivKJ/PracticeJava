@@ -57,7 +57,7 @@ public final class Utils {
 		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;
 
-		for (; iter.hasNext();) {
+		while (iter.hasNext()) {
 			XY x = iter.next() , px = p.to(x);
 
 			ZDirection bCrossX = crossProductZDirection(pb, px);
