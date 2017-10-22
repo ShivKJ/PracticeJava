@@ -47,6 +47,10 @@ public final class PointGeneration {
 		return pointsOnCircle(r1, r2, 0, 360, noPoints);
 	}
 
+	public static final Collection<XY> pointsOnCircle(XY center, double r1, double r2, int noPoints) {
+		return pointsOnCircle(center, r1, r2, 0, 360, noPoints);
+	}
+
 	public static final Collection<XY> pointsOnLine(XY a, XY b, double width, int noPoints) {
 		Collection<XY> points = new ArrayList<>(noPoints);
 		XY ab = a.to(b);

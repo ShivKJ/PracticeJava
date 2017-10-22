@@ -1,14 +1,9 @@
 package algo.spaceGeometry.convexhull;
 
-import static algo.spaceGeometry.PointLocation.INSIDE;
-import static algo.spaceGeometry.PointLocation.ON;
-import static algo.spaceGeometry.PointLocation.OUTSIDE;
 import static algo.spaceGeometry.Utils.area;
-import static algo.spaceGeometry.Utils.crossProductZDirection;
-import static algo.spaceGeometry.Utils.isZero;
-import static algo.spaceGeometry.Utils.pointLocWRTLineSegment;
 import static algo.spaceGeometry.XY.E2;
-import static algo.spaceGeometry.ZDirection.UNDEFINED;
+import static algo.spaceGeometry.pointLocation.PointLocUtils.pointLocWrtToTriangle;
+import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
@@ -18,9 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import algo.spaceGeometry.PointLocation;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.ZDirection;
 
 public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private XY a , b;
@@ -72,7 +65,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		XY baseLine = new XYHashed(E2);
 
 		Optional<? extends XY> nextB = null;
-		Consumer<? super XY> labelPointsIfNotOutsideTriangle = labelPointsNotOusideTriangle(new LocationFindingTriangle());
+		Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
 
 		while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
 			b = nextB.get();
@@ -89,24 +82,16 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 		return convexHull;
 	}
 
-	private Consumer<? super XY> labelPointsNotOusideTriangle(LocationFindingTriangle triangle) {
-		return x -> {
-			XYHashed point = (XYHashed) x;
-			if (point.inSystem && triangle.pointNotOutside(x))
-				point.inSystem = false;
-		};
-	}
-
 	@Override
 	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
 		return nextHullPoint(src, baseLine, x -> ((XYHashed) x).inSystem);
 	}
 
-	private final class LocationFindingTriangle {
+	private final class ElementLabeler {
 		XY		b;
 		double	area;
 
-		LocationFindingTriangle() {
+		ElementLabeler() {
 			this.area = 0;
 		}
 
@@ -114,37 +99,21 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 			this.area = area(origin, a, b);
 		}
 
-		PointLocation getPointLocation(XY p) {
+		boolean pointNotOutside(XY p) {
+
 			XY outerClassB = ConvexHullJarvisOptimised.this.b;
 
 			if (this.b != outerClassB) {
 				this.b = outerClassB;
 				recalculateArea();
 			}
-
-			XY pa = p.to(a) , pb = p.to(b) , pc = p.to(origin);
-			if (isZero(area))
-				return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(origin), pb, pc) == ON
-						? ON
-						: OUTSIDE;
-
-			ZDirection ab = crossProductZDirection(pa, pb);
-			if (ab == UNDEFINED)
-				return pointLocWRTLineSegment(a.to(b), pa, pb);
-
-			ZDirection bc = crossProductZDirection(pb, pc);
-			if (bc == UNDEFINED)
-				return pointLocWRTLineSegment(b.to(origin), pb, pc);
-
-			ZDirection ca = crossProductZDirection(pc, pa);
-			if (ca == UNDEFINED)
-				return pointLocWRTLineSegment(origin.to(a), pc, pa);
-
-			return ab == bc && bc == ca ? INSIDE : OUTSIDE;
+			return pointLocWrtToTriangle(origin, a, b, area, p) != OUTSIDE;
 		}
 
-		boolean pointNotOutside(XY p) {
-			return getPointLocation(p) != OUTSIDE;
+		void label(XY x) {
+			XYHashed point = (XYHashed) x;
+			if (point.inSystem && pointNotOutside(x))
+				point.inSystem = false;
 		}
 
 	}
