@@ -64,7 +64,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 		XY baseLine = E2;
 
-		Optional<? extends XY> nextB = null;
+		Optional<XY> nextB = null;
 		Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
 
 		while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
@@ -83,7 +83,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	}
 
 	@Override
-	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
+	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
 		return nextHullPoint(src, baseLine, x -> ((LabeledXY) x).inSystem);
 	}
 

@@ -11,6 +11,7 @@ import static algo.spaceGeometry.pointLocation.ZDirection.DOWN;
 import static algo.spaceGeometry.pointLocation.ZDirection.UNDEFINED;
 import static algo.spaceGeometry.pointLocation.ZDirection.UP;
 import static java.lang.Math.abs;
+import static java.util.Arrays.asList;
 
 import java.util.Iterator;
 import java.util.List;
@@ -67,25 +68,14 @@ public final class PointLocUtils {
 	}
 
 	public static PointLocation pointLocWrtToTriangle(XY a, XY b, XY c, double area, XY p) {
-		XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
-		if (isZero(area))
+		if (isZero(area)) {
+			XY pa = p.to(a) , pb = p.to(b) , pc = p.to(c);
 			return pointLocWRTLineSegment(a.to(b), pa, pb) == ON || pointLocWRTLineSegment(b.to(c), pb, pc) == ON
 					? ON
 					: OUTSIDE;
-
-		ZDirection ab = crossProductZDirection(pa, pb);
-		if (ab == UNDEFINED)
-			return pointLocWRTLineSegment(a.to(b), pa, pb);
-
-		ZDirection bc = crossProductZDirection(pb, pc);
-		if (bc == UNDEFINED)
-			return pointLocWRTLineSegment(b.to(c), pb, pc);
-
-		ZDirection ca = crossProductZDirection(pc, pa);
-		if (ca == UNDEFINED)
-			return pointLocWRTLineSegment(c.to(a), pc, pa);
-
-		return ab == bc && bc == ca ? INSIDE : OUTSIDE;
+		}
+		
+		return pointWrtConvexHull(asList(a, b, c, a), p);
 	}
 
 	public static ZDirection crossProductZDirection(XY a, XY b) {

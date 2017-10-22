@@ -23,16 +23,17 @@ public class ConvexHullJarvisSimple extends ConvexHullJarvis {
 
 		XY src = origin , dst = null , baseLine = E2;
 
-		Optional<? extends XY> nextDST = null;
+		Optional<XY> nextDST = null;
 
-		while ((nextDST = nextHullPoint(src, baseLine)).isPresent() && !(dst = nextDST.get()).equals(origin)) {
-			convexHull.add(dst);
+		while ((nextDST = nextHullPoint(src, baseLine)).isPresent()) {
+			convexHull.add(dst = nextDST.get());
+
+			if (dst.equals(origin))
+				break;
+
 			baseLine = src.to(dst);
 			src = dst;
 		}
-
-		if (convexHull.size() > 1)
-			convexHull.add(origin);// to close convex hull.
 
 		return convexHull;
 	}

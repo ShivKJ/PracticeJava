@@ -19,17 +19,17 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 		this.origin = originPoint();
 	}
 
-	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine) {
+	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
 		return nextHullPoint(src, baseLine, x -> !x.equals(src));
 	}
 
-	protected Optional<? extends XY> nextHullPoint(XY src, XY baseLine, Predicate<XY> filter) {
+	protected Optional<XY> nextHullPoint(XY src, XY baseLine, Predicate<? super XY> filter) {
 		double BASE_LINE = baseLine.magnitude();
 
 		Comparator<XY> cosineComparator = comparingDouble((XY p) -> {
 			XY srcToP = src.to(p);
 			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
-		});;
+		});
 		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 

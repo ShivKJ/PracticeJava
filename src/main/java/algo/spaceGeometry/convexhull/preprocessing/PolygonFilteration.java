@@ -60,9 +60,8 @@ public class PolygonFilteration {
 				return null;
 			}).filter(x -> x != null).collect(toList())).getConvexHull();
 		} catch (EmptyCollectionException e) {
-			e.printStackTrace();
+			return emptyList();
 		}
-		return emptyList();// will never reach here.
 	}
 
 }
