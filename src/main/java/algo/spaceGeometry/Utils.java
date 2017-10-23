@@ -53,10 +53,10 @@ public final class Utils {
 		return abs(crossProduct(a.to(b), a.to(c)));
 	}
 
-	public static Optional<XY> bestPoint(Collection<? extends XY> points, Predicate<? super XY> filteration, Comparator<? super XY> comp) {
-		XY best = null;
+	public static <E> Optional<E> bestPoint(Collection<? extends E> points, Predicate<? super E> filteration, Comparator<? super E> comp) {
+		E best = null;
 
-		for (XY tmp : points)
+		for (E tmp : points)
 			if (filteration.test(tmp))
 				if (best == null)
 					best = tmp;
@@ -66,11 +66,11 @@ public final class Utils {
 		return ofNullable(best);
 	}
 
-	public static Optional<XY> getFarthestPoint(Collection<? extends XY> points, double angle, Comparator<? super XY> resolveConflict) {
-		return bestPoint(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
+	public static <E extends XY> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {
+		return bestPoint(points, t -> true, comparingDouble((E p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
 	}
 
-	public static Optional<XY> getFarthestPoint(Collection<? extends XY> points, double angle) {
+	public static <E extends XY> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle) {
 		return bestPoint(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
 	}
 

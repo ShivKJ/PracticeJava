@@ -14,40 +14,44 @@ import java.util.List;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 
+import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
 
 public final class ConvexHulls {
 	private ConvexHulls() {}
 
-	public static List<XY> cHullSimple(Collection<? extends XY> points) {
-		return new ConvexHullJarvisSimple(points).getConvexHull();
+	public static <E extends XY> Boundary<E> cHullSimple(Collection<? extends E> points) {
+		return new CHullSimple<E>(points).getConvexHull();
 	}
 
-	public static List<XY> cHull(Collection<? extends XY> points) {
-		return new ConvexHullJarvisOptimised(points).getConvexHull();
+	public static <E extends XY> Boundary<E> cHull(Collection<? extends E> points) {
+		return new CHullOptimized<E>(points).getConvexHull();
 	}
 
-	public static List<XY> cHullAngles(Collection<? extends XY> points, List<Double> thetas) {
-		List<XY> convexSubHull = convexSubHull(points, thetas);
+	public static <E extends XY> Boundary<E> cHullAngles(Collection<? extends E> points, List<Double> thetas) {
+		Boundary<E> convexSubHull = convexSubHull(points, thetas);
 
 		convexSubHull.addAll(getPointsOutsideOfCHull(convexSubHull, points));
 
 		return cHull(convexSubHull);
 	}
 
-	public static List<XY> cHullAngles(Collection<? extends XY> points, int noOfAnglesPts) {
+	public static <E extends XY> Boundary<E> cHullAngles(Collection<? extends E> points, int noOfAnglesPts) {
+		// no of points must be greater than 2.
+
 		double eachAngle = 360 / noOfAnglesPts;
 
-		List<XY> convexSubHull = range(0, noOfAnglesPts)
+		List<E> convexSubHull = range(0, noOfAnglesPts)
 				.mapToObj(i -> getFarthestPoint(points, i * eachAngle).get())
 				.collect(toList());
 
-		convexSubHull.addAll(getPointsOutsideOfCHull(convexSubHull, points));
+		convexSubHull.add(convexSubHull.get(0));
+		convexSubHull.addAll(getPointsOutsideOfCHull(new ConvexHull<>(convexSubHull), points));
 
 		return cHull(convexSubHull);
 	}
 
-	public static List<XY> cHullKmeans(Collection<? extends XY> points, int k, int iterations) {
+	public static <E extends XY> Boundary<E> cHullKmeans(Collection<? extends E> points, int k, int iterations) {
 
 		return cHull(kmeans(points, k, iterations).stream()
 				.map(CentroidCluster::getPoints)
@@ -55,7 +59,7 @@ public final class ConvexHulls {
 				.collect(ArrayList<XY>::new, List<XY>::addAll, List<XY>::addAll));
 	}
 
-	public static List<XY> cHullKmeans(Collection<? extends XY> points, int k) {
+	public static <E extends XY> Boundary<E> cHullKmeans(Collection<? extends E> points, int k) {
 		return cHullKmeans(points, k, MAX_VALUE);
 	}
 }

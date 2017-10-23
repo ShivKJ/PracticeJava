@@ -19,7 +19,7 @@ public class DemoConvecHullJarvisOptimized {
 		//		points.addAll(PointGeneration.pointsOnPolygon(asList(a, b, c, a), 0.1, 200));
 		IO.toJson(points, Config.PATH + "a.json");
 		long start = System.currentTimeMillis();
-		List<XY> hull = new ConvexHullJarvisOptimised(points).getConvexHull();
+		List<XY> hull = new CHullOptimized<>(points).getConvexHull();
 		IO.toJson(hull, Config.PATH + "b.json");
 		System.out.println("size: " + hull.size());
 		System.out.println(System.currentTimeMillis() - start);

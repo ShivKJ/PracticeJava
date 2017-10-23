@@ -11,30 +11,30 @@ import java.util.function.Predicate;
 
 import algo.spaceGeometry.XY;
 
-public abstract class ConvexHullJarvis extends ConvexHull {
-	protected final XY origin;
+public abstract class CHullJarvis<E extends XY> extends CHullAlgo<E> {
+	protected final E origin;
 
-	public ConvexHullJarvis(Collection<? extends XY> input) {
+	public CHullJarvis(Collection<? extends XY> input) {
 		super(input);
 		this.origin = originPoint().orElse(null);
 	}
 
-	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
+	protected Optional<E> nextHullPoint(E src, E baseLine) {
 		return nextHullPoint(src, baseLine, x -> !x.equals(src));
 	}
 
-	protected Optional<XY> nextHullPoint(XY src, XY baseLine, Predicate<? super XY> filter) {
+	protected Optional<E> nextHullPoint(E src, E baseLine, Predicate<? super E> filter) {
 		double BASE_LINE = baseLine.magnitude();
-
-		Comparator<XY> cosineComparator = comparingDouble((XY p) -> {
-			XY srcToP = src.to(p);
+		Comparator<E> cosineComparator = comparingDouble((E p) -> {
+			@SuppressWarnings("unchecked")
+			E srcToP = (E) src.to(p);
 			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
 		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 
-	protected Optional<XY> originPoint() {
-		return getFarthestPoint(input, -180, comparingDouble(XY::Y).reversed());
+	protected Optional<E> originPoint() {
+		return getFarthestPoint(input, -180, comparingDouble(E::Y).reversed());
 	}
 
 }

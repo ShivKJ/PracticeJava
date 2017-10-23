@@ -7,18 +7,17 @@ import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
 
-public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
-	private XY a , b;
+public class CHullOptimized<E extends XY> extends CHullJarvis<E> {
+	private E a , b;
 
-	public ConvexHullJarvisOptimised(Collection<? extends XY> input) {
+	public CHullOptimized(Collection<? extends XY> input) {
 		super(unmodifiableCollection(input.stream().map(LabeledXY::new).distinct().collect(toList())));
 		this.a = this.origin;
 	}
@@ -44,70 +43,62 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 	}
 
-	private final static class LabeledList extends ArrayList<XY> {
+	private final static class LabeledList<E extends XY> extends ConvexHull<E> {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public boolean add(XY e) {
-			label(e);
-			return super.add(e);
+		public boolean add(E e) {
+			boolean added = super.add(e);
+
+			if (added)
+				label(e);
+
+			return added;
 		}
 
-		private void label(XY e) {
+		void label(E e) {
 			if (e instanceof LabeledXY)
 				((LabeledXY) e).inSystem = false;
-
 		}
 
-		@Override
-		public boolean addAll(Collection<? extends XY> c) {
-			forEach(this::label);
-			return super.addAll(c);
-		}
-
-		@Override
-		public boolean addAll(int index, Collection<? extends XY> c) {
-			forEach(this::label);
-			return super.addAll(index, c);
-		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<XY> getConvexHull() {
-		List<XY> convexHull = new LabeledList();
+	public Boundary<E> getConvexHull() {
+		Boundary<E> convexHull = new LabeledList<>();
 
 		if (!input.isEmpty()) {
 			convexHull.add(origin);
 
-			XY baseLine = E2;
+			E baseLine = (E) E2;
 
-			Optional<XY> nextB = null;
-			Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
+			Optional<E> nextB = null;
+			Consumer<? super E> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
 
 			while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
 				b = nextB.get();
 				convexHull.add(b);
 
 				input.forEach(labelPointsIfNotOutsideTriangle);
-				baseLine = a.to(b);
+				baseLine = (E) a.to(b);
 				a = b;
 			}
-			
-			if (convexHull.size() > 1)
-				convexHull.add(origin);
+
+			convexHull.add(origin);// closing convex hull
 		}
 
 		return convexHull;
 	}
 
 	@Override
-	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
+	protected Optional<E> nextHullPoint(E src, E baseLine) {
 		return nextHullPoint(src, baseLine, x -> ((LabeledXY) x).inSystem);
 	}
 
 	private final class ElementLabeler {
-		XY		b;
+		E		b;
 		double	area;
 
 		ElementLabeler() {
@@ -120,7 +111,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 		boolean pointNotOutside(XY p) {
 
-			XY outerClassB = ConvexHullJarvisOptimised.this.b;
+			E outerClassB = CHullOptimized.this.b;
 
 			if (this.b != outerClassB) {
 				this.b = outerClassB;
@@ -129,7 +120,7 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 			return pointLocWrtToTriangle(origin, a, b, area, p) != OUTSIDE;
 		}
 
-		void label(XY x) {
+		void label(E x) {
 			LabeledXY point = (LabeledXY) x;
 			if (point.inSystem && pointNotOutside(x))
 				point.inSystem = false;

@@ -3,29 +3,29 @@ package algo.spaceGeometry.convexhull;
 import static algo.spaceGeometry.XY.E2;
 import static java.util.Collections.unmodifiableCollection;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
+import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
 
-public class ConvexHullJarvisSimple extends ConvexHullJarvis {
+public class CHullSimple<E extends XY> extends CHullJarvis<E> {
 
-	public ConvexHullJarvisSimple(Collection<? extends XY> points) {
+	public CHullSimple(Collection<? extends XY> points) {
 		super(unmodifiableCollection(points));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<XY> getConvexHull() {
-		List<XY> convexHull = new ArrayList<>();
+	public Boundary<E> getConvexHull() {
+		Boundary<E> convexHull = new ConvexHull<>();
 
 		if (!input.isEmpty()) {
 			convexHull.add(origin);
 
-			XY src = origin , dst = null , baseLine = E2;
+			E src = origin , dst = null , baseLine = (E) E2;
 
-			Optional<XY> nextDST = null;
+			Optional<E> nextDST = null;
 
 			while ((nextDST = nextHullPoint(src, baseLine)).isPresent()) {
 				convexHull.add(dst = nextDST.get());
@@ -33,7 +33,7 @@ public class ConvexHullJarvisSimple extends ConvexHullJarvis {
 				if (dst.equals(origin))
 					break;
 
-				baseLine = src.to(dst);
+				baseLine = (E) src.to(dst);
 				src = dst;
 			}
 		}
