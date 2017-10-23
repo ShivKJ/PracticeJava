@@ -14,11 +14,9 @@ import algo.io.IO;
 import algo.io.PointGeneration;
 import algo.spaceGeometry.Config;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
-import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class ConvexHullDivideAndConqure {
-	public static void main(String[] args) throws EmptyCollectionException {
+	public static void main(String[] args) {
 		PointGeneration.setSeed(10L);
 		List<Collection<XY>> points = new ArrayList<>();
 		int pts = 40000;
@@ -41,14 +39,14 @@ public class ConvexHullDivideAndConqure {
 		System.out.println("time taken: " + (currentTimeMillis() - start));
 	}
 
-	public static List<XY> getHull(List<Collection<XY>> inputs, boolean multithread) throws EmptyCollectionException {
+	public static List<XY> getHull(List<Collection<XY>> inputs, boolean multithread) {
 		Stream<Collection<XY>> stream = multithread ? inputs.parallelStream() : inputs.stream();
 		return new ConvexHullJarvisOptimised(stream
 				.flatMap(ConvexHullDivideAndConqure::getHull)
 				.collect(toCollection(() -> Collections.synchronizedList(new ArrayList<>())))).getConvexHull();
 	}
 
-	public static List<XY> getHullSingle(Collection<XY> points) throws EmptyCollectionException {
+	public static List<XY> getHullSingle(Collection<XY> points) {
 		return new ConvexHullJarvisOptimised(points).getConvexHull();
 	}
 

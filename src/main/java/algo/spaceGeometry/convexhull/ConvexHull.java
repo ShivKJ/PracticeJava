@@ -9,12 +9,8 @@ public abstract class ConvexHull {
 	protected final Collection<XY> input;
 
 	@SuppressWarnings("unchecked")
-	public ConvexHull(Collection<? extends XY> input) throws EmptyCollectionException {
-		if (input.isEmpty())
-			throw new EmptyCollectionException("input can not be empty.");
-
+	public ConvexHull(Collection<? extends XY> input) {
 		this.input = (Collection<XY>) input;
-
 	}
 
 	public abstract List<XY> getConvexHull();

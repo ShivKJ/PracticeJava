@@ -7,10 +7,9 @@ import algo.io.IO;
 import algo.io.PointGeneration;
 import algo.spaceGeometry.convexhull.ConvexHull;
 import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
-import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 class GeneratingPointsOnCircle {
-	public static void main(String[] args) throws EmptyCollectionException {
+	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		Collection<XY> points = PointGeneration.pointsOnCircle(0, 1, 50000);
 		IO.toJson(points, Config.PATH + "a.json");

@@ -18,7 +18,7 @@ import algo.spaceGeometry.XY;
 public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 	private XY a , b;
 
-	public ConvexHullJarvisOptimised(Collection<? extends XY> input) throws EmptyCollectionException {
+	public ConvexHullJarvisOptimised(Collection<? extends XY> input) {
 		super(unmodifiableCollection(input.stream().map(LabeledXY::new).distinct().collect(toList())));
 		this.a = this.origin;
 	}
@@ -50,34 +50,53 @@ public class ConvexHullJarvisOptimised extends ConvexHullJarvis {
 
 		@Override
 		public boolean add(XY e) {
+			label(e);
+			return super.add(e);
+		}
+
+		private void label(XY e) {
 			if (e instanceof LabeledXY)
 				((LabeledXY) e).inSystem = false;
 
-			return super.add(e);
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends XY> c) {
+			forEach(this::label);
+			return super.addAll(c);
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends XY> c) {
+			forEach(this::label);
+			return super.addAll(index, c);
 		}
 	}
 
 	@Override
 	public List<XY> getConvexHull() {
 		List<XY> convexHull = new LabeledList();
-		convexHull.add(origin);
 
-		XY baseLine = E2;
-
-		Optional<XY> nextB = null;
-		Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
-
-		while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
-			b = nextB.get();
-			convexHull.add(b);
-
-			input.forEach(labelPointsIfNotOutsideTriangle);
-			baseLine = a.to(b);
-			a = b;
-		}
-
-		if (convexHull.size() > 1)
+		if (!input.isEmpty()) {
 			convexHull.add(origin);
+
+			XY baseLine = E2;
+
+			Optional<XY> nextB = null;
+			Consumer<? super XY> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
+
+			while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
+				b = nextB.get();
+				convexHull.add(b);
+
+				input.forEach(labelPointsIfNotOutsideTriangle);
+				baseLine = a.to(b);
+				a = b;
+			}
+			
+			if (convexHull.size() > 1)
+				convexHull.add(origin);
+		}
 
 		return convexHull;
 	}

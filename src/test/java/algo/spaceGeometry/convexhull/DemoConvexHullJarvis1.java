@@ -12,20 +12,17 @@ import java.util.function.Supplier;
 import algo.io.IO;
 import algo.spaceGeometry.Config;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.convexhull.ConvexHull;
-import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
-import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class DemoConvexHullJarvis1 {
 	static Random random = new Random();
 
 	public static double getNext(double mean, double std) {
 		//						return mean + std * random.nextGaussian();
-						return (int) (mean + std * random.nextGaussian());
-//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
+		return (int) (mean + std * random.nextGaussian());
+		//		return Math.min((int) (mean + std * random.nextGaussian()), 4);
 	}
 
-	public static void main(String[] args) throws IOException, EmptyCollectionException {
+	public static void main(String[] args) throws IOException {
 		long start = System.currentTimeMillis();
 		double std = 100 , mean = 0;
 		Supplier<XY> supplier = () -> new XY(getNext(mean, std), getNext(mean, std));

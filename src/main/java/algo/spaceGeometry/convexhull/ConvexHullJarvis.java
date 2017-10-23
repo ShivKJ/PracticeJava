@@ -14,9 +14,9 @@ import algo.spaceGeometry.XY;
 public abstract class ConvexHullJarvis extends ConvexHull {
 	protected final XY origin;
 
-	public ConvexHullJarvis(Collection<? extends XY> input) throws EmptyCollectionException {
+	public ConvexHullJarvis(Collection<? extends XY> input) {
 		super(input);
-		this.origin = originPoint();
+		this.origin = originPoint().orElse(null);
 	}
 
 	protected Optional<XY> nextHullPoint(XY src, XY baseLine) {
@@ -33,8 +33,8 @@ public abstract class ConvexHullJarvis extends ConvexHull {
 		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 
-	protected XY originPoint() {
-		return getFarthestPoint(input, -180, comparingDouble(XY::Y).reversed()).get();
+	protected Optional<XY> originPoint() {
+		return getFarthestPoint(input, -180, comparingDouble(XY::Y).reversed());
 	}
 
 }

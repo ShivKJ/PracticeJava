@@ -86,9 +86,10 @@ public class ConvexHullUtils {
 	}
 
 	public static List<XY> convexHull(List<? extends XY> points, List<Double> thetas) {
-		List<? extends XY> convexSubHull = convexSubHull(points, thetas);
-		Collection<XY> pointOutsideConvexHull = getPointsOutsideOfConvexHull(convexSubHull, points);
-		pointOutsideConvexHull.addAll(convexSubHull);
-		return convexHullOptimized(pointOutsideConvexHull);
+		List<XY> convexSubHull = convexSubHull(points, thetas);
+
+		convexSubHull.addAll(getPointsOutsideOfConvexHull(convexSubHull, points));
+
+		return convexHullOptimized(convexSubHull);
 	}
 }

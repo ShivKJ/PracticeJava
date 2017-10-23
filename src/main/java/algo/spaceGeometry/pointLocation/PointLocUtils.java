@@ -34,12 +34,12 @@ public final class PointLocUtils {
 		if (size == 1)
 			return a.equals(p) ? ON : OUTSIDE;
 
-		XY b = iter.next() , ab = a.to(b) , pa = p.to(a) , pb = p.to(b);
+		XY b = iter.next() , pa = p.to(a) , pb = p.to(b);
 
 		ZDirection direction = crossProductZDirection(pa, pb);
 
 		if (direction == UNDEFINED)
-			return pointLocWRTLineSegment(ab, pa, pb);
+			return pointLocWRTLineSegment(a.to(b), pa, pb);
 
 		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;

@@ -8,11 +8,9 @@ import algo.io.IO;
 import algo.io.PointGeneration;
 import algo.spaceGeometry.Config;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.convexhull.ConvexHullJarvisOptimised;
-import algo.spaceGeometry.convexhull.EmptyCollectionException;
 
 public class DemoConvecHullJarvisOptimized {
-	public static void main(String[] args) throws EmptyCollectionException {
+	public static void main(String[] args) {
 
 		PointGeneration.setSeed(10L);
 		Collection<XY> points = new LinkedList<>();
