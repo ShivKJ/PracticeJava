@@ -18,7 +18,7 @@ import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
 import algo.spaceGeometry.XY;
 
-public class ConvexHullUtils {
+public final class ConvexHullUtils {
 	private ConvexHullUtils() {}
 
 	//--------------------------------------------------------------------------------------
@@ -93,6 +93,9 @@ public class ConvexHullUtils {
 	}
 
 	public static double areaOfConvexHull(List<? extends XY> convexHull) {
+		/*
+		 * Convex hull having no point, one point or two points is defined to have area zero.
+		 */
 		if (convexHull.size() <= 2)
 			return 0;
 
