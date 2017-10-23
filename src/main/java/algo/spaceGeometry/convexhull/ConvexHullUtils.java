@@ -51,7 +51,7 @@ public final class ConvexHullUtils {
 
 	private static List<XY> mergeCHulls(Stream<Collection<? extends XY>> clusterStream) {
 		return cHull(clusterStream.map(ConvexHulls::cHull)
-				.flatMap(List::stream)
+				.flatMap(List<XY>::stream)
 				.collect(toList()));
 	}
 

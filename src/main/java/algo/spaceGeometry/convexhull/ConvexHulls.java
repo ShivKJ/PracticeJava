@@ -8,8 +8,11 @@ import static java.lang.Integer.MAX_VALUE;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.math3.ml.clustering.CentroidCluster;
 
 import algo.spaceGeometry.XY;
 
@@ -47,9 +50,9 @@ public final class ConvexHulls {
 	public static List<XY> cHullKmeans(Collection<? extends XY> points, int k, int iterations) {
 
 		return cHull(kmeans(points, k, iterations).stream()
-				.map(cluster -> cHull(cluster.getPoints()))
-				.flatMap(List::stream)
-				.collect(toList()));
+				.map(CentroidCluster::getPoints)
+				.map(ConvexHulls::cHull)
+				.collect(ArrayList<XY>::new, List<XY>::addAll, List<XY>::addAll));
 	}
 
 	public static List<XY> cHullKmeans(Collection<? extends XY> points, int k) {
