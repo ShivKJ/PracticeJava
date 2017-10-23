@@ -1,13 +1,14 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.Utils.area;
 import static algo.spaceGeometry.Utils.getFarthestPoint;
 import static algo.spaceGeometry.convexhull.ConvexHulls.convexHullOptimized;
 import static algo.spaceGeometry.pointLocation.PointLocUtils.pointWrtConvexHull;
 import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -71,8 +72,6 @@ public class ConvexHullUtils {
 	//--------------------------------------------------------------------------------------
 
 	private static List<XY> convexSubHull(List<? extends XY> points, Stream<Double> thetas) {
-		if (points.isEmpty())
-			return emptyList();
 
 		return convexHullOptimized(thetas.map(d -> getFarthestPoint(points, d).get()).collect(toList()));
 	}
@@ -91,5 +90,21 @@ public class ConvexHullUtils {
 		convexSubHull.addAll(getPointsOutsideOfConvexHull(convexSubHull, points));
 
 		return convexHullOptimized(convexSubHull);
+	}
+
+	public static double areaOfConvexHull(List<? extends XY> convexHull) {
+		if (convexHull.size() <= 2)
+			return 0;
+
+		Iterator<? extends XY> iter = convexHull.iterator();
+
+		XY o = iter.next() , a = iter.next();
+
+		double area = 0;
+
+		while (iter.hasNext())
+			area += area(o, a, a = iter.next());
+
+		return area;
 	}
 }

@@ -22,7 +22,8 @@ public final class PointLocUtils {
 
 	public static PointLocation pointWrtConvexHull(List<? extends XY> convexHull, XY p) {
 		/*
-		 * Each point in convex hull should be distinct and area of it should be defined and non zero.
+		 * Convex hull should be non empty and each point in convex hull should be distinct
+		 * and area of it should be defined and non zero.
 		 */
 
 		int size = convexHull.size();
