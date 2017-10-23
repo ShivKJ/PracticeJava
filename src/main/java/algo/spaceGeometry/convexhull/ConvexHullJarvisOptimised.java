@@ -2,7 +2,7 @@ package algo.spaceGeometry.convexhull;
 
 import static algo.spaceGeometry.Utils.area;
 import static algo.spaceGeometry.XY.E2;
-import static algo.spaceGeometry.pointLocation.PointLocUtils.pointLocWrtToTriangle;
+import static algo.spaceGeometry.pointLocation.Locations.pointLocWrtToTriangle;
 import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;

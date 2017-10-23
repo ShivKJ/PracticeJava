@@ -1,5 +1,6 @@
 package algo.io;
 
+import static algo.spaceGeometry.Utils.rotate;
 import static algo.spaceGeometry.XY.ZERO;
 import static algo.spaceGeometry.XY.rTheta;
 import static java.util.Arrays.asList;
@@ -13,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import algo.spaceGeometry.Utils;
 import algo.spaceGeometry.XY;
 
 public final class PointGeneration {
@@ -54,7 +54,7 @@ public final class PointGeneration {
 	public static final Collection<XY> pointsOnLine(XY a, XY b, double width, int noPoints) {
 		Collection<XY> points = new ArrayList<>(noPoints);
 		XY ab = a.to(b);
-		XY perpendicular = Utils.rotate(ab, 90).unitVector();
+		XY perpendicular = rotate(ab, 90).unitVector();
 
 		for (int i = 0; i < noPoints; i++) {
 			double t1 = random.nextDouble() , t2 = random.nextDouble() - 0.5;
