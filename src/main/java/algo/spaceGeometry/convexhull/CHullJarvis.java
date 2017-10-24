@@ -1,6 +1,6 @@
 package algo.spaceGeometry.convexhull;
 
-import static algo.spaceGeometry.Utils.bestPoint;
+import static algo.spaceGeometry.Utils.best;
 import static algo.spaceGeometry.Utils.getFarthestPoint;
 import static java.util.Comparator.comparingDouble;
 
@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 import algo.spaceGeometry.XY;
 
-public abstract class CHullJarvis<E extends XY> extends CHullAlgo<E> {
+abstract class CHullJarvis<E extends XY> extends CHull<E> {
 	protected final E origin;
 
 	public CHullJarvis(Collection<? extends XY> input) {
@@ -32,7 +32,7 @@ public abstract class CHullJarvis<E extends XY> extends CHullAlgo<E> {
 			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
 
-		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
+		return best(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 
 	protected Optional<E> originPoint() {

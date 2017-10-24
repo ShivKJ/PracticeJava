@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
 
-public class CHullOptimized<E extends XY> extends CHullJarvis<E> {
+class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 	private E a , b;
 
 	public CHullOptimized(Collection<? extends XY> input) {

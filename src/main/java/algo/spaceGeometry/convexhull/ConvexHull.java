@@ -25,15 +25,10 @@ public class ConvexHull<E extends XY> extends ArrayList<E> implements Boundary<E
 		this.wrapperSet = new HashSet<>();
 	}
 
-	public ConvexHull(ConvexHull<? extends E> convexHull) {
+	private ConvexHull(ConvexHull<? extends E> convexHull) {
 		super(convexHull);
 		this.wrapperSet = new HashSet<>(convexHull.wrapperSet);
 	}
-
-//	public ConvexHull(List<? extends E> convexHull) {
-//		super(convexHull);
-//		this.wrapperSet = new HashSet<>(convexHull);
-//	}
 
 	@Override
 	public boolean add(E e) {

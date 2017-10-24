@@ -9,7 +9,7 @@ import java.util.Optional;
 import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
 
-public class CHullSimple<E extends XY> extends CHullJarvis<E> {
+class CHullSimple<E extends XY> extends CHullJarvis<E> {
 
 	public CHullSimple(Collection<? extends XY> points) {
 		super(unmodifiableCollection(points));
