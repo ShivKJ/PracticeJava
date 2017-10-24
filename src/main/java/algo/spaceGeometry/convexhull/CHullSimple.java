@@ -1,17 +1,18 @@
 package algo.spaceGeometry.convexhull;
 
-import static algo.spaceGeometry.XY.E2;
+import static algo.spaceGeometry.Point.E2;
+import static algo.spaceGeometry.PointUtils.to;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 import java.util.Optional;
 
 import algo.spaceGeometry.Boundary;
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
-class CHullSimple<E extends XY> extends CHullJarvis<E> {
+class CHullSimple<E extends Point> extends CHullJarvis<E> {
 
-	public CHullSimple(Collection<? extends XY> points) {
+	public CHullSimple(Collection<? extends Point> points) {
 		super(unmodifiableCollection(points));
 	}
 
@@ -21,19 +22,20 @@ class CHullSimple<E extends XY> extends CHullJarvis<E> {
 		Boundary<E> convexHull = new ConvexHull<>();
 
 		if (!input.isEmpty()) {
-			convexHull.add(origin);
+			convexHull.add((E) origin);
 
-			E src = origin , dst = null , baseLine = (E) E2;
+			E src = (E) origin , dst = null;
+			Point baseLine = E2;
 
-			Optional<E> nextDST = null;
+			Optional<Point> nextDST = null;
 
 			while ((nextDST = nextHullPoint(src, baseLine)).isPresent()) {
-				convexHull.add(dst = nextDST.get());
+				convexHull.add(dst = (E) nextDST.get());
 
 				if (dst.equals(origin))
 					break;
 
-				baseLine = (E) src.to(dst);
+				baseLine = to(src, dst);
 				src = dst;
 			}
 		}

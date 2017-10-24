@@ -11,9 +11,9 @@ import algo.io.PointGeneration;
 class GeneratingPointsOnCircle {
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
-		Collection<XY> points = PointGeneration.pointsOnCircle(0, 1, 50000);
+		Collection<Point> points = PointGeneration.pointsOnCircle(0, 1, 50000);
 		IO.toJson(points, Config.PATH + "a.json");
-		List<XY> cHull = cHull(points);
+		List<Point> cHull = cHull(points);
 		IO.toJson(cHull, Config.PATH + "b.json");
 		System.out.println(cHull.size());
 		System.out.println(System.currentTimeMillis() - start);

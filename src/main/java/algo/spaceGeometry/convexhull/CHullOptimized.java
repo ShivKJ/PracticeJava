@@ -1,7 +1,8 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.Point.E2;
+import static algo.spaceGeometry.PointUtils.to;
 import static algo.spaceGeometry.Utils.area;
-import static algo.spaceGeometry.XY.E2;
 import static algo.spaceGeometry.pointLocation.Locations.pointLocWrtToTriangle;
 import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
 import static java.util.Collections.unmodifiableCollection;
@@ -12,28 +13,28 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import algo.spaceGeometry.Boundary;
+import algo.spaceGeometry.Point;
 import algo.spaceGeometry.XY;
 
-class CHullOptimized<E extends XY> extends CHullJarvis<E> {
-	private E a , b;
+class CHullOptimized<E extends Point> extends CHullJarvis<E> {
+	LabeledXY<E> a , b;
 
-	public CHullOptimized(Collection<? extends XY> input) {
+	@SuppressWarnings("unchecked")
+	public CHullOptimized(Collection<? extends Point> input) {
 		super(unmodifiableCollection(input.stream().map(LabeledXY::new).distinct().collect(toList())));
-		this.a = this.origin;
+		this.a = (LabeledXY<E>) this.origin;
 	}
 
-	private final static class LabeledXY extends XY {
+	private final static class LabeledXY<E extends Point> extends XY {
 		transient final int	hashcode;
 		transient boolean	inSystem;
+		transient E			data;
 
-		LabeledXY(double x, double y) {
-			super(x, y);
-			this.hashcode = super.hashCode();
+		LabeledXY(E point) {
+			super(point.X(), point.Y());
+			this.data = point;
+			this.hashcode = point.hashCode();
 			this.inSystem = true;
-		}
-
-		LabeledXY(XY point) {
-			this(point.X(), point.Y());
 		}
 
 		@Override
@@ -41,9 +42,13 @@ class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 			return hashcode;
 		}
 
+		public E getWrappedPoint() {
+			return data;
+		}
+
 	}
 
-	private final static class LabeledList<E extends XY> extends ConvexHull<E> {
+	private final static class LabeledList<E extends Point> extends ConvexHull<E> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -57,9 +62,10 @@ class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 			return added;
 		}
 
+		@SuppressWarnings("unchecked")
 		void label(E e) {
 			if (e instanceof LabeledXY)
-				((LabeledXY) e).inSystem = false;
+				((LabeledXY<E>) e).inSystem = false;
 		}
 
 	}
@@ -67,39 +73,39 @@ class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Boundary<E> getConvexHull() {
-		Boundary<E> convexHull = new LabeledList<>();
+		Boundary<LabeledXY<E>> convexHull = new LabeledList<>();
 
 		if (!input.isEmpty()) {
-			convexHull.add(origin);
+			convexHull.add((LabeledXY<E>) origin);
 
-			E baseLine = (E) E2;
+			Point baseLine = E2;
 
-			Optional<E> nextB = null;
-			Consumer<? super E> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
+			Optional<Point> nextB = null;
+			Consumer<? super Point> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
 
 			while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
-				b = nextB.get();
+				b = (LabeledXY<E>) nextB.get();
 				convexHull.add(b);
 
 				input.forEach(labelPointsIfNotOutsideTriangle);
-				baseLine = (E) a.to(b);
+				baseLine = to(a, b);
 				a = b;
 			}
 
-			convexHull.add(origin);// closing convex hull
+			convexHull.add((LabeledXY<E>) origin);// closing convex hull
 		}
-
-		return convexHull;
+		return new ConvexHull<>(convexHull.stream().map(LabeledXY::getWrappedPoint).collect(toList()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Optional<E> nextHullPoint(E src, E baseLine) {
-		return nextHullPoint(src, baseLine, x -> ((LabeledXY) x).inSystem);
+	protected Optional<Point> nextHullPoint(Point src, Point baseLine) {
+		return nextHullPoint(src, baseLine, x -> ((LabeledXY<E>) x).inSystem);
 	}
 
 	private final class ElementLabeler {
-		E		b;
-		double	area;
+		LabeledXY<E>	b;
+		double			area;
 
 		ElementLabeler() {
 			this.area = 0;
@@ -109,9 +115,9 @@ class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 			this.area = area(origin, a, b);
 		}
 
-		boolean pointNotOutside(XY p) {
+		boolean pointNotOutside(Point p) {
 
-			E outerClassB = CHullOptimized.this.b;
+			LabeledXY<E> outerClassB = CHullOptimized.this.b;
 
 			if (this.b != outerClassB) {
 				this.b = outerClassB;
@@ -120,8 +126,9 @@ class CHullOptimized<E extends XY> extends CHullJarvis<E> {
 			return pointLocWrtToTriangle(origin, a, b, area, p) != OUTSIDE;
 		}
 
-		void label(E x) {
-			LabeledXY point = (LabeledXY) x;
+		void label(Point x) {
+			@SuppressWarnings("unchecked")
+			LabeledXY<E> point = (LabeledXY<E>) x;
 			if (point.inSystem && pointNotOutside(x))
 				point.inSystem = false;
 		}

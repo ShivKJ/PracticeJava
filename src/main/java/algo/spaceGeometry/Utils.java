@@ -1,6 +1,8 @@
 package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Config.TOLERANCE;
+import static algo.spaceGeometry.PointUtils.crossProduct;
+import static algo.spaceGeometry.PointUtils.to;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -32,17 +34,12 @@ public final class Utils {
 		return isEqual(x1, x2, TOLERANCE);
 	}
 
-	//	public static <E extends XY> double crossProduct(E a, E b) {
-	//		return a.X() * b.Y() - a.Y() * b.X();
-	//	}
-
-	@SuppressWarnings("unchecked")
-	public static <E extends XY> E linearCombination(double a, E A, double b, E B) {
-		return (E) new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
+	public static Point linearCombination(double a, Point A, double b, Point B) {
+		return new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
 	}
 
-	public static double area(XY a, XY b, XY c) {
-		return abs(a.to(b).crossProduct(a.to(c)));
+	public static double area(Point a, Point b, Point c) {
+		return abs(crossProduct(to(a, b), to(a, c)));
 	}
 
 	public static <E> Optional<E> best(Collection<? extends E> points, Predicate<? super E> filteration, Comparator<? super E> comp) {
@@ -58,12 +55,12 @@ public final class Utils {
 		return ofNullable(best);
 	}
 
-	public static <E extends XY> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {
+	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {
 		return best(points, t -> true, comparingDouble((E p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
 	}
 
-	public static <E extends XY> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle) {
-		return best(points, t -> true, comparingDouble((XY p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
+	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle) {
+		return best(points, t -> true, comparingDouble((Point p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
 	}
 
 }

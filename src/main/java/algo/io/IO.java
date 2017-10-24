@@ -15,12 +15,12 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
 public final class IO {
 	private final static Gson GSON = new Gson();
 
-	public static void toJson(Collection<? extends XY> points, Path jsonPath) {
+	public static void toJson(Collection<? extends Point> points, Path jsonPath) {
 		try (JsonWriter jsonWriter = new JsonWriter(new FileWriter(jsonPath.toFile()))) {
 			GSON.toJson(points, points.getClass(), jsonWriter);
 		} catch (IOException e) {
@@ -28,7 +28,7 @@ public final class IO {
 		}
 	}
 
-	public static void toJson(Collection<? extends XY> points, String jsonPath) {
+	public static void toJson(Collection<? extends Point> points, String jsonPath) {
 		toJson(points, get(jsonPath));
 	}
 

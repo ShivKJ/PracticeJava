@@ -3,22 +3,14 @@ package algo.spaceGeometry.convexhull;
 import java.util.Collection;
 
 import algo.spaceGeometry.Boundary;
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
-abstract class CHull<E extends XY> {
-	protected final Collection<E> input;
+abstract class CHull<E extends Point> {
+	protected final Collection<Point> input;
 
 	@SuppressWarnings("unchecked")
-	public CHull(Collection<? extends XY> input) {
-		this.input = (Collection<E>) input;
-	}
-
-	static class A extends XY {
-
-		public A(double x, double y) {
-
-			super(x, y);
-		}
+	public CHull(Collection<? extends Point> input) {
+		this.input = (Collection<Point>) input;
 	}
 
 	public abstract Boundary<E> getConvexHull();

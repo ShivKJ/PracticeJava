@@ -1,5 +1,7 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.PointUtils.dotProduct;
+import static algo.spaceGeometry.PointUtils.to;
 import static algo.spaceGeometry.Utils.best;
 import static algo.spaceGeometry.Utils.getFarthestPoint;
 import static java.util.Comparator.comparingDouble;
@@ -9,34 +11,35 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
-abstract class CHullJarvis<E extends XY> extends CHull<E> {
-	protected final E origin;
+abstract class CHullJarvis<E extends Point> extends CHull<E> {
+	protected final Point origin;
 
-	public CHullJarvis(Collection<? extends XY> input) {
+	public CHullJarvis(Collection<? extends Point> input) {
 		super(input);
 		this.origin = originPoint().orElse(null);
 	}
 
-	protected Optional<E> nextHullPoint(E src, E baseLine) {
+	protected Optional<Point> nextHullPoint(Point src, Point baseLine) {
 		return nextHullPoint(src, baseLine, x -> !x.equals(src));
 	}
 
-	protected Optional<E> nextHullPoint(E src, E baseLine, Predicate<? super E> filter) {
+	protected Optional<Point> nextHullPoint(Point src, Point baseLine, Predicate<? super Point> filter) {
 		double BASE_LINE = baseLine.magnitude();
 
-		Comparator<E> cosineComparator = comparingDouble((E p) -> {
-			@SuppressWarnings("unchecked")
-			E srcToP = (E) src.to(p);
-			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
+		Comparator<Point> cosineComparator = comparingDouble((Point p) -> {
+
+			Point srcToP = to(src, p);
+
+			return dotProduct(srcToP, baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
 
-		return best(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
+		return best(input, filter, cosineComparator.thenComparingDouble(p -> to(src, p).magnitude()));
 	}
 
-	protected Optional<E> originPoint() {
-		return getFarthestPoint(input, -180, comparingDouble(E::Y).reversed());
+	protected Optional<Point> originPoint() {
+		return getFarthestPoint(input, -180, comparingDouble(Point::Y).reversed());
 	}
 
 }

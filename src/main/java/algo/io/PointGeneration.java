@@ -1,7 +1,10 @@
 package algo.io;
 
-import static algo.spaceGeometry.XY.ZERO;
-import static algo.spaceGeometry.XY.rTheta;
+import static algo.spaceGeometry.Point.ZERO;
+import static algo.spaceGeometry.PointUtils.rTheta;
+import static algo.spaceGeometry.PointUtils.rotate;
+import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.unitVector;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -13,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import algo.spaceGeometry.Point;
 import algo.spaceGeometry.XY;
 
 public final class PointGeneration {
@@ -24,8 +28,8 @@ public final class PointGeneration {
 		random.setSeed(seed);
 	}
 
-	public static final Collection<XY> pointsOnCircle(XY center, double r1, double r2, double theta1, double theta2, int noPoints) {
-		Collection<XY> points = new ArrayList<>(noPoints);
+	public static final Collection<Point> pointsOnCircle(Point center, double r1, double r2, double theta1, double theta2, int noPoints) {
+		Collection<Point> points = new ArrayList<>(noPoints);
 
 		if (theta2 < theta1)
 			theta2 += 360;
@@ -38,22 +42,22 @@ public final class PointGeneration {
 		return points;
 	}
 
-	public static final Collection<XY> pointsOnCircle(double r1, double r2, double theta1, double theta2, int noPoints) {
+	public static final Collection<Point> pointsOnCircle(double r1, double r2, double theta1, double theta2, int noPoints) {
 		return pointsOnCircle(ZERO, r1, r2, theta1, theta2, noPoints);
 	}
 
-	public static final Collection<XY> pointsOnCircle(double r1, double r2, int noPoints) {
+	public static final Collection<Point> pointsOnCircle(double r1, double r2, int noPoints) {
 		return pointsOnCircle(r1, r2, 0, 360, noPoints);
 	}
 
-	public static final Collection<XY> pointsOnCircle(XY center, double r1, double r2, int noPoints) {
+	public static final Collection<Point> pointsOnCircle(Point center, double r1, double r2, int noPoints) {
 		return pointsOnCircle(center, r1, r2, 0, 360, noPoints);
 	}
 
-	public static final Collection<XY> pointsOnLine(XY a, XY b, double width, int noPoints) {
-		Collection<XY> points = new ArrayList<>(noPoints);
-		XY ab = a.to(b);
-		XY perpendicular = ab.rotate(90).unitVector();
+	public static final Collection<Point> pointsOnLine(Point a, Point b, double width, int noPoints) {
+		Collection<Point> points = new ArrayList<>(noPoints);
+		Point ab = to(a, b);
+		Point perpendicular = unitVector(rotate(ab, 90));
 
 		for (int i = 0; i < noPoints; i++) {
 			double t1 = random.nextDouble() , t2 = random.nextDouble() - 0.5;
@@ -68,19 +72,19 @@ public final class PointGeneration {
 		return points;
 	}
 
-	public static final Collection<XY> pointsOnTriangle(XY a, XY b, XY c, double width, int noPoints) {
+	public static final Collection<Point> pointsOnTriangle(Point a, Point b, Point c, double width, int noPoints) {
 		return pointsOnPolygon(asList(a, b, c, a), width, noPoints);
 	}
 
-	public static final Collection<XY> pointsOnRectangle(XY a, XY b, XY c, XY d, double width, int noPoints) {
+	public static final Collection<Point> pointsOnRectangle(Point a, Point b, Point c, Point d, double width, int noPoints) {
 		return pointsOnPolygon(asList(a, b, c, d, a), width, noPoints);
 	}
 
 	private static class LineSegement {
-		final XY		a , b;
+		final Point		a , b;
 		final double	mag;
 
-		LineSegement(XY a, XY b) {
+		LineSegement(Point a, Point b) {
 			this.a = a;
 			this.b = b;
 			this.mag = a.distanceTo(b);
@@ -90,11 +94,11 @@ public final class PointGeneration {
 			return mag;
 		}
 
-		static List<LineSegement> getLineSegs(List<XY> polys) {
+		static List<LineSegement> getLineSegs(List<? extends Point> polys) {
 			List<LineSegement> lineSegements = new ArrayList<>(polys.size() - 1);
-			Iterator<XY> iter = polys.iterator();
+			Iterator<? extends Point> iter = polys.iterator();
 
-			XY prev = iter.next();
+			Point prev = iter.next();
 
 			while (iter.hasNext())
 				lineSegements.add(new LineSegement(prev, prev = iter.next()));
@@ -104,7 +108,7 @@ public final class PointGeneration {
 
 	}
 
-	public static final Collection<XY> pointsOnPolygon(List<XY> polygon, double width, int noPoints) {
+	public static final Collection<Point> pointsOnPolygon(List<? extends Point> polygon, double width, int noPoints) {
 		if (polygon.isEmpty())
 			return emptyList();
 
@@ -117,7 +121,7 @@ public final class PointGeneration {
 
 		double length = lineSegements.stream().mapToDouble(LineSegement::getMag).sum();
 
-		List<XY> points = new ArrayList<>(noPoints);
+		List<Point> points = new ArrayList<>(noPoints);
 
 		int[] indiPoints = lineSegements.stream()
 				.mapToInt(lineSegement -> (int) (lineSegement.mag * noPoints / length))

@@ -1,5 +1,7 @@
 package algo.spaceGeometry.pointLocation;
 
+import static algo.spaceGeometry.PointUtils.crossProduct;
+import static algo.spaceGeometry.PointUtils.to;
 import static algo.spaceGeometry.Utils.area;
 import static algo.spaceGeometry.Utils.isEqual;
 import static algo.spaceGeometry.Utils.isZero;
@@ -18,11 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
 public final class Locations {
 
-	public static <E extends XY> PointLocation pointWrtCHull(List<? extends E> convexHull, E p) {
+	public static PointLocation pointWrtCHull(List<? extends Point> convexHull, Point p) {
 		/*
 		 * Convex hull should be non empty and each point in convex hull should be distinct
 		 * and area of it should be defined and non zero if hull size > 2.
@@ -30,30 +32,30 @@ public final class Locations {
 
 		int size = convexHull.size();
 
-		Iterator<? extends XY> iter = convexHull.iterator();
+		Iterator<? extends Point> iter = convexHull.iterator();
 
-		XY a = iter.next();
+		Point a = iter.next();
 
 		if (size == 1)
 			return a.equals(p) ? ON : OUTSIDE;
 
-		XY b = iter.next() , pa = p.to(a) , pb = p.to(b);
+		Point b = iter.next() , pa = to(p, a) , pb = to(p, b);
 
 		Direction direction = crossProductZDirection(pa, pb);
 
 		if (direction == ZERO)
-			return pointLocWrtLineSegment(a.to(b), pa, pb);
+			return pointLocWrtLineSegment(to(a, b), pa, pb);
 
 		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;
 
 		while (iter.hasNext()) {
-			XY x = iter.next() , px = p.to(x);
+			Point x = iter.next() , px = to(p, x);
 
 			Direction bCrossX = crossProductZDirection(pb, px);
 
 			if (bCrossX == ZERO)
-				return pointLocWrtLineSegment(b.to(x), pb, px);
+				return pointLocWrtLineSegment(to(b, x), pb, px);
 			else if (direction != bCrossX)
 				return OUTSIDE;
 
@@ -64,22 +66,22 @@ public final class Locations {
 		return INSIDE;
 	}
 
-	public static <E extends XY> PointLocation pointLocWrtLineSegment(E ab, E pa, E pb) {
+	public static PointLocation pointLocWrtLineSegment(Point ab, Point pa, Point pb) {
 		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) ? ON : OUTSIDE;
 	}
 
-	public static <E extends XY> PointLocation pointLocWrtToTriangle(E a, E b, E c, double area, E p) {
+	public static PointLocation pointLocWrtToTriangle(Point a, Point b, Point c, double area, Point p) {
 		if (isZero(area)) {
-			XY pb = p.to(b);
-			return pointLocWrtLineSegment(a.to(b), p.to(a), pb) == ON || pointLocWrtLineSegment(b.to(c), pb, p.to(c)) == ON
+			Point pb = to(p, b);
+			return pointLocWrtLineSegment(to(a, b), to(p, a), pb) == ON || pointLocWrtLineSegment(to(b, c), pb, to(p, c)) == ON
 					? ON
 					: OUTSIDE;
 		}
 		return pointWrtCHull(asList(a, b, c, a), p);
 	}
 
-	private static <E extends XY> Direction crossProductZDirection(E a, E b) {
-		double crossProduct = a.crossProduct(b);
+	private static Direction crossProductZDirection(Point a, Point b) {
+		double crossProduct = crossProduct(a, b);
 
 		if (isZero(crossProduct))
 			return ZERO;
@@ -87,19 +89,19 @@ public final class Locations {
 		return crossProduct > 0 ? PLUS : MINUS;
 	}
 
-	public static <E extends XY> PointLocation pointLocWrtTriangle(E a, E b, E c, E p) {
+	public static PointLocation pointLocWrtTriangle(Point a, Point b, Point c, Point p) {
 		return pointLocWrtToTriangle(a, b, c, area(a, b, c), p);
 	}
 
-	public static <E extends XY> Direction pointLocWrtLine(E a, E b, E p) {
-		return crossProductZDirection(p.to(a), p.to(b));
+	public static Direction pointLocWrtLine(Point a, Point b, Point p) {
+		return crossProductZDirection(to(p, a), to(p, b));
 	}
 
-	public static <E extends XY> Map<Direction, List<E>> partitionPointsWrtLine(E a, E b, Collection<? extends E> points) {
+	public static Map<Direction, List<Point>> partitionPointsWrtLine(Point a, Point b, Collection<? extends Point> points) {
 		return points.stream().collect(groupingBy(p -> pointLocWrtLine(a, b, p)));
 	}
 
-	public static <E extends XY> Map<PointLocation, List<E>> partitionPointWrtCHull(List<? extends E> cHull, Collection<? extends E> points) {
+	public static Map<PointLocation, List<Point>> partitionPointWrtCHull(List<? extends Point> cHull, Collection<? extends Point> points) {
 		return points.stream().collect(groupingBy(p -> pointWrtCHull(cHull, p)));
 	}
 }

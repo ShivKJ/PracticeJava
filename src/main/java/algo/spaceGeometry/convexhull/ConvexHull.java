@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import algo.spaceGeometry.Boundary;
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
-public class ConvexHull<E extends XY> extends ArrayList<E> implements Boundary<E> {
+public class ConvexHull<E extends Point> extends ArrayList<E> implements Boundary<E> {
 	private static final long	serialVersionUID	= 1L;
 	private final Set<E>		wrapperSet;
 
@@ -25,9 +25,14 @@ public class ConvexHull<E extends XY> extends ArrayList<E> implements Boundary<E
 		this.wrapperSet = new HashSet<>();
 	}
 
-	private ConvexHull(ConvexHull<? extends E> convexHull) {
+	public ConvexHull(ConvexHull<? extends E> convexHull) {
 		super(convexHull);
 		this.wrapperSet = new HashSet<>(convexHull.wrapperSet);
+	}
+
+	public ConvexHull(List<? extends E> convexHull) {
+		super(convexHull);
+		this.wrapperSet = new HashSet<>(convexHull);
 	}
 
 	@Override

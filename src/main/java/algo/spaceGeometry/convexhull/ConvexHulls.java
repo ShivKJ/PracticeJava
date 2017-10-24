@@ -15,16 +15,17 @@ import java.util.List;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 
 import algo.spaceGeometry.Boundary;
+import algo.spaceGeometry.Point;
 import algo.spaceGeometry.XY;
 
 public final class ConvexHulls {
 	private ConvexHulls() {}
 
-	public static <E extends XY> Boundary<E> cHullSimple(Collection<? extends E> points) {
+	public static <E extends Point> Boundary<E> cHullSimple(Collection<? extends E> points) {
 		return new CHullSimple<E>(points).getConvexHull();
 	}
 
-	public static <E extends XY> Boundary<E> cHull(Collection<? extends E> points) {
+	public static <E extends Point> Boundary<E> cHull(Collection<? extends E> points) {
 		return new CHullOptimized<E>(points).getConvexHull();
 	}
 
