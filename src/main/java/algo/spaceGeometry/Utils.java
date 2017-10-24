@@ -4,7 +4,6 @@ import static algo.spaceGeometry.Config.TOLERANCE;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static java.lang.Math.toRadians;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Optional.ofNullable;
 
@@ -33,24 +32,17 @@ public final class Utils {
 		return isEqual(x1, x2, TOLERANCE);
 	}
 
-	public static double crossProduct(XY a, XY b) {
-		return a.X() * b.Y() - a.Y() * b.X();
-	}
+	//	public static <E extends XY> double crossProduct(E a, E b) {
+	//		return a.X() * b.Y() - a.Y() * b.X();
+	//	}
 
-	public static XY rotate(XY vector, double theta) {
-		theta = toRadians(theta);
-
-		double x = vector.X() , y = vector.Y();
-
-		return new XY(x * cos(theta) - y * sin(theta), x * sin(theta) + y * cos(theta));
-	}
-
-	public static XY linearCombination(double a, XY A, double b, XY B) {
-		return new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
+	@SuppressWarnings("unchecked")
+	public static <E extends XY> E linearCombination(double a, E A, double b, E B) {
+		return (E) new XY(a * A.X() + b * B.X(), a * A.Y() + b * B.Y());
 	}
 
 	public static double area(XY a, XY b, XY c) {
-		return abs(crossProduct(a.to(b), a.to(c)));
+		return abs(a.to(b).crossProduct(a.to(c)));
 	}
 
 	public static <E> Optional<E> best(Collection<? extends E> points, Predicate<? super E> filteration, Comparator<? super E> comp) {

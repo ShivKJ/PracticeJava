@@ -1,7 +1,6 @@
 package algo.spaceGeometry.pointLocation;
 
 import static algo.spaceGeometry.Utils.area;
-import static algo.spaceGeometry.Utils.crossProduct;
 import static algo.spaceGeometry.Utils.isEqual;
 import static algo.spaceGeometry.Utils.isZero;
 import static algo.spaceGeometry.pointLocation.Direction.MINUS;
@@ -80,7 +79,7 @@ public final class Locations {
 	}
 
 	private static <E extends XY> Direction crossProductZDirection(E a, E b) {
-		double crossProduct = crossProduct(a, b);
+		double crossProduct = a.crossProduct(b);
 
 		if (isZero(crossProduct))
 			return ZERO;

@@ -59,26 +59,34 @@ public class XY implements Clusterable {
 		return prime * result + (int) (temp ^ temp >>> 32);
 	}
 
-	public double dotProduct(XY b) {
+	public <E extends XY> double dotProduct(E b) {
 		return x * b.x + y * b.y;
 
+	}
+
+	public <E extends XY> double crossProduct(E other) {
+		return x * other.y - y * other.x;
 	}
 
 	public double magnitude() {
 		return hypot(x, y);
 	}
 
-	public double distanceTo(XY to) {
+	public <E extends XY> double distanceTo(E to) {
 		return hypot(x - to.x, y - to.y);
 	}
 
-	public XY to(XY b) {
+	public <E extends XY> XY to(E b) {
 		return new XY(b.x - x, b.y - y);
 	}
 
 	public XY unitVector() {
 		double mag = magnitude();
 		return new XY(x / mag, y / mag);
+	}
+
+	public XY rotate(double theta) {
+		return new XY(x * cos(theta) - y * sin(theta), x * sin(theta) + y * cos(theta));
 	}
 
 	@Override
