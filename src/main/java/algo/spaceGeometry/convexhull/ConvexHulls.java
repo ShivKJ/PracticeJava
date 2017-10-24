@@ -46,7 +46,7 @@ public final class ConvexHulls {
 				.collect(toList());
 
 		convexSubHull.add(convexSubHull.get(0));
-		convexSubHull.addAll(getPointsOutsideOfCHull(new ConvexHull<>(convexSubHull), points));
+		convexSubHull.addAll(getPointsOutsideOfCHull(convexSubHull, points));
 
 		return cHull(convexSubHull);
 	}
@@ -56,7 +56,7 @@ public final class ConvexHulls {
 		return cHull(kmeans(points, k, iterations).stream()
 				.map(CentroidCluster::getPoints)
 				.map(ConvexHulls::cHull)
-				.collect(ArrayList<XY>::new, List<XY>::addAll, List<XY>::addAll));
+				.collect(ArrayList<E>::new, List<E>::addAll, List<E>::addAll));
 	}
 
 	public static <E extends XY> Boundary<E> cHullKmeans(Collection<? extends E> points, int k) {

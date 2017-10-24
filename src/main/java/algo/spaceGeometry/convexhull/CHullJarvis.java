@@ -25,11 +25,13 @@ public abstract class CHullJarvis<E extends XY> extends CHullAlgo<E> {
 
 	protected Optional<E> nextHullPoint(E src, E baseLine, Predicate<? super E> filter) {
 		double BASE_LINE = baseLine.magnitude();
+
 		Comparator<E> cosineComparator = comparingDouble((E p) -> {
 			@SuppressWarnings("unchecked")
 			E srcToP = (E) src.to(p);
 			return srcToP.dotProduct(baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
+
 		return bestPoint(input, filter, cosineComparator.thenComparingDouble(p -> src.to(p).magnitude()));
 	}
 

@@ -23,15 +23,15 @@ public final class ConvexHullUtils {
 	private ConvexHullUtils() {}
 
 	//--------------------------------------------------------------------------------------
-	private static <E extends XY> Collection<E> getPointsOutsideOfCHull(Boundary<? extends E> convexHull, Stream<? extends E> pointStream) {
+	private static <E extends XY> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Stream<? extends E> pointStream) {
 		return pointStream.filter(x -> pointWrtCHull(convexHull, x) == OUTSIDE).collect(toList());
 	}
 
-	public static <E extends XY> Collection<E> getPointsOutsideOfCHull(Boundary<? extends E> convexHull, Collection<? extends E> points) {
+	public static <E extends XY> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Collection<? extends E> points) {
 		return getPointsOutsideOfCHull(convexHull, points.stream());
 	}
 
-	public static <E extends XY> Collection<E> getPointsOutsideOfCHullConcurrent(Boundary<? extends E> convexHull, Collection<? extends E> points) {
+	public static <E extends XY> Collection<E> getPointsOutsideOfCHullConcurrent(List<? extends E> convexHull, Collection<? extends E> points) {
 		return getPointsOutsideOfCHull(convexHull, points.parallelStream());
 	}
 

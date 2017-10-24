@@ -19,13 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.XY;
-import algo.spaceGeometry.convexhull.ConvexHull;
 
 public final class Locations {
 
-	public static <E extends XY> PointLocation pointWrtCHull(Boundary<? extends E> convexHull, E p) {
+	public static <E extends XY> PointLocation pointWrtCHull(List<? extends E> convexHull, E p) {
 		/*
 		 * Convex hull should be non empty and each point in convex hull should be distinct
 		 * and area of it should be defined and non zero if hull size > 2.
@@ -78,7 +76,7 @@ public final class Locations {
 					? ON
 					: OUTSIDE;
 		}
-		return pointWrtCHull(new ConvexHull<>(asList(a, b, c, a)), p);
+		return pointWrtCHull(asList(a, b, c, a), p);
 	}
 
 	private static <E extends XY> Direction crossProductZDirection(E a, E b) {
@@ -102,7 +100,7 @@ public final class Locations {
 		return points.stream().collect(groupingBy(p -> pointLocWrtLine(a, b, p)));
 	}
 
-	public static <E extends XY> Map<PointLocation, List<E>> partitionPointWrtCHull(Boundary<? extends E> cHull, Collection<? extends E> points) {
+	public static <E extends XY> Map<PointLocation, List<E>> partitionPointWrtCHull(List<? extends E> cHull, Collection<? extends E> points) {
 		return points.stream().collect(groupingBy(p -> pointWrtCHull(cHull, p)));
 	}
 }
