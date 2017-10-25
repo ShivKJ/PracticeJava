@@ -9,6 +9,49 @@
 
 	<name>basics</name>
 	<url>http://maven.apache.org</url>
+	<developers>
+		<developer>
+			<name>Shiv</name>
+			<email>skj.com</email>
+		</developer>
+	</developers>
+
+	<prerequisites>
+		<maven>3.3.0</maven>
+	</prerequisites>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<properties>
 		<jdkVersion>1.8</jdkVersion>
