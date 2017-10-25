@@ -1,10 +1,10 @@
 package algo.io;
 
 import static algo.spaceGeometry.Point.ZERO;
+import static algo.spaceGeometry.PointUtils.distanceBetween;
+import static algo.spaceGeometry.PointUtils.line;
 import static algo.spaceGeometry.PointUtils.rTheta;
 import static algo.spaceGeometry.PointUtils.rotate;
-import static algo.spaceGeometry.PointUtils.to;
-import static algo.spaceGeometry.PointUtils.unitVector;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -56,8 +56,8 @@ public final class PointGeneration {
 
 	public static final Collection<Point> pointsOnLine(Point a, Point b, double width, int noPoints) {
 		Collection<Point> points = new ArrayList<>(noPoints);
-		Point ab = to(a, b);
-		Point perpendicular = unitVector(rotate(ab, 90));
+		Point ab = line(a, b);
+		Point perpendicular = rotate(ab, 90).unitVector();
 
 		for (int i = 0; i < noPoints; i++) {
 			double t1 = random.nextDouble() , t2 = random.nextDouble() - 0.5;
@@ -87,7 +87,7 @@ public final class PointGeneration {
 		LineSegement(Point a, Point b) {
 			this.a = a;
 			this.b = b;
-			this.mag = a.distanceTo(b);
+			this.mag = distanceBetween(a, b);
 		}
 
 		private double getMag() {

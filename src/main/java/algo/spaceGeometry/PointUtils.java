@@ -2,6 +2,7 @@ package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Point.ZERO;
 import static java.lang.Math.cos;
+import static java.lang.Math.hypot;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
@@ -17,13 +18,21 @@ public final class PointUtils {
 		return new XY(center.X() + r * cos(theta), center.Y() + r * sin(theta));
 	}
 
-	public static Point to(Point a, Point b) {
-		return new XY(b.X() - a.X(), b.Y() - a.Y());
+	public static Point line(Point from, Point to) {
+		return new XY(to.X() - from.X(), to.Y() - from.Y());
+	}
+
+	public static double magnitude(Point point) {
+		return hypot(point.X(), point.Y());
 	}
 
 	public static Point unitVector(Point point) {
 		double mag = point.magnitude();
 		return new XY(point.X() / mag, point.Y() / mag);
+	}
+
+	public static double distanceBetween(Point from, Point to) {
+		return hypot(from.X() - to.X(), from.Y() - to.Y());
 	}
 
 	public static Point rotate(Point point, double theta) {

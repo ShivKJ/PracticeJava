@@ -1,7 +1,7 @@
 package algo.spaceGeometry.convexhull;
 
 import static algo.spaceGeometry.Point.E2;
-import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.line;
 import static algo.spaceGeometry.Utils.area;
 import static algo.spaceGeometry.pointLocation.Locations.pointLocWrtToTriangle;
 import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
@@ -25,10 +25,43 @@ class CHullOptimized<E extends Point> extends CHullJarvis<E> {
 		this.a = (LabeledXY<E>) this.origin;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boundary<E> getConvexHull() {
+		Boundary<LabeledXY<E>> convexHull = new LabeledList<>();
+
+		if (!input.isEmpty()) {
+			convexHull.add((LabeledXY<E>) origin);
+
+			Point baseLine = E2;
+
+			Optional<Point> nextB = null;
+			Consumer<? super Point> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
+
+			while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
+				b = (LabeledXY<E>) nextB.get();
+				convexHull.add(b);
+
+				input.forEach(labelPointsIfNotOutsideTriangle);
+				baseLine = line(a, b);
+				a = b;
+			}
+
+			convexHull.add((LabeledXY<E>) origin);// closing convex hull
+		}
+		return new ConvexHull<>(convexHull.stream().map(LabeledXY::getWrappedPoint).collect(toList()));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Optional<Point> nextHullPoint(Point src, Point baseLine) {
+		return nextHullPoint(src, baseLine, x -> ((LabeledXY<E>) x).inSystem);
+	}
+
 	private final static class LabeledXY<E extends Point> extends XY {
-		transient final int	hashcode;
-		transient boolean	inSystem;
-		transient E			data;
+		final int	hashcode;
+		boolean		inSystem;
+		E			data;
 
 		LabeledXY(E point) {
 			super(point.X(), point.Y());
@@ -48,59 +81,19 @@ class CHullOptimized<E extends Point> extends CHullJarvis<E> {
 
 	}
 
-	private final static class LabeledList<E extends Point> extends ConvexHull<E> {
+	private final static class LabeledList<E extends Point> extends ConvexHull<LabeledXY<E>> {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public boolean add(E e) {
+		public boolean add(LabeledXY<E> e) {
 			boolean added = super.add(e);
 
 			if (added)
-				label(e);
+				e.inSystem = false;
 
 			return added;
 		}
-
-		@SuppressWarnings("unchecked")
-		void label(E e) {
-			if (e instanceof LabeledXY)
-				((LabeledXY<E>) e).inSystem = false;
-		}
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Boundary<E> getConvexHull() {
-		Boundary<LabeledXY<E>> convexHull = new LabeledList<>();
-
-		if (!input.isEmpty()) {
-			convexHull.add((LabeledXY<E>) origin);
-
-			Point baseLine = E2;
-
-			Optional<Point> nextB = null;
-			Consumer<? super Point> labelPointsIfNotOutsideTriangle = new ElementLabeler()::label;
-
-			while ((nextB = nextHullPoint(a, baseLine)).isPresent()) {
-				b = (LabeledXY<E>) nextB.get();
-				convexHull.add(b);
-
-				input.forEach(labelPointsIfNotOutsideTriangle);
-				baseLine = to(a, b);
-				a = b;
-			}
-
-			convexHull.add((LabeledXY<E>) origin);// closing convex hull
-		}
-		return new ConvexHull<>(convexHull.stream().map(LabeledXY::getWrappedPoint).collect(toList()));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Optional<Point> nextHullPoint(Point src, Point baseLine) {
-		return nextHullPoint(src, baseLine, x -> ((LabeledXY<E>) x).inSystem);
 	}
 
 	private final class ElementLabeler {

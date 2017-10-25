@@ -2,7 +2,7 @@ package algo.spaceGeometry;
 
 import static algo.spaceGeometry.Config.TOLERANCE;
 import static algo.spaceGeometry.PointUtils.crossProduct;
-import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.line;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -39,7 +39,7 @@ public final class Utils {
 	}
 
 	public static double area(Point a, Point b, Point c) {
-		return abs(crossProduct(to(a, b), to(a, c)));
+		return abs(crossProduct(line(a, b), line(a, c)));
 	}
 
 	public static <E> Optional<E> best(Collection<? extends E> points, Predicate<? super E> filteration, Comparator<? super E> comp) {

@@ -1,7 +1,5 @@
 package algo.spaceGeometry;
 
-import static java.lang.Math.hypot;
-
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
 public interface Point extends Clusterable {
@@ -11,14 +9,12 @@ public interface Point extends Clusterable {
 
 	double Y();
 
-	
-
 	default double magnitude() {
-		return hypot(X(), Y());
+		return PointUtils.magnitude(this);
 	}
 
-	default double distanceTo(Point to) {
-		return hypot(X() - to.X(), Y() - to.Y());
+	default Point unitVector() {
+		return PointUtils.unitVector(this);
 	}
 
 	default Object getData() {

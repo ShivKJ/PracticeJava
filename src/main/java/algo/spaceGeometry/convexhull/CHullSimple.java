@@ -1,7 +1,7 @@
 package algo.spaceGeometry.convexhull;
 
 import static algo.spaceGeometry.Point.E2;
-import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.line;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ class CHullSimple<E extends Point> extends CHullJarvis<E> {
 				if (dst.equals(origin))
 					break;
 
-				baseLine = to(src, dst);
+				baseLine = line(src, dst);
 				src = dst;
 			}
 		}

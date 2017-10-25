@@ -1,7 +1,7 @@
 package algo.spaceGeometry.pointLocation;
 
 import static algo.spaceGeometry.PointUtils.crossProduct;
-import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.line;
 import static algo.spaceGeometry.Utils.area;
 import static algo.spaceGeometry.Utils.isEqual;
 import static algo.spaceGeometry.Utils.isZero;
@@ -39,23 +39,23 @@ public final class Locations {
 		if (size == 1)
 			return a.equals(p) ? ON : OUTSIDE;
 
-		Point b = iter.next() , pa = to(p, a) , pb = to(p, b);
+		Point b = iter.next() , pa = line(p, a) , pb = line(p, b);
 
 		Direction direction = crossProductZDirection(pa, pb);
 
 		if (direction == ZERO)
-			return pointLocWrtLineSegment(to(a, b), pa, pb);
+			return pointLocWrtLineSegment(line(a, b), pa, pb);
 
 		if (size == 3)// size 2 will not be possible.
 			return OUTSIDE;
 
 		while (iter.hasNext()) {
-			Point x = iter.next() , px = to(p, x);
+			Point x = iter.next() , px = line(p, x);
 
 			Direction bCrossX = crossProductZDirection(pb, px);
 
 			if (bCrossX == ZERO)
-				return pointLocWrtLineSegment(to(b, x), pb, px);
+				return pointLocWrtLineSegment(line(b, x), pb, px);
 			else if (direction != bCrossX)
 				return OUTSIDE;
 
@@ -72,8 +72,8 @@ public final class Locations {
 
 	public static PointLocation pointLocWrtToTriangle(Point a, Point b, Point c, double area, Point p) {
 		if (isZero(area)) {
-			Point pb = to(p, b);
-			return pointLocWrtLineSegment(to(a, b), to(p, a), pb) == ON || pointLocWrtLineSegment(to(b, c), pb, to(p, c)) == ON
+			Point pb = line(p, b);
+			return pointLocWrtLineSegment(line(a, b), line(p, a), pb) == ON || pointLocWrtLineSegment(line(b, c), pb, line(p, c)) == ON
 					? ON
 					: OUTSIDE;
 		}
@@ -94,7 +94,7 @@ public final class Locations {
 	}
 
 	public static Direction pointLocWrtLine(Point a, Point b, Point p) {
-		return crossProductZDirection(to(p, a), to(p, b));
+		return crossProductZDirection(line(p, a), line(p, b));
 	}
 
 	public static Map<Direction, List<Point>> partitionPointsWrtLine(Point a, Point b, Collection<? extends Point> points) {

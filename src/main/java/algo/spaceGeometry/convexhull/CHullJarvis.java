@@ -1,7 +1,7 @@
 package algo.spaceGeometry.convexhull;
 
 import static algo.spaceGeometry.PointUtils.dotProduct;
-import static algo.spaceGeometry.PointUtils.to;
+import static algo.spaceGeometry.PointUtils.line;
 import static algo.spaceGeometry.Utils.best;
 import static algo.spaceGeometry.Utils.getFarthestPoint;
 import static java.util.Comparator.comparingDouble;
@@ -30,12 +30,12 @@ abstract class CHullJarvis<E extends Point> extends CHull<E> {
 
 		Comparator<Point> cosineComparator = comparingDouble((Point p) -> {
 
-			Point srcToP = to(src, p);
+			Point srcToP = line(src, p);
 
 			return dotProduct(srcToP, baseLine) / srcToP.magnitude() / BASE_LINE;
 		});
 
-		return best(input, filter, cosineComparator.thenComparingDouble(p -> to(src, p).magnitude()));
+		return best(input, filter, cosineComparator.thenComparingDouble(p -> line(src, p).magnitude()));
 	}
 
 	protected Optional<Point> originPoint() {
