@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 import algo.spaceGeometry.Point;
 
-abstract class CHullJarvis<E extends Point> extends CHull<E> {
+abstract class CHullJarvis<E extends Point> extends AbstractCHull<E> {
 	protected final Point origin;
 
 	public CHullJarvis(Collection<? extends Point> input) {

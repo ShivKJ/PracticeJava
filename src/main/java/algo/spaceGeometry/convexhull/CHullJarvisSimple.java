@@ -10,9 +10,9 @@ import java.util.Optional;
 import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 
-class CHullSimple<E extends Point> extends CHullJarvis<E> {
+class CHullJarvisSimple<E extends Point> extends CHullJarvis<E> {
 
-	public CHullSimple(Collection<? extends Point> points) {
+	public CHullJarvisSimple(Collection<? extends Point> points) {
 		super(unmodifiableCollection(points));
 	}
 

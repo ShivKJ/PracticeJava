@@ -16,20 +16,19 @@ import org.apache.commons.math3.ml.clustering.CentroidCluster;
 
 import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
-import algo.spaceGeometry.XY;
 
 public final class ConvexHulls {
 	private ConvexHulls() {}
 
 	public static <E extends Point> Boundary<E> cHullSimple(Collection<? extends E> points) {
-		return new CHullSimple<E>(points).getConvexHull();
+		return new CHullJarvisSimple<E>(points).getConvexHull();
 	}
 
 	public static <E extends Point> Boundary<E> cHull(Collection<? extends E> points) {
-		return new CHullOptimized<E>(points).getConvexHull();
+		return new CHullJarvisOptimized<E>(points).getConvexHull();
 	}
 
-	public static <E extends XY> Boundary<E> cHullAngles(Collection<? extends E> points, List<Double> thetas) {
+	public static <E extends Point> Boundary<E> cHullAngles(Collection<? extends E> points, List<Double> thetas) {
 		Boundary<E> convexSubHull = convexSubHull(points, thetas);
 
 		convexSubHull.addAll(getPointsOutsideOfCHull(convexSubHull, points));
@@ -37,7 +36,7 @@ public final class ConvexHulls {
 		return cHull(convexSubHull);
 	}
 
-	public static <E extends XY> Boundary<E> cHullAngles(Collection<? extends E> points, int noOfAnglesPts) {
+	public static <E extends Point> Boundary<E> cHullAngles(Collection<? extends E> points, int noOfAnglesPts) {
 		// no of points must be greater than 2.
 
 		double eachAngle = 360 / noOfAnglesPts;
@@ -52,7 +51,7 @@ public final class ConvexHulls {
 		return cHull(convexSubHull);
 	}
 
-	public static <E extends XY> Boundary<E> cHullKmeans(Collection<? extends E> points, int k, int iterations) {
+	public static <E extends Point> Boundary<E> cHullKmeans(Collection<? extends E> points, int k, int iterations) {
 
 		return cHull(kmeans(points, k, iterations).stream()
 				.map(CentroidCluster::getPoints)
@@ -60,7 +59,7 @@ public final class ConvexHulls {
 				.collect(ArrayList<E>::new, List<E>::addAll, List<E>::addAll));
 	}
 
-	public static <E extends XY> Boundary<E> cHullKmeans(Collection<? extends E> points, int k) {
+	public static <E extends Point> Boundary<E> cHullKmeans(Collection<? extends E> points, int k) {
 		return cHullKmeans(points, k, MAX_VALUE);
 	}
 }

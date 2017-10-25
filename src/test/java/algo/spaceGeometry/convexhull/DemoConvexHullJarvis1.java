@@ -35,7 +35,7 @@ public class DemoConvexHullJarvis1 {
 		//				points.add(new XY(10, -5));
 		//				points.add(new XY(10, -1));
 
-		CHull<XY> convexHullJarvis = new CHullOptimized<>(points);
+		AbstractCHull<XY> convexHullJarvis = new CHullJarvisOptimized<>(points);
 		//		ConvexHull convexHullJarvis = new ConvexHullJarvisSimple(points);
 
 		String inputPath = Config.PATH + "a.json";

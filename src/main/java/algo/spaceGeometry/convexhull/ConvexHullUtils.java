@@ -17,50 +17,50 @@ import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
 import algo.spaceGeometry.Boundary;
-import algo.spaceGeometry.XY;
+import algo.spaceGeometry.Point;
 
 public final class ConvexHullUtils {
 	private ConvexHullUtils() {}
 
 	//--------------------------------------------------------------------------------------
-	private static <E extends XY> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Stream<? extends E> pointStream) {
+	private static <E extends Point> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Stream<? extends E> pointStream) {
 		return pointStream.filter(x -> pointWrtCHull(convexHull, x) == OUTSIDE).collect(toList());
 	}
 
-	public static <E extends XY> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Collection<? extends E> points) {
+	public static <E extends Point> Collection<E> getPointsOutsideOfCHull(List<? extends E> convexHull, Collection<? extends E> points) {
 		return getPointsOutsideOfCHull(convexHull, points.stream());
 	}
 
-	public static <E extends XY> Collection<E> getPointsOutsideOfCHullConcurrent(List<? extends E> convexHull, Collection<? extends E> points) {
+	public static <E extends Point> Collection<E> getPointsOutsideOfCHullConcurrent(List<? extends E> convexHull, Collection<? extends E> points) {
 		return getPointsOutsideOfCHull(convexHull, points.parallelStream());
 	}
 
 	//--------------------------------------------------------------------------------------
-	private static <E extends XY> List<Boundary<? extends XY>> cHulls(Stream<Collection<? extends E>> clusterStream) {
+	private static <E extends Point> List<Boundary<? extends Point>> cHulls(Stream<Collection<? extends E>> clusterStream) {
 		return clusterStream.map(ConvexHulls::cHull).collect(toList());
 	}
 
-	public static <E extends XY> List<Boundary<? extends XY>> cHulls(List<Collection<? extends E>> clusters) {
+	public static <E extends Point> List<Boundary<? extends Point>> cHulls(List<Collection<? extends E>> clusters) {
 		return cHulls(clusters.stream());
 	}
 
-	public static <E extends XY> List<Boundary<? extends XY>> cHullsConcurrent(List<Collection<? extends E>> clusters) {
+	public static <E extends Point> List<Boundary<? extends Point>> cHullsConcurrent(List<Collection<? extends E>> clusters) {
 		return cHulls(clusters.parallelStream());
 	}
 
 	//--------------------------------------------------------------------------------------
 
-	private static <E extends XY> Boundary<E> mergeCHulls(Stream<Collection<? extends E>> clusterStream) {
+	private static <E extends Point> Boundary<E> mergeCHulls(Stream<Collection<? extends E>> clusterStream) {
 		return cHull(clusterStream.map(ConvexHulls::cHull)
 				.flatMap(Boundary::stream)
 				.collect(toList()));
 	}
 
-	public static <E extends XY> Boundary<E> mergeCHulls(Collection<Collection<? extends E>> clusters) {
+	public static <E extends Point> Boundary<E> mergeCHulls(Collection<Collection<? extends E>> clusters) {
 		return mergeCHulls(clusters.stream());
 	}
 
-	public static <E extends XY> Boundary<E> mergeCHullsConcurrent(Collection<Collection<? extends E>> clusters) {
+	public static <E extends Point> Boundary<E> mergeCHullsConcurrent(Collection<Collection<? extends E>> clusters) {
 		return mergeCHulls(clusters.parallelStream());
 	}
 
@@ -72,29 +72,29 @@ public final class ConvexHullUtils {
 
 	//--------------------------------------------------------------------------------------
 
-	private static <E extends XY> Boundary<E> convexSubHull(Collection<? extends E> points, Stream<Double> thetas) {
+	private static <E extends Point> Boundary<E> convexSubHull(Collection<? extends E> points, Stream<Double> thetas) {
 
 		return cHull(thetas.map(d -> getFarthestPoint(points, d).get()).collect(toList()));
 	}
 
-	public static <E extends XY> Boundary<E> convexSubHull(Collection<? extends E> points, List<Double> thetas) {
+	public static <E extends Point> Boundary<E> convexSubHull(Collection<? extends E> points, List<Double> thetas) {
 		return convexSubHull(points, thetas.stream());
 	}
 
-	public static <E extends XY> Boundary<E> convexSubHullConcurrent(Collection<? extends E> points, List<Double> thetas) {
+	public static <E extends Point> Boundary<E> convexSubHullConcurrent(Collection<? extends E> points, List<Double> thetas) {
 		return convexSubHull(points, thetas.parallelStream());
 	}
 
-	public static <E extends XY> double areaOfConvexHull(List<? extends E> convexHull) {
+	public static <E extends Point> double areaOfConvexHull(List<? extends E> convexHull) {
 		/*
 		 * Convex hull having no point, one point or two points is defined to have area zero.
 		 */
 		if (convexHull.size() <= 2)
 			return 0;
 
-		Iterator<? extends XY> iter = convexHull.iterator();
+		Iterator<? extends Point> iter = convexHull.iterator();
 
-		XY o = iter.next() , a = iter.next();
+		Point o = iter.next() , a = iter.next();
 
 		double area = 0;
 

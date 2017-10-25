@@ -16,11 +16,11 @@ import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 import algo.spaceGeometry.XY;
 
-class CHullOptimized<E extends Point> extends CHullJarvis<E> {
+class CHullJarvisOptimized<E extends Point> extends CHullJarvis<E> {
 	LabeledXY<E> a , b;
 
 	@SuppressWarnings("unchecked")
-	public CHullOptimized(Collection<? extends Point> input) {
+	public CHullJarvisOptimized(Collection<? extends Point> input) {
 		super(unmodifiableCollection(input.stream().map(LabeledXY::new).distinct().collect(toList())));
 		this.a = (LabeledXY<E>) this.origin;
 	}
@@ -110,7 +110,7 @@ class CHullOptimized<E extends Point> extends CHullJarvis<E> {
 
 		boolean pointNotOutside(Point p) {
 
-			LabeledXY<E> outerClassB = CHullOptimized.this.b;
+			LabeledXY<E> outerClassB = CHullJarvisOptimized.this.b;
 
 			if (this.b != outerClassB) {
 				this.b = outerClassB;

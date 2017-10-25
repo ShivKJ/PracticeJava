@@ -42,18 +42,18 @@ public class ConvexHullDivideAndConqure {
 
 	public static List<Point> getHull(List<Collection<Point>> inputs, boolean multithread) {
 		Stream<Collection<Point>> stream = multithread ? inputs.parallelStream() : inputs.stream();
-		return new CHullOptimized<>(stream
+		return new CHullJarvisOptimized<>(stream
 				.flatMap(ConvexHullDivideAndConqure::getHull)
 				.collect(toCollection(() -> Collections.synchronizedList(new ArrayList<>())))).getConvexHull();
 	}
 
 	public static List<Point> getHullSingle(Collection<Point> points) {
-		return new CHullOptimized<>(points).getConvexHull();
+		return new CHullJarvisOptimized<>(points).getConvexHull();
 	}
 
 	public static Stream<Point> getHull(Collection<Point> input) {
 		try {
-			return new CHullOptimized<>(input).getConvexHull().stream();
+			return new CHullJarvisOptimized<>(input).getConvexHull().stream();
 		} catch (Exception e) {
 			System.out.println("Error");
 		}
