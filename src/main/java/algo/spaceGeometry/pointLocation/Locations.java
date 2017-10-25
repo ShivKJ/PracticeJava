@@ -26,9 +26,13 @@ public final class Locations {
 
 	public static PointLocation pointWrtCHull(List<? extends Point> convexHull, Point p) {
 		/*
-		 * Convex hull should be non empty and each point in convex hull should be distinct
-		 * and area of it should be defined and non zero if hull size > 2.
+		 * Each point of the convex hull should be different, if convex hull is not empty.
+		 * If convex hull is empty, then returns OUTSIDE.
+		 * Start and end point of convex hull should be same if it is not empty of single point convex hull.
 		 */
+
+		if (convexHull.isEmpty())
+			return OUTSIDE;
 
 		int size = convexHull.size();
 
@@ -80,7 +84,7 @@ public final class Locations {
 		return pointWrtCHull(asList(a, b, c, a), p);
 	}
 
-	private static Direction crossProductZDirection(Point a, Point b) {
+	public static Direction crossProductZDirection(Point a, Point b) {
 		double crossProduct = crossProduct(a, b);
 
 		if (isZero(crossProduct))

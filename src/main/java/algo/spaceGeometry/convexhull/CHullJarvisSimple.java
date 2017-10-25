@@ -7,7 +7,6 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Collection;
 import java.util.Optional;
 
-import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 
 class CHullJarvisSimple<E extends Point> extends CHullJarvis<E> {
@@ -18,8 +17,8 @@ class CHullJarvisSimple<E extends Point> extends CHullJarvis<E> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Boundary<E> getConvexHull() {
-		Boundary<E> convexHull = new ConvexHull<>();
+	public ConvexHull<E> getConvexHull() {
+		ConvexHull<E> convexHull = new ConvexHullImpl<>();
 
 		if (!input.isEmpty()) {
 			convexHull.add((E) origin);

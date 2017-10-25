@@ -2,7 +2,6 @@ package algo.spaceGeometry.convexhull;
 
 import java.util.Collection;
 
-import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 
 abstract class AbstractCHull<E extends Point> {
@@ -13,6 +12,6 @@ abstract class AbstractCHull<E extends Point> {
 		this.input = (Collection<Point>) input;
 	}
 
-	public abstract Boundary<E> getConvexHull();
+	public abstract ConvexHull<E> getConvexHull();
 
 }

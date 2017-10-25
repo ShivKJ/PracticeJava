@@ -29,9 +29,9 @@ public class XY implements Point {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof XY
-				&& isEqual(((XY) obj).x, x)
-				&& isEqual(((XY) obj).y, y);
+		return obj instanceof Point
+				&& isEqual(((Point) obj).X(), x)
+				&& isEqual(((Point) obj).Y(), y);
 	}
 
 	@Override

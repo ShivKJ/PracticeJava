@@ -1,5 +1,7 @@
 package algo.spaceGeometry;
 
+import static algo.spaceGeometry.PointUtils.line;
+
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
 public interface Point extends Clusterable {
@@ -21,8 +23,12 @@ public interface Point extends Clusterable {
 		throw new UnsupportedOperationException();
 	}
 
-	default void setData() {
+	default void setData(Object data) {
 		throw new UnsupportedOperationException();
+	}
+
+	default Point to(Point to) {
+		return line(this, to);
 	}
 
 	@Override

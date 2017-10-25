@@ -16,7 +16,6 @@ import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
-import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 
 public final class ConvexHullUtils {
@@ -36,31 +35,31 @@ public final class ConvexHullUtils {
 	}
 
 	//--------------------------------------------------------------------------------------
-	private static <E extends Point> List<Boundary<? extends Point>> cHulls(Stream<Collection<? extends E>> clusterStream) {
+	private static <E extends Point> List<ConvexHull<? extends Point>> cHulls(Stream<Collection<? extends E>> clusterStream) {
 		return clusterStream.map(ConvexHulls::cHull).collect(toList());
 	}
 
-	public static <E extends Point> List<Boundary<? extends Point>> cHulls(List<Collection<? extends E>> clusters) {
+	public static <E extends Point> List<ConvexHull<? extends Point>> cHulls(List<Collection<? extends E>> clusters) {
 		return cHulls(clusters.stream());
 	}
 
-	public static <E extends Point> List<Boundary<? extends Point>> cHullsConcurrent(List<Collection<? extends E>> clusters) {
+	public static <E extends Point> List<ConvexHull<? extends Point>> cHullsConcurrent(List<Collection<? extends E>> clusters) {
 		return cHulls(clusters.parallelStream());
 	}
 
 	//--------------------------------------------------------------------------------------
 
-	private static <E extends Point> Boundary<E> mergeCHulls(Stream<Collection<? extends E>> clusterStream) {
+	private static <E extends Point> ConvexHull<E> mergeCHulls(Stream<Collection<? extends E>> clusterStream) {
 		return cHull(clusterStream.map(ConvexHulls::cHull)
-				.flatMap(Boundary::stream)
+				.flatMap(ConvexHull::stream)
 				.collect(toList()));
 	}
 
-	public static <E extends Point> Boundary<E> mergeCHulls(Collection<Collection<? extends E>> clusters) {
+	public static <E extends Point> ConvexHull<E> mergeCHulls(Collection<Collection<? extends E>> clusters) {
 		return mergeCHulls(clusters.stream());
 	}
 
-	public static <E extends Point> Boundary<E> mergeCHullsConcurrent(Collection<Collection<? extends E>> clusters) {
+	public static <E extends Point> ConvexHull<E> mergeCHullsConcurrent(Collection<Collection<? extends E>> clusters) {
 		return mergeCHulls(clusters.parallelStream());
 	}
 
@@ -72,16 +71,16 @@ public final class ConvexHullUtils {
 
 	//--------------------------------------------------------------------------------------
 
-	private static <E extends Point> Boundary<E> convexSubHull(Collection<? extends E> points, Stream<Double> thetas) {
+	private static <E extends Point> ConvexHull<E> convexSubHull(Collection<? extends E> points, Stream<Double> thetas) {
 
 		return cHull(thetas.map(d -> getFarthestPoint(points, d).get()).collect(toList()));
 	}
 
-	public static <E extends Point> Boundary<E> convexSubHull(Collection<? extends E> points, List<Double> thetas) {
+	public static <E extends Point> ConvexHull<E> convexSubHull(Collection<? extends E> points, List<Double> thetas) {
 		return convexSubHull(points, thetas.stream());
 	}
 
-	public static <E extends Point> Boundary<E> convexSubHullConcurrent(Collection<? extends E> points, List<Double> thetas) {
+	public static <E extends Point> ConvexHull<E> convexSubHullConcurrent(Collection<? extends E> points, List<Double> thetas) {
 		return convexSubHull(points, thetas.parallelStream());
 	}
 

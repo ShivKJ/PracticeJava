@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import algo.spaceGeometry.Boundary;
 import algo.spaceGeometry.Point;
 import algo.spaceGeometry.XY;
 
@@ -27,8 +26,8 @@ class CHullJarvisOptimized<E extends Point> extends CHullJarvis<E> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Boundary<E> getConvexHull() {
-		Boundary<LabeledXY<E>> convexHull = new LabeledList<>();
+	public ConvexHull<E> getConvexHull() {
+		ConvexHull<LabeledXY<E>> convexHull = new LabeledList<>();
 
 		if (!input.isEmpty()) {
 			convexHull.add((LabeledXY<E>) origin);
@@ -49,7 +48,12 @@ class CHullJarvisOptimized<E extends Point> extends CHullJarvis<E> {
 
 			convexHull.add((LabeledXY<E>) origin);// closing convex hull
 		}
-		return new ConvexHull<>(convexHull.stream().map(LabeledXY::getWrappedPoint).collect(toList()));
+		try {
+			return new ConvexHullImpl<>(convexHull.stream().map(LabeledXY::getWrappedPoint).collect(toList()));
+		} catch (NotConvexHullException | PolygonNotClosed e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,7 +85,7 @@ class CHullJarvisOptimized<E extends Point> extends CHullJarvis<E> {
 
 	}
 
-	private final static class LabeledList<E extends Point> extends ConvexHull<LabeledXY<E>> {
+	private final static class LabeledList<E extends Point> extends ConvexHullImpl<LabeledXY<E>> {
 
 		private static final long serialVersionUID = 1L;
 
