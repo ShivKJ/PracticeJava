@@ -44,7 +44,7 @@ public abstract class ConvexHull<E extends Point> extends ArrayList<E> implement
 		Set<Point> linkedMap = new LinkedHashSet<>(convexHull);
 		int size = linkedMap.size();
 
-		if (size == 2 && convexHull.get(0).equals(convexHull.get(convexHull.size() - 1)))
+		if (size == 2 && !convexHull.get(0).equals(convexHull.get(convexHull.size() - 1)))
 			return false;// convex hull is not closed.
 		else if (size > 2) {
 			Iterator<? extends Point> iter = linkedMap.iterator();
