@@ -3,10 +3,8 @@ package algo.graphs.traversal;
 import static algo.graphs.traversal.StatusCode.DONE;
 import static algo.graphs.traversal.StatusCode.NEW;
 import static algo.graphs.traversal.StatusCode.QUEUED;
-import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -15,46 +13,41 @@ import java.util.function.Consumer;
 public final class Traversals {
 	public Traversals() {}
 
-	public static <T> List<TraversalVertex<T>> bfs(Collection<TraversalVertex<T>> vertexs, Consumer<TraversalVertex<T>> vertexProcessor) {
-		if (vertexs.isEmpty())
-			return emptyList();
+	@SuppressWarnings("unchecked")
+	public static final <T extends TraversalVertex<E>, E> List<T> bfs(T srcVrtx, Consumer<T> vertexProcessor) {
+		// Only those vertices will be processed which have status code NEW.
 
-		return bfs(vertexs.iterator().next(), vertexProcessor);
-	}
+		List<T> output = new ArrayList<>();
 
-	public static <T> List<TraversalVertex<T>> bfs(Collection<TraversalVertex<T>> vertices) {
-		if (vertices.isEmpty())
-			return emptyList();
+		if (isNew(srcVrtx)) {
+			srcVrtx.setDepth(0);
+			srcVrtx.setParent(null);
 
-		// all vertices must be in state NEW.
-		return bfs(vertices.iterator().next(), t -> {});
-	}
+			Queue<T> queue = new BFSQueue<>(vertexProcessor);
+			queue.add(srcVrtx);
 
-	private static final <T> List<TraversalVertex<T>> bfs(TraversalVertex<T> s, Consumer<TraversalVertex<T>> vertexProcessor) {
+			while (!queue.isEmpty()) {
+				T curr = queue.poll();
 
-		s.setDepth(0);
-		s.setParent(null);
+				int childDepth = curr.depth() + 1;
 
-		Queue<TraversalVertex<T>> queue = new BFSQueue<>(vertexProcessor);
-		queue.add(s);
+				for (TraversalVertex<E> v : curr.adjacentVertices())
+					if (isNew(v)) {
+						v.setParent(curr);
+						v.setDepth(childDepth);
 
-		List<TraversalVertex<T>> output = new ArrayList<>();
+						queue.add((T) v);
+					}
 
-		while (!queue.isEmpty()) {
-			TraversalVertex<T> curr = queue.poll();
-
-			for (TraversalVertex<T> v : curr.adjacentVertices())
-				if (isNew(v)) {
-					v.setParent(curr);
-					v.setDepth(curr.depth() + 1);
-
-					queue.add(v);
-				}
-
-			output.add(curr);
+				output.add(curr);
+			}
 		}
 
 		return output;
+	}
+
+	public static final <T extends TraversalVertex<E>, E> List<T> bfs(T srcVrtx) {
+		return bfs(srcVrtx, t -> {});
 	}
 
 	private static final class BFSQueue<T extends TraversalVertex<?>> extends LinkedList<T> {
@@ -84,6 +77,6 @@ public final class Traversals {
 	}
 
 	private static <T> boolean isNew(TraversalVertex<T> v) {
-		return v.getStatusCode() == NEW;
+		return v.statusCode() == NEW;
 	}
 }

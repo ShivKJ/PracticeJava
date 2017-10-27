@@ -13,6 +13,8 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 
 	public TraversalVertex() {
 		this.statusCode = NEW;
+		this.depth = 0;
+		this.parent = null;
 	}
 
 	public int depth() {
@@ -35,7 +37,7 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 	@Override
 	public abstract Set<TraversalVertex<T>> adjacentVertices();
 
-	public StatusCode getStatusCode() {
+	public StatusCode statusCode() {
 		return statusCode;
 	}
 
