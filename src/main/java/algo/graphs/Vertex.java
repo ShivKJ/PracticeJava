@@ -5,15 +5,18 @@ import java.util.Set;
 public interface Vertex<T> {
 	T getData();
 
+	@Override
 	int hashCode();
 
+	@Override
 	boolean equals(Object obj);
 
+	@Override
 	String toString();
 
-	Set<Vertex<T>> adjacentVertices();
+	<E extends Vertex<T>> Set<E> adjacentVertices();
 
-	default void addAdjacentVertex(Vertex<T> vertex) {
+	default <E extends Vertex<T>> void addAdjacentVertex(E vertex) {
 		adjacentVertices().add(vertex);
 	}
 }

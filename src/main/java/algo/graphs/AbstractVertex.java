@@ -18,6 +18,7 @@ public class AbstractVertex<T> implements Vertex<T> {
 		return data;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Vertex<T>> adjacentVertices() {
 
@@ -25,7 +26,7 @@ public class AbstractVertex<T> implements Vertex<T> {
 	}
 
 	@Override
-	public void addAdjacentVertex(Vertex<T> vertex) {
+	public <E extends Vertex<T>> void addAdjacentVertex(E vertex) {
 		adjacents.add(vertex);
 	}
 

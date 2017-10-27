@@ -84,6 +84,7 @@ class HashableVertex<T> implements Vertex<T> {
 		return data.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Vertex<T>> adjacentVertices() {
 
