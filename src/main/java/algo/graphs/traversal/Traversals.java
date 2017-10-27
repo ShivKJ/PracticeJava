@@ -32,9 +32,7 @@ public final class Traversals {
 
 	private static final <T> List<TraversalVertex<T>> bfs(TraversalVertex<T> s, Consumer<TraversalVertex<T>> vertexProcessor) {
 
-		int depth = 0;
-
-		s.setDepth(depth);
+		s.setDepth(0);
 		s.setParent(null);
 
 		Queue<TraversalVertex<T>> queue = new BFSQueue<>(vertexProcessor);
@@ -44,12 +42,12 @@ public final class Traversals {
 
 		while (!queue.isEmpty()) {
 			TraversalVertex<T> curr = queue.poll();
-			depth++;
 
 			for (TraversalVertex<T> v : curr.adjacentVertices())
 				if (isNew(v)) {
-					v.setDepth(depth);
 					v.setParent(curr);
+					v.setDepth(curr.depth() + 1);
+
 					queue.add(v);
 				}
 
