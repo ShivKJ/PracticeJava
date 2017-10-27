@@ -4,10 +4,8 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -15,11 +13,9 @@ import algo.graphs.Graph;
 import algo.graphs.Vertex;
 
 public class BFS<T> extends Traverse<T> {
-	Map<Vertex<T>, LabeledVertex<T>> map;
 
 	public BFS(Graph<? extends Vertex<T>> graph) {
 		super(graph);
-		this.map = new HashMap<>();
 	}
 
 	@Override
@@ -27,28 +23,28 @@ public class BFS<T> extends Traverse<T> {
 		if (graph.getVertices().isEmpty())
 			return emptyList();
 
-		LabeledVertex<T> s = new LabeledVertex<>(graph.getVertices().iterator().next());
+		return bfs(new LabeledVertex<>(graph.getVertices().iterator().next()));
+	}
 
-		int level = 0;
-		s.d = level;
+	private List<Vertex<T>> bfs(LabeledVertex<T> s) {
+
+		int depth = 0;
+		s.depth = depth;
 
 		Queue<LabeledVertex<T>> queue = new LinkedList<>();
 		queue.add(s);
 
 		while (!queue.isEmpty()) {
 			LabeledVertex<T> curr = queue.poll();
-			level++;
+			depth++;
 
 			for (LabeledVertex<T> v : curr.childrens) {
 				if (v.color == Color.WHITE) {
-					v.color = Color.GREY;
-					v.p = curr;
-					v.d = level;
+					v.set(curr, depth, Color.GREY);
 					queue.add(new LabeledVertex<>(v));
 				}
 			}
 			curr.color = Color.BLACK;
-
 		}
 
 		return queue.stream().map(LabeledVertex<T>::getVertex).collect(toList());
@@ -61,20 +57,14 @@ public class BFS<T> extends Traverse<T> {
 	private final static class LabeledVertex<T> implements Vertex<T> {
 		final Vertex<T>					vertex;
 		@SuppressWarnings("unused")
-		LabeledVertex<T>				p;
+		LabeledVertex<T>				parent;
 		Collection<LabeledVertex<T>>	childrens;
 		Color							color;
 		@SuppressWarnings("unused")
-		int								d;
+		int								depth;
 
-		public LabeledVertex(Vertex<T> vertex) {
-			this(vertex, null, 0);
-		}
-
-		public LabeledVertex(Vertex<T> vertex, LabeledVertex<T> p, int d) {
+		LabeledVertex(Vertex<T> vertex) {
 			this.vertex = vertex;
-			this.p = p;
-			this.d = d;
 			this.color = Color.WHITE;
 			this.childrens = vertex.adjacentVertices()
 					.stream()
@@ -82,7 +72,7 @@ public class BFS<T> extends Traverse<T> {
 					.collect(toList());
 		}
 
-		public Vertex<T> getVertex() {
+		Vertex<T> getVertex() {
 			return vertex;
 		}
 
@@ -97,18 +87,11 @@ public class BFS<T> extends Traverse<T> {
 			return vertex.adjacentVertices();
 		}
 
-		@Override
-		public int hashCode() {
-
-			return vertex.hashCode();
+		void set(LabeledVertex<T> parent, int depth, Color color) {
+			this.parent = parent;
+			this.depth = depth;
+			this.color = color;
 		}
-
-		@Override
-		public boolean equals(Object obj) {
-
-			return vertex.equals(obj);
-		}
-
 	}
 
 }
