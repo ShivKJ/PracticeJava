@@ -7,12 +7,12 @@ import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.util.Comparator.comparingDouble;
-import static java.util.Optional.ofNullable;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Predicate;
+
+import algo.utils.UtilsAlgo;
 
 public final class Utils {
 
@@ -42,25 +42,12 @@ public final class Utils {
 		return abs(crossProduct(line(a, b), line(a, c)));
 	}
 
-	public static <E> Optional<E> best(Collection<? extends E> points, Predicate<? super E> filteration, Comparator<? super E> comp) {
-		E best = null;
-
-		for (E tmp : points)
-			if (filteration.test(tmp))
-				if (best == null)
-					best = tmp;
-				else if (comp.compare(tmp, best) > 0)
-					best = tmp;
-
-		return ofNullable(best);
-	}
-
 	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {
-		return best(points, t -> true, comparingDouble((E p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
+		return UtilsAlgo.best(points, t -> true, comparingDouble((E p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
 	}
 
 	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle) {
-		return best(points, t -> true, comparingDouble((Point p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
+		return UtilsAlgo.best(points, t -> true, comparingDouble((Point p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
 	}
 
 }

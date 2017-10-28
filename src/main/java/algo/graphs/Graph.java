@@ -1,15 +1,22 @@
 package algo.graphs;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.Optional;
 
-public interface Graph<T extends Vertex<?>> {
-	Set<T> getVertices();
+public interface Graph<T extends Vertex<?>, E extends Edge<? extends T>> {
+	Collection<T> getVertices();
+
+	Collection<E> edges();
+
+	Optional<E> getEdge(T src, T dst);
 
 	default void addVertex(T vertex) {
 		getVertices().add(vertex);
-	}
+	};
 
-	default <E> void connectVertices(Vertex<E> from, Vertex<E> to) {
-		from.addAdjacentVertex(to);
-	}
+	void connect(T from, T to);
+
+	Collection<T> adjacentVertices(T vertex);
+
+	Collection<E> adjacentEdges(T vertex);
 }

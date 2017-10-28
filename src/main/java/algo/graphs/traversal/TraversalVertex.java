@@ -1,23 +1,16 @@
 package algo.graphs.traversal;
 
-import static algo.graphs.traversal.StatusCode.NEW;
-
-import java.util.Set;
-
 import algo.graphs.Vertex;
 
 public abstract class TraversalVertex<T> implements Vertex<T> {
+	private final T				data;
 	private TraversalVertex<T>	parent;
-	private StatusCode			statusCode;
+	private VertexTraversalCode	statusCode;
 
-	public TraversalVertex() {
+	public TraversalVertex(T data) {
+		this.data = data;
 		this.parent = null;
-		this.statusCode = NEW;
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public abstract Set<TraversalVertex<T>> adjacentVertices();
 
 	public void setParent(TraversalVertex<T> parent) {
 		this.parent = parent;
@@ -27,11 +20,18 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 		return parent;
 	}
 
-	public StatusCode statusCode() {
+	@Override
+	public T getData() {
+
+		return data;
+	}
+
+	public VertexTraversalCode statusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(StatusCode statusCode) {
+	public void setStatusCode(VertexTraversalCode statusCode) {
 		this.statusCode = statusCode;
 	}
+
 }
