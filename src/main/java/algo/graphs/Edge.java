@@ -1,6 +1,8 @@
 package algo.graphs;
 
-public abstract class Edge<T extends Vertex<?>> {
+import static java.lang.Integer.compare;
+
+public abstract class Edge<T extends Vertex<?>> implements Comparable<Edge<T>> {
 	private final T src , dst;
 
 	public Edge(T src, T dst) {
@@ -16,6 +18,11 @@ public abstract class Edge<T extends Vertex<?>> {
 
 	public T getDst() {
 		return dst;
+	}
+
+	@Override
+	public int compareTo(Edge<T> o) {
+		return compare(distance(), o.distance());
 	}
 
 }
