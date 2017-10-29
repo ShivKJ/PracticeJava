@@ -3,14 +3,15 @@ package algo.graphs.traversal;
 import algo.graphs.Vertex;
 
 public abstract class TraversalVertex<T> implements Vertex<T> {
-	private final T				data;
 	private TraversalVertex<T>	parent;
 	private VertexTraversalCode	statusCode;
 
-	public TraversalVertex(T data) {
-		this.data = data;
+	public TraversalVertex() {
 		this.parent = null;
 	}
+
+	@Override
+	public abstract T getData();
 
 	public void setParent(TraversalVertex<T> parent) {
 		this.parent = parent;
@@ -18,12 +19,6 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 
 	public TraversalVertex<T> parent() {
 		return parent;
-	}
-
-	@Override
-	public T getData() {
-
-		return data;
 	}
 
 	public VertexTraversalCode statusCode() {

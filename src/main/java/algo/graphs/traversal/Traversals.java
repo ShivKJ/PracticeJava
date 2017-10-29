@@ -5,9 +5,12 @@ import static algo.graphs.traversal.VertexTraversalCode.IN_PROGRESS;
 import static algo.graphs.traversal.VertexTraversalCode.NEW;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.Consumer;
 
+import algo.graphs.Edge;
 import algo.graphs.Graph;
 
 public final class Traversals {
@@ -73,10 +76,11 @@ public final class Traversals {
 	private static <T> boolean isNew(TraversalVertex<T> v) {
 		return v.statusCode() == NEW;
 	}
+	//-------------------------------------------- DFS --------------------------------------------------
 
-	public static <T extends TraversalVertex<E>, E> void dfs(Graph<T, ?> graph, T srcVrtx,
-			Consumer<? super T> preProcessing,
-			Consumer<? super T> postProcessing) {
+	public static <V extends TraversalVertex<E>, E> void dfs(Graph<V, ?> graph, V srcVrtx,
+			Consumer<? super V> preProcessing,
+			Consumer<? super V> postProcessing) {
 
 		if (!isNew(srcVrtx))
 			return;
@@ -84,7 +88,7 @@ public final class Traversals {
 		preProcessing.accept(srcVrtx);
 		srcVrtx.setStatusCode(IN_PROGRESS);
 
-		for (T v : graph.adjacentVertices(srcVrtx))
+		for (V v : graph.adjacentVertices(srcVrtx))
 			if (isNew(v)) {
 				v.setParent(srcVrtx);
 				dfs(graph, v, preProcessing, postProcessing);
@@ -92,5 +96,24 @@ public final class Traversals {
 
 		postProcessing.accept(srcVrtx);
 		srcVrtx.setStatusCode(DONE);
+	}
+
+	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> List<W> mstKruskal(Graph<V, W> graph) {
+		List<W> mst = new LinkedList<>();
+		graph.getVertices().forEach(Parent<E>::new);
+
+		Queue<W> priorityQueue = new PriorityQueue<>(graph.edges());
+
+		while (!priorityQueue.isEmpty()) {
+			W w = priorityQueue.poll();
+
+			Parent<E> pu = (Parent<E>) w.getSrc().parent() , pv = (Parent<E>) w.getDst().parent();
+
+			if (pu != pv) {
+				mst.add(w);
+				pu.union(pv.pointInSet());
+			}
+		}
+		return mst;
 	}
 }
