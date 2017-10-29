@@ -4,10 +4,13 @@ import static algo.graphs.traversal.VertexTraversalCode.DONE;
 import static algo.graphs.traversal.VertexTraversalCode.IN_PROGRESS;
 import static algo.graphs.traversal.VertexTraversalCode.NEW;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
+import algo.graphs.Edge;
 import algo.graphs.Graph;
 
 public final class Traversals {
@@ -37,6 +40,10 @@ public final class Traversals {
 					queue.add(v);
 				}
 		}
+	}
+
+	public static final <T extends TraversalVertex<E>, E> void bfs(Graph<T, ?> graph, T srcVrtx) {
+		bfs(graph, srcVrtx, t -> {}, t -> {});
 	}
 
 	private static final class BFSQueue<T extends TraversalVertex<?>> extends LinkedList<T> {
@@ -73,6 +80,10 @@ public final class Traversals {
 	private static <T> boolean isNew(TraversalVertex<T> v) {
 		return v.statusCode() == NEW;
 	}
+
+	private static <T> boolean isDone(TraversalVertex<T> v) {
+		return v.statusCode() == DONE;
+	}
 	//-------------------------------------------- DFS --------------------------------------------------
 
 	public static <V extends TraversalVertex<E>, E> void dfs(Graph<V, ?> graph, V srcVrtx,
@@ -95,4 +106,18 @@ public final class Traversals {
 		srcVrtx.setStatusCode(DONE);
 	}
 
+	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> boolean isConnected(Graph<V, W> graph) {
+		Collection<V> vs = graph.vertices();
+
+		if (!vs.isEmpty()) {
+			Iterator<V> iter = vs.iterator();
+			bfs(graph, iter.next());
+
+			while (iter.hasNext())
+				if (!isDone(iter.next()))
+					return false;
+		}
+
+		return true;
+	}
 }

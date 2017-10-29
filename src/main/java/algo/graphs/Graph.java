@@ -4,14 +4,14 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface Graph<V extends Vertex<?>, W extends Edge<? extends V>> {
-	Collection<V> getVertices();
+	Collection<V> vertices();
 
 	Collection<W> edges();
 
 	Optional<W> edge(V src, V dst);
 
 	default void addVertex(V vertex) {
-		getVertices().add(vertex);
+		vertices().add(vertex);
 	};
 
 	void connect(V from, V to);

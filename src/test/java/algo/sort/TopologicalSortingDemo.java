@@ -47,7 +47,7 @@ class HashableGraph<E> implements Graph<HashableVertex<E>, Edge<HashableVertex<E
 	}
 
 	@Override
-	public Collection<HashableVertex<E>> getVertices() {
+	public Collection<HashableVertex<E>> vertices() {
 		return vertices;
 	}
 

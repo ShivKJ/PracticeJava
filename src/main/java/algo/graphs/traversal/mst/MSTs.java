@@ -25,7 +25,7 @@ public final class MSTs {
 
 		List<W> mst = new ArrayList<>();
 
-		Collection<V> vertices = graph.getVertices();
+		Collection<V> vertices = graph.vertices();
 
 		vertices.forEach(Parent<E>::new);
 
@@ -77,12 +77,12 @@ public final class MSTs {
 	@SuppressWarnings("unchecked")
 	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph) {
 
-		Collection<V> vertices = graph.getVertices();
+		Collection<V> vertices = graph.vertices();
 
 		if (vertices.isEmpty())
 			return emptyGraph();
 
-		Map<V, PQNode<Double>> vToPQNode = graph.getVertices()
+		Map<V, PQNode<Double>> vToPQNode = graph.vertices()
 				.stream()
 				.collect(toMap(identity(), e -> new PQNode<>(e, MAX_VALUE)));
 

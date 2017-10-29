@@ -26,7 +26,7 @@ public class TopologicalSorting<T> implements Sort<T> {
 
 	@Override
 	public List<T> sort() {
-		for (Vertex<T> vertex : graph.getVertices())
+		for (Vertex<T> vertex : graph.vertices())
 			if (!visitedNodes.contains(vertex))
 				processVertex(vertex);
 

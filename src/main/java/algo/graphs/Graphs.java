@@ -20,7 +20,7 @@ public final class Graphs {
 	private static final class EmptyGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Graph<V, W> {
 
 		@Override
-		public Collection<V> getVertices() {
+		public Collection<V> vertices() {
 
 			return emptyList();
 		}

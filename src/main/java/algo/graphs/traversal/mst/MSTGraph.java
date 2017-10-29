@@ -27,7 +27,7 @@ class MSTGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Grap
 	}
 
 	@Override
-	public Collection<V> getVertices() {
+	public Collection<V> vertices() {
 
 		return vertices;
 	}
