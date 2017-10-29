@@ -79,7 +79,7 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 
 			if (compNodes.compare(parent, node) > 0) {
 				swap(parent, node);
-				bubbleUp(parent);
+				bubbleUp(node);
 				index = node.index();
 			} else
 				break;

@@ -33,5 +33,4 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 	public int hashCode() {
 		return uid();
 	}
-
 }

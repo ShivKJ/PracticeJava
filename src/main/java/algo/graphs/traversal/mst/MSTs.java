@@ -34,11 +34,11 @@ public final class MSTs {
 		sort(edges);
 
 		for (W w : edges) {
-			Parent<E> pu = (Parent<E>) w.getSrc().parent() , pv = (Parent<E>) w.getDst().parent();
+			Parent<E> pU = (Parent<E>) w.getSrc().parent() , pV = (Parent<E>) w.getDst().parent();
 
-			if (pu != pv) {
+			if (pU != pV) {
 				mst.add(w);
-				pu.merge(pv);
+				pU.merge(pV);
 			}
 		}
 
@@ -74,7 +74,6 @@ public final class MSTs {
 		}
 	}
 
-	//------------------------------------------------------------------------------------------
 	@SuppressWarnings("unchecked")
 	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph) {
 
@@ -106,7 +105,7 @@ public final class MSTs {
 			if (u.parent() != null)
 				edges.add(graph.edge((V) u.parent(), u).get());
 
-			for (V v : graph.adjacentVertices((V) uNode.getVertex())) {
+			for (V v : graph.adjacentVertices(u)) {
 				Optional<W> edge = graph.edge(u, v);
 
 				if (edge.isPresent()) {
