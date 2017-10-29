@@ -4,15 +4,10 @@ import static algo.graphs.traversal.VertexTraversalCode.DONE;
 import static algo.graphs.traversal.VertexTraversalCode.IN_PROGRESS;
 import static algo.graphs.traversal.VertexTraversalCode.NEW;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-import algo.graphs.Edge;
 import algo.graphs.Graph;
 
 public final class Traversals {
@@ -100,65 +95,4 @@ public final class Traversals {
 		srcVrtx.setStatusCode(DONE);
 	}
 
-	//-------------------------------------------- MST KRUSKAL ---------------------------------------------
-
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> mstKruskal(Graph<V, W> graph) {
-		List<W> mst = new ArrayList<>();
-		Collection<V> vertices = graph.getVertices();
-
-		vertices.forEach(Parent<E>::new);
-
-		Queue<W> priorityQueue = new PriorityQueue<>(graph.edges());
-
-		while (!priorityQueue.isEmpty()) {
-			W w = priorityQueue.poll();
-
-			Parent<E> pu = (Parent<E>) w.getSrc().parent() , pv = (Parent<E>) w.getDst().parent();
-
-			if (pu != pv) {
-				mst.add(w);
-				pu.merge(pv);
-			}
-		}
-
-		return new MSTGraph<>(vertices, mst);
-	}
-
-	private static class Parent<T> extends TraversalVertex<T> {
-		private final Collection<TraversalVertex<T>> vertices;
-
-		Parent(TraversalVertex<T> v) {
-			this.vertices = new LinkedList<>();
-			add(v);
-		}
-
-		void merge(Parent<T> pv) {
-			pv.vertices.forEach(this::add);
-		}
-
-		void add(TraversalVertex<T> v) {
-			vertices.add(v);
-			v.setParent(this);
-
-		}
-
-		@Override
-		public T getData() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int uid() {
-			throw new UnsupportedOperationException();
-
-		}
-
-	}
-
-	//-------------------------------------------- MST PRIM --------------------------------------------------
-
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> mstPrim(Graph<V, W> graph) {
-		
-		return null;
-	}
 }

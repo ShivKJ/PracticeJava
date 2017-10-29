@@ -1,4 +1,4 @@
-package algo.graphs.traversal;
+package algo.graphs.traversal.mst;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
@@ -15,12 +15,12 @@ import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.Vertex;
 
-public class MSTGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Graph<V, W> {
-	Collection<V>					vertices;
-	Collection<W>					edges;
-	Map<Integer, Map<Integer, W>>	edgeMapper;
+class MSTGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Graph<V, W> {
+	private final Collection<V>					vertices;
+	private final Collection<W>					edges;
+	private final Map<Integer, Map<Integer, W>>	edgeMapper;
 
-	public MSTGraph(Collection<V> vertices, Collection<W> edges) {
+	MSTGraph(Collection<V> vertices, Collection<W> edges) {
 		this.vertices = vertices;
 		this.edges = edges;
 		this.edgeMapper = edges.stream().collect(groupingBy((W e) -> e.getSrc().uid(), toMap(e -> e.getDst().uid(), identity())));

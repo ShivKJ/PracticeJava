@@ -19,7 +19,7 @@
 	<prerequisites>
 		<maven>3.3.0</maven>
 	</prerequisites>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -84,6 +84,20 @@
 			<artifactId>commons-math3</artifactId>
 			<version>3.6.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.commons</groupId> -->
+		<!-- <artifactId>commons-collections4</artifactId> -->
+		<!-- <version>4.1</version> -->
+		<!-- </dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.google.guava</groupId> -->
+		<!-- <artifactId>guava</artifactId> -->
+		<!-- <version>23.0</version> -->
+		<!-- </dependency> -->
+
+
 	</dependencies>
 
 </project>

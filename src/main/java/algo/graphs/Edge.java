@@ -1,6 +1,6 @@
 package algo.graphs;
 
-import static java.lang.Integer.compare;
+import static java.lang.Double.compare;
 
 public abstract class Edge<T extends Vertex<?>> implements Comparable<Edge<T>> {
 	private final T src , dst;
@@ -10,7 +10,7 @@ public abstract class Edge<T extends Vertex<?>> implements Comparable<Edge<T>> {
 		this.dst = dst;
 	}
 
-	public abstract int distance();
+	public abstract double distance();
 
 	public T getSrc() {
 		return src;

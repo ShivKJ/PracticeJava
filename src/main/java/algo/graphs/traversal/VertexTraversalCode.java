@@ -5,4 +5,6 @@ public class VertexTraversalCode {
 	public final static VertexTraversalCode	IN_PROGRESS	= new VertexTraversalCode();
 	public final static VertexTraversalCode	DONE		= new VertexTraversalCode();
 
+	public final static VertexTraversalCode IN_PRIM_PRIORITY_QUEUE = new VertexTraversalCode();
+
 }
