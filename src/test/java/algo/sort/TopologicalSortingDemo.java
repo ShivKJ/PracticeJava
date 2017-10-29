@@ -58,7 +58,7 @@ class HashableGraph<E> implements Graph<HashableVertex<E>, Edge<HashableVertex<E
 	}
 
 	@Override
-	public Optional<Edge<HashableVertex<E>>> getEdge(HashableVertex<E> src, HashableVertex<E> dst) {
+	public Optional<Edge<HashableVertex<E>>> edge(HashableVertex<E> src, HashableVertex<E> dst) {
 
 		throw new UnsupportedOperationException();
 	}

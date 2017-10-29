@@ -8,7 +8,7 @@ public interface Graph<V extends Vertex<?>, W extends Edge<? extends V>> {
 
 	Collection<W> edges();
 
-	Optional<W> getEdge(V src, V dst);
+	Optional<W> edge(V src, V dst);
 
 	default void addVertex(V vertex) {
 		getVertices().add(vertex);
@@ -20,5 +20,4 @@ public interface Graph<V extends Vertex<?>, W extends Edge<? extends V>> {
 
 	Collection<W> adjacentEdges(V vertex);
 
-	
 }

@@ -39,7 +39,7 @@ class MSTGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Grap
 	}
 
 	@Override
-	public Optional<W> getEdge(V src, V dst) {
+	public Optional<W> edge(V src, V dst) {
 		return ofNullable(edgeMapper.getOrDefault(src.uid(), emptyMap()).get(dst.uid()));
 	}
 

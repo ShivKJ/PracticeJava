@@ -1,14 +1,23 @@
 package algo.graphs.traversal.mst;
 
-import java.util.AbstractQueue;
+import static java.util.Arrays.sort;
+import static java.util.Comparator.comparing;
+
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
-public class ArrayPriorityQueue<E extends IndexedPriorityQueueNode<?, P> & Comparable<E>, P extends Comparable<P>> extends AbstractQueue<E>
-		implements AdaptablePriorityQueue<E, P> {
-	private E[]	nodes;
-	private int	effectiveSize;
+class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implements AdaptablePriorityQueue<E> {
 
-	public ArrayPriorityQueue(E[] nodes) {
+	private final E[]			nodes;
+	private int					effectiveSize;
+	private final Comparator<E>	compNodes;
+
+	ArrayPriorityQueue(E[] nodes) {
+		this.compNodes = comparing(E::getPriority);
+
+		sort(nodes, this.compNodes);
+
 		this.nodes = nodes;
 		this.effectiveSize = nodes.length;
 
@@ -16,25 +25,65 @@ public class ArrayPriorityQueue<E extends IndexedPriorityQueueNode<?, P> & Compa
 			nodes[i].setIndex(i);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void updatePriority(E e, Comparable<?> p) {
+		P oldPriority = e.getPriority();
+		P newPriority = (P) p;
+		e.setPriority(newPriority);
+
+		int comp = newPriority.compareTo(oldPriority);
+
+		if (comp < 0)
+			bubbleUp(e);
+		else if (comp > 0)
+			bubbleDown(e);
+	}
+
 	@Override
 	public E poll() {
-		E currNode = nodes[effectiveSize-- - 1];
+		E currNode = nodes[0];
+		int lastIndex = --effectiveSize;
 
-		if (currNode.index() != 0)
-			heapify(currNode);
+		nodes[0] = nodes[lastIndex];
+
+		nodes[lastIndex] = null;
+		bubbleDown(nodes[0]);
 
 		return currNode;
 	}
 
-	private void heapify(E node) {
-		int index = node.index();
-		E parent = nodes[(index + 1) / 2 - 1];
+	private void bubbleDown(E node) {
+		int index = node.index() , leftChildIndex = 2 * index + 1 , rightChildIndex = leftChildIndex + 1;
 
-		if (parent != nodes[0])
-			if (parent.compareTo(node) > 0) {
+		E min = node;
+
+		if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes[leftChildIndex]) > 0)
+			min = nodes[leftChildIndex];
+
+		if (rightChildIndex < effectiveSize && compNodes.compare(min, nodes[rightChildIndex]) > 0)
+			min = nodes[rightChildIndex];
+
+		if (min != node) {
+			swap(node, min);
+			bubbleDown(node);
+		}
+
+	}
+
+	private void bubbleUp(E node) {
+		int index = node.index();
+
+		while (index != 0) {
+			E parent = nodes[(index + 1) / 2 - 1];
+
+			if (compNodes.compare(parent, node) > 0) {
 				swap(parent, node);
-				heapify(parent);
-			}
+				bubbleUp(parent);
+				index = node.index();
+			} else
+				break;
+		}
 	}
 
 	private void swap(E a, E b) {
@@ -42,18 +91,25 @@ public class ArrayPriorityQueue<E extends IndexedPriorityQueueNode<?, P> & Compa
 
 		a.setIndex(bIndex);
 		b.setIndex(aIndex);
+
 		nodes[aIndex] = b;
 		nodes[bIndex] = a;
 
 	}
 
 	@Override
-	public void updatePriority(E e, P p) {}
+	public int size() {
+		return effectiveSize;
+	}
 
 	@Override
-	public int size() {
+	public boolean contains(Object o) {
+		return o instanceof PQNode && ((PQNode<?>) o).index() < size();
+	}
 
-		return effectiveSize;
+	@Override
+	public Iterator<E> iterator() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -67,8 +123,68 @@ public class ArrayPriorityQueue<E extends IndexedPriorityQueueNode<?, P> & Compa
 	}
 
 	@Override
-	public Iterator<E> iterator() {
+	public boolean add(E e) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public E remove() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public E element() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object[] toArray() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean remove(Object o) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends E> c) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void clear() {
+		throw new UnsupportedOperationException();
+	}
 }

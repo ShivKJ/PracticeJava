@@ -1,16 +1,21 @@
 package algo.graphs.traversal.mst;
 
+import static algo.graphs.Graphs.emptyGraph;
+import static java.lang.Double.MAX_VALUE;
+import static java.util.Collections.sort;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Map;
+import java.util.Optional;
 
 import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.traversal.TraversalVertex;
-import algo.graphs.traversal.VertexTraversalCode;
 
 public final class MSTs {
 
@@ -24,11 +29,11 @@ public final class MSTs {
 
 		vertices.forEach(Parent<E>::new);
 
-		Queue<W> priorityQueue = new PriorityQueue<>(graph.edges());
+		List<W> edges = new ArrayList<>(graph.edges());
 
-		while (!priorityQueue.isEmpty()) {
-			W w = priorityQueue.poll();
+		sort(edges);
 
+		for (W w : edges) {
 			Parent<E> pu = (Parent<E>) w.getSrc().parent() , pv = (Parent<E>) w.getDst().parent();
 
 			if (pu != pv) {
@@ -70,59 +75,56 @@ public final class MSTs {
 	}
 
 	//------------------------------------------------------------------------------------------
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph, V src) {
-		return null;
+	@SuppressWarnings("unchecked")
+	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph) {
+
+		Collection<V> vertices = graph.getVertices();
+
+		if (vertices.isEmpty())
+			return emptyGraph();
+
+		Map<V, PQNode<Double>> vToPQNode = graph.getVertices()
+				.stream()
+				.collect(toMap(identity(), e -> new PQNode<>(e, MAX_VALUE)));
+
+		PQNode<Double>[] vs = vToPQNode.values().toArray(new PQNode[vToPQNode.size()]);
+
+		PQNode<Double> src = vs[0];
+
+		src.setPriority(0.);
+		src.getVertex().setParent(null);
+
+		AdaptablePriorityQueue<PQNode<Double>> priorityQueue = new ArrayPriorityQueue<>(vs);
+
+		Collection<W> edges = new ArrayList<>();
+
+		while (!priorityQueue.isEmpty()) {
+			PQNode<Double> uNode = priorityQueue.poll();
+
+			V u = (V) uNode.getVertex();
+
+			if (u.parent() != null)
+				edges.add(graph.edge((V) u.parent(), u).get());
+
+			for (V v : graph.adjacentVertices((V) uNode.getVertex())) {
+				Optional<W> edge = graph.edge(u, v);
+
+				if (edge.isPresent()) {
+					PQNode<Double> vNode = vToPQNode.get(v);
+
+					if (priorityQueue.contains(vNode)) {
+						Double cost = edge.get().distance();
+
+						if (cost < vNode.getPriority()) {
+							v.setParent(u);
+							priorityQueue.updatePriority(vNode, cost);
+						}
+					}
+				}
+			}
+		}
+
+		return new MSTGraph<>(vertices, edges);
 	}
 
-	final static class DistanceTracker<T> extends TraversalVertex<T> {
-		TraversalVertex<T>	vertex;
-		int					distance;
-
-		public DistanceTracker(TraversalVertex<T> vertex) {
-			this.vertex = vertex;
-			this.distance = Integer.MAX_VALUE;
-		}
-
-		public int getDistance() {
-			return distance;
-		}
-
-		public void setDistance(int distance) {
-			this.distance = distance;
-		}
-
-		@Override
-		public int uid() {
-
-			return vertex.uid();
-		}
-
-		@Override
-		public T getData() {
-
-			return vertex.getData();
-		}
-
-		@Override
-		public void setStatusCode(VertexTraversalCode statusCode) {
-			vertex.setStatusCode(statusCode);
-		}
-
-		@Override
-		public VertexTraversalCode statusCode() {
-			return vertex.statusCode();
-		}
-
-		@Override
-		public TraversalVertex<T> parent() {
-
-			return vertex.parent();
-		}
-
-		@Override
-		public void setParent(TraversalVertex<T> parent) {
-			vertex.setParent(parent);
-		}
-
-	}
 }
