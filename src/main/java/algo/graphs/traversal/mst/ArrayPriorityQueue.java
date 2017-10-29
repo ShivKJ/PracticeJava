@@ -1,5 +1,6 @@
 package algo.graphs.traversal.mst;
 
+import static algo.graphs.traversal.VertexTraversalCode.NOT_IN_PRIM_PRIORITY_QUEUE;
 import static java.util.Arrays.sort;
 import static java.util.Comparator.comparing;
 
@@ -43,12 +44,16 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 	@Override
 	public E poll() {
 		E currNode = nodes[0];
+		
 		int lastIndex = --effectiveSize;
 
 		nodes[0] = nodes[lastIndex];
 
 		nodes[lastIndex] = null;
+
 		bubbleDown(nodes[0]);
+
+		currNode.getVertex().setStatusCode(NOT_IN_PRIM_PRIORITY_QUEUE);
 
 		return currNode;
 	}
@@ -104,7 +109,7 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof PQNode && ((PQNode<?>) o).index() < size();
+		return o instanceof PQNode && ((PQNode<?>) o).getVertex().statusCode() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override
