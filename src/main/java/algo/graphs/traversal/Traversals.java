@@ -4,6 +4,7 @@ import static algo.graphs.traversal.VertexTraversalCode.DONE;
 import static algo.graphs.traversal.VertexTraversalCode.IN_PROGRESS;
 import static algo.graphs.traversal.VertexTraversalCode.NEW;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -111,9 +112,34 @@ public final class Traversals {
 
 			if (pu != pv) {
 				mst.add(w);
-				pu.union(pv.pointInSet());
+				pu.merge(pv);
 			}
 		}
 		return mst;
+	}
+
+	private static class Parent<T> extends TraversalVertex<T> {
+		private final Collection<TraversalVertex<T>> vertices;
+
+		Parent(TraversalVertex<T> v) {
+			this.vertices = new LinkedList<>();
+			add(v);
+		}
+
+		void merge(Parent<T> pv) {
+			pv.vertices.forEach(this::add);
+		}
+
+		void add(TraversalVertex<T> v) {
+			vertices.add(v);
+			v.setParent(this);
+
+		}
+
+		@Override
+		public T getData() {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 }
