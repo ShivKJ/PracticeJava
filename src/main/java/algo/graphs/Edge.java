@@ -25,4 +25,14 @@ public abstract class Edge<T extends Vertex<?>> implements Comparable<Edge<T>> {
 		return compare(distance(), o.distance());
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Edge<?>) {
+			Edge<?> edge = (Edge<?>) obj;
+			return src.uid() == edge.src.uid() && dst.uid() == edge.dst.uid();
+		}
+
+		return false;
+	}
+
 }

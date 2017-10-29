@@ -3,20 +3,22 @@ package algo.graphs;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface Graph<T extends Vertex<?>, E extends Edge<? extends T>> {
-	Collection<T> getVertices();
+public interface Graph<V extends Vertex<?>, W extends Edge<? extends V>> {
+	Collection<V> getVertices();
 
-	Collection<E> edges();
+	Collection<W> edges();
 
-	Optional<E> getEdge(T src, T dst);
+	Optional<W> getEdge(V src, V dst);
 
-	default void addVertex(T vertex) {
+	default void addVertex(V vertex) {
 		getVertices().add(vertex);
 	};
 
-	void connect(T from, T to);
+	void connect(V from, V to);
 
-	Collection<T> adjacentVertices(T vertex);
+	Collection<V> adjacentVertices(V vertex);
 
-	Collection<E> adjacentEdges(T vertex);
+	Collection<W> adjacentEdges(V vertex);
+
+	
 }

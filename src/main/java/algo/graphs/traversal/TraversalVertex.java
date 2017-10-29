@@ -29,4 +29,9 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 		this.statusCode = statusCode;
 	}
 
+	@Override
+	public int hashCode() {
+		return uid();
+	}
+
 }

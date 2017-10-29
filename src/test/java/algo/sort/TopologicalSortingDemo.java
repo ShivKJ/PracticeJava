@@ -81,18 +81,21 @@ class HashableGraph<E> implements Graph<HashableVertex<E>, Edge<HashableVertex<E
 }
 
 class HashableVertex<T> implements Vertex<T> {
+	static int								indexer	= 0;
 	private final Set<HashableVertex<T>>	adja;
 	private final T							data;
+	private final int						I;
 
 	public HashableVertex(T data) {
 		this.data = data;
 		this.adja = new HashSet<>();
+		this.I = indexer++;
 	}
 
 	@Override
 	public int hashCode() {
 
-		return data.hashCode();
+		return I;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,6 +119,12 @@ class HashableVertex<T> implements Vertex<T> {
 	public T getData() {
 
 		return data;
+	}
+
+	@Override
+	public int uid() {
+
+		return I;
 	}
 
 }

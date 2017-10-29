@@ -12,4 +12,6 @@ public interface Vertex<T> {
 	@Override
 	String toString();
 
+	int uid();
+
 }

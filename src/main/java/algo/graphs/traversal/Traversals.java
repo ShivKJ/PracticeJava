@@ -4,6 +4,7 @@ import static algo.graphs.traversal.VertexTraversalCode.DONE;
 import static algo.graphs.traversal.VertexTraversalCode.IN_PROGRESS;
 import static algo.graphs.traversal.VertexTraversalCode.NEW;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,9 +100,13 @@ public final class Traversals {
 		srcVrtx.setStatusCode(DONE);
 	}
 
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> List<W> mstKruskal(Graph<V, W> graph) {
-		List<W> mst = new LinkedList<>();
-		graph.getVertices().forEach(Parent<E>::new);
+	//-------------------------------------------- MST KRUSKAL ---------------------------------------------
+
+	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> mstKruskal(Graph<V, W> graph) {
+		List<W> mst = new ArrayList<>();
+		Collection<V> vertices = graph.getVertices();
+
+		vertices.forEach(Parent<E>::new);
 
 		Queue<W> priorityQueue = new PriorityQueue<>(graph.edges());
 
@@ -115,7 +120,8 @@ public final class Traversals {
 				pu.merge(pv);
 			}
 		}
-		return mst;
+
+		return new MSTGraph<>(vertices, mst);
 	}
 
 	private static class Parent<T> extends TraversalVertex<T> {
@@ -141,5 +147,18 @@ public final class Traversals {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
+		public int uid() {
+			throw new UnsupportedOperationException();
+
+		}
+
+	}
+
+	//-------------------------------------------- MST PRIM --------------------------------------------------
+
+	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> mstPrim(Graph<V, W> graph) {
+		
+		return null;
 	}
 }
