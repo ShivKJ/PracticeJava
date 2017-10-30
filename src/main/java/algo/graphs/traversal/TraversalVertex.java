@@ -4,7 +4,7 @@ import algo.graphs.Vertex;
 
 public abstract class TraversalVertex<T> implements Vertex<T> {
 	private TraversalVertex<T>	parent;
-	private VertexTraversalCode	statusCode;
+	private VertexTraversalCode	code;
 
 	public TraversalVertex() {
 		this.parent = null;
@@ -21,12 +21,12 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 		return parent;
 	}
 
-	public VertexTraversalCode statusCode() {
-		return statusCode;
+	public VertexTraversalCode code() {
+		return code;
 	}
 
-	public void setStatusCode(VertexTraversalCode statusCode) {
-		this.statusCode = statusCode;
+	public void setCode(VertexTraversalCode statusCode) {
+		this.code = statusCode;
 	}
 
 	@Override

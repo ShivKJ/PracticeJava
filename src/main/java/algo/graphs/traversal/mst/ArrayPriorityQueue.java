@@ -1,7 +1,6 @@
 package algo.graphs.traversal.mst;
 
 import static algo.graphs.traversal.VertexTraversalCode.NOT_IN_PRIM_PRIORITY_QUEUE;
-import static java.util.Comparator.comparing;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -11,14 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implements AdaptablePriorityQueue<E> {
+class ArrayPriorityQueue<E extends PQNode<?>> implements AdaptablePriorityQueue<E> {
 
 	private final List<E>		nodes;
 	private int					effectiveSize;
 	private final Comparator<E>	compNodes;
 
-	ArrayPriorityQueue(Collection<E> nodes) {
-		this.compNodes = comparing(E::getPriority);
+	ArrayPriorityQueue(Collection<E> nodes, Comparator<E> comparator) {
+		this.compNodes = comparator;
 
 		this.nodes = new ArrayList<>(nodes.size());
 		this.effectiveSize = 0;
@@ -28,11 +27,14 @@ class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implem
 
 	}
 
-	@Override
-	public <Q extends java.lang.Comparable<Q>> void updatePriority(E e, Q p) {
+	ArrayPriorityQueue(Collection<E> nodes) {
+		this(nodes, (e1, e2) -> e1.getPriority().compareTo(e2.getPriority()));
+	}
 
-		@SuppressWarnings("unchecked")
-		P newPriority = (P) p;
+	@Override
+	public <P extends Comparable<P>> void updatePriority(E e, P p) {
+
+		P newPriority = p;
 		P oldPriority = e.getPriority();
 
 		e.setPriority(newPriority);
@@ -137,7 +139,7 @@ class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implem
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof PQNode && ((PQNode<?, ?>) o).getCode() != NOT_IN_PRIM_PRIORITY_QUEUE;
+		return o instanceof PQNode && ((PQNode<?>) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override
@@ -215,6 +217,12 @@ class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implem
 	}
 
 	@Override
+	public void clear() {
+		nodes.replaceAll(t -> null);
+		effectiveSize = 0;
+	}
+
+	@Override
 	public boolean remove(Object o) {
 		throw new UnsupportedOperationException();
 	}
@@ -237,9 +245,4 @@ class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implem
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void clear() {
-		nodes.replaceAll(t -> null);
-		effectiveSize = 0;
-	}
 }

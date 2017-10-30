@@ -82,25 +82,25 @@ public final class MSTs {
 		if (vertices.isEmpty())
 			return emptyGraph();
 
-		Map<V, PQNode<V, Double>> vToPQNode = graph.vertices()
+		Map<V, PQNode<V>> vToPQNode = graph.vertices()
 				.stream()
 				.collect(toMap(identity(), e -> new PQNode<>(e, MAX_VALUE)));
 
-		List<PQNode<V, Double>> vs = new ArrayList<>(vToPQNode.values());
+		List<PQNode<V>> vs = new ArrayList<>(vToPQNode.values());
 
-		PQNode<V, Double> src = vs.get(0);
+		PQNode<V> src = vs.get(0);
 
 		src.setPriority(0.);
-		src.getVertex().setParent(null);
+		src.getData().setParent(null);
 
-		AdaptablePriorityQueue<PQNode<V, Double>> priorityQueue = new ArrayPriorityQueue<>(vs);
+		AdaptablePriorityQueue<PQNode<V>> priorityQueue = new ArrayPriorityQueue<>(vs);
 
 		Collection<W> edges = new ArrayList<>();
 
 		while (!priorityQueue.isEmpty()) {
-			PQNode<V, Double> uNode = priorityQueue.poll();
+			PQNode<V> uNode = priorityQueue.poll();
 
-			V u = uNode.getVertex();
+			V u = uNode.getData();
 
 			if (u.parent() != null)
 				edges.add(graph.edge((V) u.parent(), u).get());
@@ -109,12 +109,12 @@ public final class MSTs {
 				Optional<W> edge = graph.edge(u, v);
 
 				if (edge.isPresent()) {
-					PQNode<V, Double> vNode = vToPQNode.get(v);
+					PQNode<V> vNode = vToPQNode.get(v);
 
 					if (priorityQueue.contains(vNode)) {
 						Double cost = edge.get().distance();
 
-						if (cost < vNode.getPriority()) {
+						if (cost.compareTo(vNode.getPriority()) < 0) {
 							v.setParent(u);
 							priorityQueue.updatePriority(vNode, cost);
 						}

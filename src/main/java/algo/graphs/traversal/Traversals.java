@@ -60,7 +60,7 @@ public final class Traversals {
 		@Override
 		public boolean add(T e) {
 			preProcessor.accept(e);
-			e.setStatusCode(IN_PROGRESS);
+			e.setCode(IN_PROGRESS);
 
 			return super.add(e);
 		}
@@ -70,7 +70,7 @@ public final class Traversals {
 			T polled = super.poll();
 
 			postProcessor.accept(polled);
-			polled.setStatusCode(DONE);
+			polled.setCode(DONE);
 
 			return polled;
 		}
@@ -78,11 +78,11 @@ public final class Traversals {
 
 	//---------------------------------------------------------------------------------------------------
 	private static <T> boolean isNew(TraversalVertex<T> v) {
-		return v.statusCode() == NEW;
+		return v.code() == NEW;
 	}
 
 	private static <T> boolean isDone(TraversalVertex<T> v) {
-		return v.statusCode() == DONE;
+		return v.code() == DONE;
 	}
 	//-------------------------------------------- DFS --------------------------------------------------
 
@@ -94,7 +94,7 @@ public final class Traversals {
 			return;
 
 		preProcessing.accept(srcVrtx);
-		srcVrtx.setStatusCode(IN_PROGRESS);
+		srcVrtx.setCode(IN_PROGRESS);
 
 		for (V v : graph.adjacentVertices(srcVrtx))
 			if (isNew(v)) {
@@ -103,7 +103,7 @@ public final class Traversals {
 			}
 
 		postProcessing.accept(srcVrtx);
-		srcVrtx.setStatusCode(DONE);
+		srcVrtx.setCode(DONE);
 	}
 
 	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> boolean isConnected(Graph<V, W> graph) {

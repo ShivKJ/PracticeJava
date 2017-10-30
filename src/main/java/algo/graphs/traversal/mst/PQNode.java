@@ -2,18 +2,18 @@ package algo.graphs.traversal.mst;
 
 import algo.graphs.traversal.VertexTraversalCode;
 
-class PQNode<E, P extends Comparable<P>> {
+class PQNode<E> {
 	private int					index;
 	private final E				e;
-	private P					p;
+	private Object				priority;
 	private VertexTraversalCode	code;
 
-	public PQNode(E e, P p) {
+	public <P extends Comparable<P>> PQNode(E e, P p) {
 		this.e = e;
-		this.p = p;
+		this.priority = p;
 	}
 
-	public E getVertex() {
+	public E getData() {
 		return e;
 	}
 
@@ -25,15 +25,16 @@ class PQNode<E, P extends Comparable<P>> {
 		this.index = index;
 	}
 
-	public P getPriority() {
-		return p;
+	@SuppressWarnings("unchecked")
+	public <P extends Comparable<P>> P getPriority() {
+		return (P) priority;
 	}
 
-	public void setPriority(P p) {
-		this.p = p;
+	public <P extends Comparable<P>> void setPriority(P p) {
+		this.priority = p;
 	}
 
-	public VertexTraversalCode getCode() {
+	public VertexTraversalCode code() {
 		return code;
 	}
 
