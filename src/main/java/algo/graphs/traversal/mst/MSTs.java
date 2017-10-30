@@ -108,8 +108,8 @@ public final class MSTs {
 				PQNode<V> vNode = vToPQNode.get(v);
 
 				if (priorityQueue.contains(vNode)) {
-					Double cost = graph.edge(u, v).get().distance();
-
+					Double cost = graph.distance(u, v);
+					
 					if (cost.compareTo(vNode.getPriority()) < 0) {
 						v.setParent(u);
 						priorityQueue.updatePriority(vNode, cost);
