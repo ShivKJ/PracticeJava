@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import algo.graphs.Edge;
 import algo.graphs.Graph;
@@ -106,18 +105,14 @@ public final class MSTs {
 				edges.add(graph.edge((V) u.parent(), u).get());
 
 			for (V v : graph.adjacentVertices(u)) {
-				Optional<W> edge = graph.edge(u, v);
+				PQNode<V> vNode = vToPQNode.get(v);
 
-				if (edge.isPresent()) {
-					PQNode<V> vNode = vToPQNode.get(v);
+				if (priorityQueue.contains(vNode)) {
+					Double cost = graph.edge(u, v).get().distance();
 
-					if (priorityQueue.contains(vNode)) {
-						Double cost = edge.get().distance();
-
-						if (cost.compareTo(vNode.getPriority()) < 0) {
-							v.setParent(u);
-							priorityQueue.updatePriority(vNode, cost);
-						}
+					if (cost.compareTo(vNode.getPriority()) < 0) {
+						v.setParent(u);
+						priorityQueue.updatePriority(vNode, cost);
 					}
 				}
 			}
