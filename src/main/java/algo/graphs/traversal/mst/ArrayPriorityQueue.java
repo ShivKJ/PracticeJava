@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-class ArrayPriorityQueue<E extends IndexedNode & PNode> implements AdaptablePriorityQueue<E> {
+public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements AdaptablePriorityQueue<E> {
 
 	private final List<E>		nodes;
 	private int					effectiveSize;

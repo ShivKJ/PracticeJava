@@ -1,6 +1,6 @@
 package algo.graphs.traversal.mst;
 
-class PQNode<E> extends IndexedNode implements PNode {
+public class PQNode<E> extends IndexedNode implements PNode {
 	private final E	e;
 	private Object	priority;
 
