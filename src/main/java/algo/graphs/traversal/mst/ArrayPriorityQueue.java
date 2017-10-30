@@ -1,34 +1,37 @@
 package algo.graphs.traversal.mst;
 
 import static algo.graphs.traversal.VertexTraversalCode.NOT_IN_PRIM_PRIORITY_QUEUE;
+import static java.util.Collections.emptyList;
 
 import java.lang.reflect.Array;
+import java.util.AbstractQueue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
 
-public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements AdaptablePriorityQueue<E> {
+public class ArrayPriorityQueue<E extends IndexedNode & PNode> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
 
-	private final List<E>		nodes;
+	private final ArrayList<E>	nodes;
 	private int					effectiveSize;
 	private final Comparator<E>	compNodes;
 
-	ArrayPriorityQueue(Collection<E> nodes, Comparator<E> comparator) {
-		this.compNodes = comparator;
+	@SuppressWarnings("unchecked")
+	public ArrayPriorityQueue(Collection<? extends E> nodes, Comparator<? super E> comparator) {
+		this.compNodes = (Comparator<E>) comparator;
 
 		this.nodes = new ArrayList<>(nodes.size());
 		this.effectiveSize = 0;
 
-		for (E e : nodes)
-			add(e);
-
+		addAll(nodes);
 	}
 
-	ArrayPriorityQueue(Collection<E> nodes) {
+	public ArrayPriorityQueue(Collection<? extends E> nodes) {
 		this(nodes, (e1, e2) -> e1.getPriority().compareTo(e2.getPriority()));
+	}
+
+	public ArrayPriorityQueue() {
+		this(emptyList());
 	}
 
 	@Override
@@ -109,12 +112,30 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements Adapta
 
 	@Override
 	public boolean add(E e) {
-		e.setIndex(effectiveSize++);
+		e.setIndex(effectiveSize);
 
-		nodes.add(e);
+		if (effectiveSize < nodes.size())
+			nodes.set(effectiveSize, e);
+		else
+			nodes.add(e);
+
+		effectiveSize++;
+
 		bubbleUp(e);
 
 		return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends E> c) {
+
+		int oldSize = effectiveSize;
+
+		nodes.ensureCapacity(effectiveSize + c.size());
+
+		c.forEach(this::add);
+
+		return oldSize != effectiveSize;
 	}
 
 	@Override
@@ -124,22 +145,13 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements Adapta
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
-		int oldSize = effectiveSize;
-
-		c.forEach(this::add);
-
-		return oldSize != effectiveSize;
-	}
-
-	@Override
 	public int size() {
 		return effectiveSize;
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof PQNode && ((PQNode<?>) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
+		return o instanceof IndexedNode && ((IndexedNode) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override
@@ -156,8 +168,9 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements Adapta
 
 			@Override
 			public E next() {
-
-				return next;
+				E tmp = next;
+				next = iterator.hasNext() ? iterator.next() : null;
+				return tmp;
 			}
 
 		};
@@ -171,21 +184,6 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements Adapta
 	@Override
 	public E peek() {
 		return nodes.get(0);
-	}
-
-	@Override
-	public E remove() {
-		if (isEmpty())
-			throw new NoSuchElementException();
-		return poll();
-	}
-
-	@Override
-	public E element() {
-		if (isEmpty())
-			throw new NoSuchElementException();
-
-		return peek();
 	}
 
 	@Override
@@ -218,31 +216,8 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> implements Adapta
 
 	@Override
 	public void clear() {
-		nodes.replaceAll(t -> null);
+		nodes.clear();
 		effectiveSize = 0;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-
-		throw new UnsupportedOperationException();
 	}
 
 }
