@@ -1,36 +1,40 @@
 package algo.graphs.traversal.mst;
 
 import static algo.graphs.traversal.VertexTraversalCode.NOT_IN_PRIM_PRIORITY_QUEUE;
-import static java.util.Arrays.sort;
 import static java.util.Comparator.comparing;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implements AdaptablePriorityQueue<E> {
+class ArrayPriorityQueue<E extends PQNode<?, P>, P extends Comparable<P>> implements AdaptablePriorityQueue<E> {
 
-	private final E[]			nodes;
+	private final List<E>		nodes;
 	private int					effectiveSize;
 	private final Comparator<E>	compNodes;
 
-	ArrayPriorityQueue(E[] nodes) {
+	ArrayPriorityQueue(Collection<E> nodes) {
 		this.compNodes = comparing(E::getPriority);
 
-		sort(nodes, this.compNodes);
+		this.nodes = new ArrayList<>(nodes.size());
+		this.effectiveSize = 0;
 
-		this.nodes = nodes;
-		this.effectiveSize = nodes.length;
+		for (E e : nodes)
+			add(e);
 
-		for (int i = 0; i < this.effectiveSize; i++)
-			nodes[i].setIndex(i);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public void updatePriority(E e, Comparable<?> p) {
-		P oldPriority = e.getPriority();
+	public <Q extends java.lang.Comparable<Q>> void updatePriority(E e, Q p) {
+
+		@SuppressWarnings("unchecked")
 		P newPriority = (P) p;
+		P oldPriority = e.getPriority();
+
 		e.setPriority(newPriority);
 
 		int comp = newPriority.compareTo(oldPriority);
@@ -39,35 +43,35 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 			bubbleUp(e);
 		else if (comp > 0)
 			bubbleDown(e);
-	}
+	};
 
 	@Override
 	public E poll() {
-		E currNode = nodes[0];
-		
-		int lastIndex = --effectiveSize;
+		E currNode = nodes.get(0);
 
-		nodes[0] = nodes[lastIndex];
+		int lastIndex = effectiveSize - 1;
 
-		nodes[lastIndex] = null;
+		swap(currNode, nodes.get(lastIndex));
 
-		bubbleDown(nodes[0]);
+		nodes.set(--effectiveSize, null);
 
-		currNode.getVertex().setStatusCode(NOT_IN_PRIM_PRIORITY_QUEUE);
+		if (!isEmpty())
+			bubbleDown(nodes.get(0));
+
+		currNode.setCode(NOT_IN_PRIM_PRIORITY_QUEUE);
 
 		return currNode;
 	}
 
 	private void bubbleDown(E node) {
 		int index = node.index() , leftChildIndex = 2 * index + 1 , rightChildIndex = leftChildIndex + 1;
-
 		E min = node;
 
-		if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes[leftChildIndex]) > 0)
-			min = nodes[leftChildIndex];
+		if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes.get(leftChildIndex)) > 0)
+			min = nodes.get(leftChildIndex);
 
-		if (rightChildIndex < effectiveSize && compNodes.compare(min, nodes[rightChildIndex]) > 0)
-			min = nodes[rightChildIndex];
+		if (rightChildIndex < effectiveSize && compNodes.compare(min, nodes.get(rightChildIndex)) > 0)
+			min = nodes.get(rightChildIndex);
 
 		if (min != node) {
 			swap(node, min);
@@ -80,11 +84,10 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 		int index = node.index();
 
 		while (index != 0) {
-			E parent = nodes[(index + 1) / 2 - 1];
+			E parent = nodes.get((index + 1) / 2 - 1);
 
 			if (compNodes.compare(parent, node) > 0) {
 				swap(parent, node);
-				bubbleUp(node);
 				index = node.index();
 			} else
 				break;
@@ -97,9 +100,34 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 		a.setIndex(bIndex);
 		b.setIndex(aIndex);
 
-		nodes[aIndex] = b;
-		nodes[bIndex] = a;
+		nodes.set(aIndex, b);
+		nodes.set(bIndex, a);
 
+	}
+
+	@Override
+	public boolean add(E e) {
+		e.setIndex(effectiveSize++);
+
+		nodes.add(e);
+		bubbleUp(e);
+
+		return true;
+	}
+
+	@Override
+	public String toString() {
+
+		return nodes.toString();
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends E> c) {
+		int oldSize = effectiveSize;
+
+		c.forEach(this::add);
+
+		return oldSize != effectiveSize;
 	}
 
 	@Override
@@ -109,69 +137,90 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof PQNode && ((PQNode<?>) o).getVertex().statusCode() != NOT_IN_PRIM_PRIORITY_QUEUE;
+		return o instanceof PQNode && ((PQNode<?, ?>) o).getCode() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override
 	public Iterator<E> iterator() {
-		throw new UnsupportedOperationException();
+		return new Iterator<E>() {
+			Iterator<E>	iterator	= nodes.iterator();
+			E			next		= iterator.hasNext() ? iterator.next() : null;
+
+			@Override
+			public boolean hasNext() {
+
+				return next != null;
+			}
+
+			@Override
+			public E next() {
+
+				return next;
+			}
+
+		};
 	}
 
 	@Override
 	public boolean offer(E e) {
-		throw new UnsupportedOperationException();
+		return add(e);
 	}
 
 	@Override
 	public E peek() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean add(E e) {
-		throw new UnsupportedOperationException();
+		return nodes.get(0);
 	}
 
 	@Override
 	public E remove() {
-		throw new UnsupportedOperationException();
+		if (isEmpty())
+			throw new NoSuchElementException();
+		return poll();
 	}
 
 	@Override
 	public E element() {
-		throw new UnsupportedOperationException();
+		if (isEmpty())
+			throw new NoSuchElementException();
+
+		return peek();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		throw new UnsupportedOperationException();
+		return size() == 0;
 	}
 
 	@Override
 	public Object[] toArray() {
-		throw new UnsupportedOperationException();
+		Object[] output = new Object[effectiveSize];
+
+		for (int i = 0; i < effectiveSize; i++)
+			output[i] = nodes.get(i);
+
+		return output;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T[] toArray(T[] a) {
+		if (a.length < size())
+			a = (T[]) Array.newInstance(a.getClass().getComponentType(), effectiveSize);
 
-		throw new UnsupportedOperationException();
+		for (int i = 0; i < effectiveSize; i++)
+			a[i] = (T) nodes.get(i);
+
+		return a;
+
 	}
 
 	@Override
 	public boolean remove(Object o) {
-
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends E> c) {
 
 		throw new UnsupportedOperationException();
 	}
@@ -190,6 +239,7 @@ class ArrayPriorityQueue<E extends PQNode<P>, P extends Comparable<P>> implement
 
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException();
+		nodes.replaceAll(t -> null);
+		effectiveSize = 0;
 	}
 }
