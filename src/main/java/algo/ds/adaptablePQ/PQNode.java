@@ -1,32 +1,35 @@
 package algo.ds.adaptablePQ;
 
-public class PQNode<E> extends IndexedNode implements PNode {
+public class PQNode<E, K extends Comparable<K>> extends IndexedPNode implements PNode {
 	private final E	e;
-	private Object	priority;
+	private K		priority;
 
-	public <P extends Comparable<P>> PQNode(E e, P p) {
+	public PQNode(E e, K p) {
 		this.e = e;
 		this.priority = p;
 	}
 
 	public E getData() {
+
 		return e;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <P extends Comparable<P>> P getPriority() {
-		return (P) priority;
+	public <Q extends Comparable<Q>> void setPriority(Q p) {
+		this.priority = (K) p;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <Q extends Comparable<Q>> Q getPriority() {
+
+		return (Q) priority;
 	}
 
 	@Override
-	public <P extends Comparable<P>> void setPriority(P p) {
-		this.priority = p;
-	}
-
-	@Override
-	public String toString() {
-		return e.toString();
+	public int compareTo(PNode o) {
+		return getPriority().compareTo(o.getPriority());
 	}
 
 }

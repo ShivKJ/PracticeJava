@@ -14,9 +14,9 @@ class UsingAdaptablePQ {
 	public static void main(String[] args) {
 		long time = currentTimeMillis();
 		Random random = new Random(10);
-		List<PQNode<?>> nodes = random.doubles(1_000_000, 0, 1).mapToObj(x -> new PQNode<>(null, x)).collect(toList());
-		AdaptablePriorityQueue<PQNode<?>> adaptablePriorityQueue = new ArrayPriorityQueue<>();
-		for (PQNode<?> pqNode : nodes)
+		List<PQNode<?, Double>> nodes = random.doubles(1_000_000, 0, 1).mapToObj(x -> new PQNode<>(null, x)).collect(toList());
+		AdaptablePriorityQueue<PQNode<?, Double>> adaptablePriorityQueue = new ArrayPriorityQueue<>();
+		for (PQNode<?, Double> pqNode : nodes)
 			adaptablePriorityQueue.add(pqNode);
 		adaptablePriorityQueue.addAll(nodes);
 

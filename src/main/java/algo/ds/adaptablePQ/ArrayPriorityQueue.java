@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class ArrayPriorityQueue<E extends IndexedNode & PNode> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
+public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
 
 	private final ArrayList<E>	nodes;
 	private int					effectiveSize;
@@ -27,7 +27,7 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> extends AbstractQ
 	}
 
 	public ArrayPriorityQueue(Collection<? extends E> nodes) {
-		this(nodes, (e1, e2) -> e1.getPriority().compareTo(e2.getPriority()));
+		this(nodes, E::compareTo);
 	}
 
 	public ArrayPriorityQueue() {
@@ -41,7 +41,7 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> extends AbstractQ
 		P oldPriority = e.getPriority();
 
 		e.setPriority(newPriority);
-
+		compNodes.compare(e, e);
 		int comp = newPriority.compareTo(oldPriority);
 
 		if (comp < 0)
@@ -151,7 +151,7 @@ public class ArrayPriorityQueue<E extends IndexedNode & PNode> extends AbstractQ
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof IndexedNode && ((IndexedNode) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
+		return o instanceof IndexedPNode && ((IndexedPNode) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override

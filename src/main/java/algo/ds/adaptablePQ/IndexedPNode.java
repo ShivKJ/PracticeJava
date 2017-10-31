@@ -2,12 +2,12 @@ package algo.ds.adaptablePQ;
 
 import algo.graphs.traversal.VertexTraversalCode;
 
-public class IndexedNode {
+public abstract class IndexedPNode implements PNode {
 	public static final int		DEFAULT_INDEX	= -1;
 	private int					index;
 	private VertexTraversalCode	code;
 
-	public IndexedNode() {
+	public IndexedPNode() {
 		this.index = DEFAULT_INDEX;
 	}
 
