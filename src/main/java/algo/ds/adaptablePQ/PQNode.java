@@ -27,9 +27,4 @@ public class PQNode<E, K extends Comparable<K>> extends IndexedPNode implements 
 		return (Q) priority;
 	}
 
-	@Override
-	public int compareTo(PNode o) {
-		return getPriority().compareTo(o.getPriority());
-	}
-
 }
