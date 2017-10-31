@@ -41,7 +41,6 @@ public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E>
 		P oldPriority = e.getPriority();
 
 		e.setPriority(newPriority);
-		compNodes.compare(e, e);
 		int comp = newPriority.compareTo(oldPriority);
 
 		if (comp < 0)
