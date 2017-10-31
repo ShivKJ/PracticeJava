@@ -3,6 +3,10 @@ package algo.graphs.traversal.mst;
 import java.util.ArrayList;
 import java.util.List;
 
+import algo.ds.adaptablePQ.AdaptablePriorityQueue;
+import algo.ds.adaptablePQ.ArrayPriorityQueue;
+import algo.ds.adaptablePQ.PQNode;
+
 class UsingArrayAdaptablePQ {
 	public static void main(String[] args) {
 		PQNode<String> n1 = new PQNode<>("S", 1) ,

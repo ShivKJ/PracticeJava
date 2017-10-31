@@ -1,4 +1,4 @@
-package algo.graphs.traversal.mst;
+package algo.ds.adaptablePQ;
 
 import algo.graphs.traversal.VertexTraversalCode;
 

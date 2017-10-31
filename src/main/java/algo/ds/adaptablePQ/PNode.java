@@ -1,4 +1,4 @@
-package algo.graphs.traversal.mst;
+package algo.ds.adaptablePQ;
 
 public interface PNode {
 	public <P extends Comparable<P>> P getPriority();

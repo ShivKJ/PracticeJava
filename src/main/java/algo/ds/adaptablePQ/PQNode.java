@@ -1,4 +1,4 @@
-package algo.graphs.traversal.mst;
+package algo.ds.adaptablePQ;
 
 public class PQNode<E> extends IndexedNode implements PNode {
 	private final E	e;

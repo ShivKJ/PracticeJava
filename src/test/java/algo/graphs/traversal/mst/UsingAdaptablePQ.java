@@ -6,6 +6,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Random;
 
+import algo.ds.adaptablePQ.AdaptablePriorityQueue;
+import algo.ds.adaptablePQ.ArrayPriorityQueue;
+import algo.ds.adaptablePQ.PQNode;
+
 class UsingAdaptablePQ {
 	public static void main(String[] args) {
 		long time = currentTimeMillis();

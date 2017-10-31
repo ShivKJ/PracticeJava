@@ -1,4 +1,4 @@
-package algo.graphs.traversal.mst;
+package algo.ds.adaptablePQ;
 
 import static algo.graphs.traversal.VertexTraversalCode.NOT_IN_PRIM_PRIORITY_QUEUE;
 import static java.util.Collections.emptyList;

@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import algo.ds.adaptablePQ.AdaptablePriorityQueue;
+import algo.ds.adaptablePQ.ArrayPriorityQueue;
+import algo.ds.adaptablePQ.PQNode;
 import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.traversal.TraversalVertex;
