@@ -101,7 +101,7 @@ public final class MSTs {
 		src.setPriority(0.);
 		src.getData().setParent(null);
 
-		AdaptablePriorityQueue<IndexedPNode<V, Double>> priorityQueue = new ArrayPriorityQueue<>(vs);
+		AdaptablePriorityQueue<IndexedPNode<V, Double>> priorityQueue = new ArrayPriorityQueue<>(vs, Double::compareTo);
 
 		Collection<W> edges = new ArrayList<>();
 

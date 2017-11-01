@@ -16,9 +16,12 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 	private int					effectiveSize;
 	private final Comparator<E>	compNodes;
 
-	@SuppressWarnings("unchecked")
-	public ArrayPriorityQueue(Collection<? extends E> nodes, Comparator<? super E> comparator) {
-		this.compNodes = (Comparator<E>) comparator;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <P> ArrayPriorityQueue(Collection<? extends E> nodes, Comparator<? super P> priorityComp) {
+		if (priorityComp != null)
+			this.compNodes = (e1, e2) -> priorityComp.compare((P) e1.getPriority(), (P) e2.getPriority());
+		else
+			this.compNodes = (e1, e2) -> ((Comparable) e1.getPriority()).compareTo(e2.getPriority());
 
 		this.nodes = new ArrayList<>(nodes.size());
 		this.effectiveSize = 0;
@@ -26,9 +29,8 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 		addAll(nodes);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayPriorityQueue(Collection<? extends E> nodes) {
-		this(nodes, (e1, e2) -> e1.compareTo((IndexedPNode) e2));
+	public <P> ArrayPriorityQueue(Collection<? extends E> nodes) {
+		this(nodes, null);
 	}
 
 	public ArrayPriorityQueue() {
