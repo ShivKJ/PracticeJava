@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
+public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?>>> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
 
 	private final ArrayList<E>	nodes;
 	private int					effectiveSize;
@@ -26,19 +26,27 @@ public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E>
 		addAll(nodes);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ArrayPriorityQueue(Collection<? extends E> nodes) {
-		this(nodes, E::compareTo);
+		this(nodes, (e1, e2) -> e1.compareTo((IndexedPNode) e2));
 	}
 
 	public ArrayPriorityQueue() {
 		this(emptyList());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <P extends Comparable<P>> void updatePriority(E e, P p) {
+	public <P extends Comparable<P>> void updatePriority(E e, P newPriority) {
 
-		P newPriority = p;
-		P oldPriority = e.getPriority();
+		P oldPriority = null;
+
+		try {
+			oldPriority = (P) e.getPriority();
+		} catch (ClassCastException e1) {
+			e1.printStackTrace();
+		}
+
 		int comp = newPriority.compareTo(oldPriority);
 
 		e.setPriority(newPriority);
@@ -150,7 +158,7 @@ public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E>
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof IndexedPNode && ((IndexedPNode) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
+		return o instanceof IndexedPNode && ((IndexedPNode<?, ?>) o).code() != NOT_IN_PRIM_PRIORITY_QUEUE;
 	}
 
 	@Override

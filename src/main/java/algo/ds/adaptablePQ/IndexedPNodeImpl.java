@@ -1,6 +1,6 @@
 package algo.ds.adaptablePQ;
 
-public class IndexedPNodeImpl<E, K extends Comparable<K>> extends IndexedPNode implements PNode {
+public class IndexedPNodeImpl<E, K extends Comparable<K>> extends IndexedPNode<E, K> {
 	private final E	e;
 	private K		priority;
 
@@ -9,6 +9,7 @@ public class IndexedPNodeImpl<E, K extends Comparable<K>> extends IndexedPNode i
 		this.priority = p;
 	}
 
+	@Override
 	public E getData() {
 
 		return e;
@@ -16,15 +17,14 @@ public class IndexedPNodeImpl<E, K extends Comparable<K>> extends IndexedPNode i
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <Q extends Comparable<Q>> void setPriority(Q p) {
+	public void setPriority(Object p) {
 		this.priority = (K) p;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <Q extends Comparable<Q>> Q getPriority() {
+	public K getPriority() {
 
-		return (Q) priority;
+		return priority;
 	}
 
 }

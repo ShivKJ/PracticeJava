@@ -2,7 +2,7 @@ package algo.ds.adaptablePQ;
 
 import algo.graphs.traversal.VertexTraversalCode;
 
-public abstract class IndexedPNode implements PNode {
+public abstract class IndexedPNode<E, P extends Comparable<P>> implements PNode<E, P> {
 	public static final int		DEFAULT_INDEX	= -1;
 	private int					index;
 	private VertexTraversalCode	code;

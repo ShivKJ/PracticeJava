@@ -1,14 +1,16 @@
 package algo.ds.adaptablePQ;
 
-public interface PNode extends Comparable<PNode> {
+public interface PNode<E, P extends Comparable<P>> extends Comparable<PNode<?, P>> {
 
-	<P extends Comparable<P>> void setPriority(P p);
+	void setPriority(Object p);
 
-	<P extends Comparable<P>> P getPriority();
+	P getPriority();
 
 	@Override
-	default int compareTo(PNode o) {
+	default int compareTo(PNode<?, P> o) {
 		return getPriority().compareTo(o.getPriority());
 	}
+
+	E getData();
 
 }

@@ -1,4 +1,4 @@
-package algo.graphs.traversal.minimumSpanningTree;
+package algo.graphs.traversal.mst;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;

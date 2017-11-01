@@ -1,4 +1,4 @@
-package algo.graphs.traversal.minimumSpanningTree;
+package algo.graphs.traversal.mst;
 
 import static algo.graphs.Graphs.emptyGraph;
 import static java.lang.Double.MAX_VALUE;
@@ -14,6 +14,7 @@ import java.util.Map;
 
 import algo.ds.adaptablePQ.AdaptablePriorityQueue;
 import algo.ds.adaptablePQ.ArrayPriorityQueue;
+import algo.ds.adaptablePQ.IndexedPNode;
 import algo.ds.adaptablePQ.IndexedPNodeImpl;
 import algo.graphs.Edge;
 import algo.graphs.Graph;
@@ -90,23 +91,22 @@ public final class MSTs {
 		if (vertices.isEmpty())
 			return emptyGraph();
 
-		Map<V, IndexedPNodeImpl<V, Double>> vToPQNode = graph.vertices()
+		Map<V, IndexedPNode<V, Double>> vToPQNode = graph.vertices()
 				.stream()
 				.collect(toMap(identity(), e -> new IndexedPNodeImpl<>(e, MAX_VALUE)));
+		List<IndexedPNode<V, Double>> vs = new ArrayList<>(vToPQNode.values());
 
-		List<IndexedPNodeImpl<V, Double>> vs = new ArrayList<>(vToPQNode.values());
-
-		IndexedPNodeImpl<V, Double> src = vs.get(0);
+		IndexedPNode<V, Double> src = vs.get(0);
 
 		src.setPriority(0.);
 		src.getData().setParent(null);
 
-		AdaptablePriorityQueue<IndexedPNodeImpl<V, Double>> priorityQueue = new ArrayPriorityQueue<>(vs);
+		AdaptablePriorityQueue<IndexedPNode<V, Double>> priorityQueue = new ArrayPriorityQueue<>(vs);
 
 		Collection<W> edges = new ArrayList<>();
 
 		while (!priorityQueue.isEmpty()) {
-			IndexedPNodeImpl<V, Double> uNode = priorityQueue.poll();
+			IndexedPNode<V, Double> uNode = priorityQueue.poll();
 
 			V u = uNode.getData();
 
@@ -114,7 +114,7 @@ public final class MSTs {
 				edges.add(graph.edge((V) u.parent(), u).get());
 
 			for (V v : graph.adjacentVertices(u)) {
-				IndexedPNodeImpl<V, Double> vNode = vToPQNode.get(v);
+				IndexedPNode<V, Double> vNode = vToPQNode.get(v);
 
 				if (priorityQueue.contains(vNode)) {
 					Double cost = graph.distance(u, v);
