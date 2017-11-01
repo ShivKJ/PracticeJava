@@ -1,10 +1,9 @@
 package algo.graphs.traversal.mst;
 
 import static algo.graphs.Graphs.emptyGraph;
+import static algo.graphs.traversal.Utils.traversalVertexToPQNode;
 import static java.lang.Double.MAX_VALUE;
 import static java.util.Collections.sort;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +14,6 @@ import java.util.Map;
 import algo.ds.adaptablePQ.AdaptablePriorityQueue;
 import algo.ds.adaptablePQ.ArrayPriorityQueue;
 import algo.ds.adaptablePQ.IndexedPNode;
-import algo.ds.adaptablePQ.IndexedPNodeImpl;
 import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.traversal.TraversalVertex;
@@ -89,11 +87,10 @@ public final class MSTs {
 		Collection<V> vertices = graph.vertices();
 
 		if (vertices.isEmpty())
-			return emptyGraph();
+			return emptyGraph();;
 
-		Map<V, IndexedPNode<V, Double>> vToPQNode = graph.vertices()
-				.stream()
-				.collect(toMap(identity(), e -> new IndexedPNodeImpl<>(e, MAX_VALUE)));
+		Map<V, IndexedPNode<V, Double>> vToPQNode = traversalVertexToPQNode(graph.vertices(), MAX_VALUE);
+
 		List<IndexedPNode<V, Double>> vs = new ArrayList<>(vToPQNode.values());
 
 		IndexedPNode<V, Double> src = vs.get(0);
