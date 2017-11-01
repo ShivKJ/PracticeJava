@@ -1,10 +1,10 @@
 package algo.ds.adaptablePQ;
 
-public class PQNode<E, K extends Comparable<K>> extends IndexedPNode implements PNode {
+public class IndexedPNodeImpl<E, K extends Comparable<K>> extends IndexedPNode implements PNode {
 	private final E	e;
 	private K		priority;
 
-	public PQNode(E e, K p) {
+	public IndexedPNodeImpl(E e, K p) {
 		this.e = e;
 		this.priority = p;
 	}

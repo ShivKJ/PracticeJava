@@ -39,9 +39,9 @@ public class ArrayPriorityQueue<E extends IndexedPNode> extends AbstractQueue<E>
 
 		P newPriority = p;
 		P oldPriority = e.getPriority();
+		int comp = newPriority.compareTo(oldPriority);
 
 		e.setPriority(newPriority);
-		int comp = newPriority.compareTo(oldPriority);
 
 		if (comp < 0)
 			bubbleUp(e);

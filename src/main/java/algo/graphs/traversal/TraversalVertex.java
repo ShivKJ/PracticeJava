@@ -5,6 +5,7 @@ import algo.graphs.Vertex;
 public abstract class TraversalVertex<T> implements Vertex<T> {
 	private TraversalVertex<T>	parent;
 	private VertexTraversalCode	code;
+	private Object				vData;
 
 	public TraversalVertex() {
 		this.parent = null;
@@ -33,4 +34,16 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 	public int hashCode() {
 		return uid();
 	}
+
+	@SuppressWarnings("unchecked")
+	public <E> E getvData() {
+		return (E) vData;
+	}
+
+	public <E> void setvData(E vData) {
+		this.vData = vData;
+	}
+
+	public abstract <E> void updateVData(E e);
+
 }
