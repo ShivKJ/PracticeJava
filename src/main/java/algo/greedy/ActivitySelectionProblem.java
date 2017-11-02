@@ -10,20 +10,13 @@ import java.util.List;
 import algo.graphs.DataWrapper;
 
 public class ActivitySelectionProblem {
-	public static class ASP<T> implements DataWrapper<T> {
-		private T			data;
-		private final long	start , finish;
 
-		public ASP(T data, long start, long finish) {
-			this.data = data;
+	public abstract static class ASP<T> implements DataWrapper<T> {
+		private final long start , finish;
+
+		public ASP(long start, long finish) {
 			this.start = start;
 			this.finish = finish;
-		}
-
-		@Override
-		public T getData() {
-
-			return data;
 		}
 
 		public long getFinish() {
@@ -37,7 +30,8 @@ public class ActivitySelectionProblem {
 
 	public static <T> List<ASP<T>> asp(Collection<? extends ASP<T>> activities) {
 		List<ASP<T>> acts = new ArrayList<>(activities);
-		acts.sort(comparingLong(ASP::getFinish));
+
+		acts.sort(comparingLong(ASP<T>::getFinish));
 
 		Iterator<ASP<T>> iter = acts.iterator();
 		ASP<T> prev = iter.next();
