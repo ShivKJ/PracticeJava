@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-import algo.graphs.Edge;
 import algo.graphs.Graph;
 
 public final class Traversals {
@@ -106,7 +105,7 @@ public final class Traversals {
 		srcVrtx.setCode(DONE);
 	}
 
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> boolean isConnected(Graph<V, W> graph) {
+	public static <V extends TraversalVertex<E>, E> boolean isConnected(Graph<V, ?> graph) {
 		Collection<V> vs = graph.vertices();
 
 		if (!vs.isEmpty()) {

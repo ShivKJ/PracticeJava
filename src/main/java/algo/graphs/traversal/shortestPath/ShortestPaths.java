@@ -11,7 +11,6 @@ import java.util.Map;
 import algo.ds.adaptablePQ.AdaptablePriorityQueue;
 import algo.ds.adaptablePQ.ArrayPriorityQueue;
 import algo.ds.adaptablePQ.IndexedPNode;
-import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.traversal.TraversalVertex;
 
@@ -28,7 +27,7 @@ public final class ShortestPaths {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends TraversalVertex<D>, D, W extends Edge<? extends T>> List<T> dijkstra(Graph<T, W> graph, T src, T dst) {
+	public static <T extends TraversalVertex<D>, D> List<T> dijkstra(Graph<T, ?> graph, T src, T dst) {
 		Map<T, IndexedPNode<T, Double>> vertexToPQNode = traversalVertexToPQNode(graph.vertices(), MAX_VALUE);
 		IndexedPNode<T, Double> srcNode = vertexToPQNode.get(src);
 
@@ -36,21 +35,21 @@ public final class ShortestPaths {
 		srcNode.setPriority(0.);
 
 		AdaptablePriorityQueue<IndexedPNode<T, Double>> pq = new ArrayPriorityQueue<>(vertexToPQNode.values());
-		boolean isReachable = false;
+		boolean reachableToDst = false;
 
 		do {
 			IndexedPNode<T, Double> uNode = pq.poll();
 			T u = uNode.getData();
 
-			for (T v : graph.adjacentVertices(uNode.getData())) {
+			for (T v : graph.adjacentVertices(u)) {
 				relax(uNode, vertexToPQNode.get(v), graph.distance(u, v));
 				if (v == dst)
-					isReachable = true;
+					reachableToDst = true;
 			}
 
 		} while (!pq.isEmpty());
 
-		if (isReachable) {
+		if (reachableToDst) {
 			List<T> path = new ArrayList<>();
 
 			do
