@@ -1,8 +1,8 @@
 package algo.sorting;
 
 import static java.util.Collections.asLifoQueue;
-import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -12,33 +12,31 @@ import java.util.Queue;
 import algo.graphs.Graph;
 import algo.graphs.Vertex;
 
-public class TopologicalSorting<T> implements Sort<T> {
-	private final Graph<Vertex<T>, ?>	graph;
-	private final Collection<Vertex<T>>	visitedNodes;
-	private final Queue<Vertex<T>>		outputStack;
+public class TopologicalSorting<T extends Vertex> implements Sort<T> {
+	private final Graph<T, ?>	graph;
+	private final Collection<T>	visitedNodes;
+	private final Queue<T>		outputStack;
 
 	@SuppressWarnings("unchecked")
-	public TopologicalSorting(Graph<? extends Vertex<T>, ?> graph) {
-		this.graph = (Graph<Vertex<T>, ?>) graph;
+	public TopologicalSorting(Graph<? extends Vertex, ?> graph) {
+		this.graph = (Graph<T, ?>) graph;
 		this.visitedNodes = new HashSet<>();
 		this.outputStack = asLifoQueue(new LinkedList<>());
 	}
 
 	@Override
 	public List<T> sort() {
-		for (Vertex<T> vertex : graph.vertices())
+		for (T vertex : graph.vertices())
 			if (!visitedNodes.contains(vertex))
 				processVertex(vertex);
 
-		return outputStack.stream()
-				.map(Vertex::getData)
-				.collect(toList());
+		return new ArrayList<>(outputStack);
 	}
 
-	private void processVertex(Vertex<T> sourceVertex) {
+	private void processVertex(T sourceVertex) {
 		visitedNodes.add(sourceVertex);
 
-		for (Vertex<T> adjacentVertex : graph.adjacentVertices(sourceVertex))
+		for (T adjacentVertex : graph.adjacentVertices(sourceVertex))
 			if (!visitedNodes.contains(adjacentVertex))
 				processVertex(adjacentVertex);
 

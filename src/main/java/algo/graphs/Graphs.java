@@ -13,11 +13,11 @@ public final class Graphs {
 	private static final Graph EMPTY_GRAPH = new EmptyGraph<>();
 
 	@SuppressWarnings("unchecked")
-	public static <V extends Vertex<?>, W extends Edge<? extends V>> Graph<V, W> emptyGraph() {
+	public static <V extends Vertex, W extends Edge<? extends V>> Graph<V, W> emptyGraph() {
 		return EMPTY_GRAPH;
 	}
 
-	private static final class EmptyGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Graph<V, W> {
+	private static final class EmptyGraph<V extends Vertex, W extends Edge<? extends V>> implements Graph<V, W> {
 
 		@Override
 		public Collection<V> vertices() {

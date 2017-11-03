@@ -17,7 +17,7 @@ import algo.graphs.traversal.TraversalVertex;
 public final class ShortestPaths {
 	private ShortestPaths() {}
 
-	public final static <PQ extends IndexedPNode<? extends TraversalVertex<D>, Double>, D, T, P extends Comparable<P>> void relax(PQ u, PQ v, double w) {
+	public final static <PQ extends IndexedPNode<? extends TraversalVertex, Double>, T, P extends Comparable<P>> void relax(PQ u, PQ v, double w) {
 		Double uData = u.getPriority() , vData = v.getPriority();
 
 		if (vData > uData + w) {
@@ -27,7 +27,7 @@ public final class ShortestPaths {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends TraversalVertex<D>, D> List<T> dijkstra(Graph<T, ?> graph, T src, T dst) {
+	public static <T extends TraversalVertex> List<T> dijkstra(Graph<T, ?> graph, T src, T dst) {
 		Map<T, IndexedPNode<T, Double>> vertexToPQNode = traversalVertexToPQNode(graph.vertices(), MAX_VALUE);
 		IndexedPNode<T, Double> srcNode = vertexToPQNode.get(src);
 

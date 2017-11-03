@@ -22,20 +22,20 @@ public final class MSTs {
 
 	private MSTs() {}
 
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> kruskal(Graph<V, W> graph) {
+	public static <V extends TraversalVertex, W extends Edge<? extends V>> Graph<V, W> kruskal(Graph<V, W> graph) {
 
 		List<W> mst = new ArrayList<>();
 
 		Collection<V> vertices = graph.vertices();
 
-		vertices.forEach(Parent<E>::new);
+		vertices.forEach(Parent::new);
 
 		List<W> edges = new ArrayList<>(graph.edges());
 
 		sort(edges);
 
 		for (W w : edges) {
-			Parent<E> pU = (Parent<E>) w.getSrc().parent() , pV = (Parent<E>) w.getDst().parent();
+			Parent pU = (Parent) w.getSrc().parent() , pV = (Parent) w.getDst().parent();
 
 			if (pU != pV) {
 				mst.add(w);
@@ -46,27 +46,22 @@ public final class MSTs {
 		return new MSTGraph<>(vertices, mst);
 	}
 
-	private final static class Parent<T> extends TraversalVertex<T> {
-		private final Collection<TraversalVertex<T>> vertices;
+	private final static class Parent extends TraversalVertex {
+		private final Collection<TraversalVertex> vertices;
 
-		Parent(TraversalVertex<T> v) {
+		Parent(TraversalVertex v) {
 			this.vertices = new LinkedList<>();
 			add(v);
 		}
 
-		void merge(Parent<T> pv) {
+		void merge(Parent pv) {
 			pv.vertices.forEach(this::add);
 		}
 
-		void add(TraversalVertex<T> v) {
+		void add(TraversalVertex v) {
 			vertices.add(v);
 			v.setParent(this);
 
-		}
-
-		@Override
-		public T getData() {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -74,15 +69,10 @@ public final class MSTs {
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		public <E> void updateVData(E e) {
-			throw new UnsupportedOperationException();
-
-		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <V extends TraversalVertex<E>, E, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph) {
+	public static <V extends TraversalVertex, W extends Edge<? extends V>> Graph<V, W> prim(Graph<V, W> graph) {
 
 		Collection<V> vertices = graph.vertices();
 

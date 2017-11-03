@@ -17,7 +17,7 @@ public final class Traversals {
 
 	//-----------------------------------------  BFS -----------------------------------------------------
 
-	public static final <T extends TraversalVertex<E>, E> void bfs(Graph<T, ?> graph, T srcVrtx,
+	public static final <T extends TraversalVertex> void bfs(Graph<T, ?> graph, T srcVrtx,
 			Consumer<? super T> preProcessor,
 			Consumer<? super T> postProcessor) {
 		// Only those vertices will be processed which have status code "NEW". 
@@ -41,11 +41,11 @@ public final class Traversals {
 		}
 	}
 
-	public static final <T extends TraversalVertex<E>, E> void bfs(Graph<T, ?> graph, T srcVrtx) {
+	public static final <T extends TraversalVertex> void bfs(Graph<T, ?> graph, T srcVrtx) {
 		bfs(graph, srcVrtx, t -> {}, t -> {});
 	}
 
-	private static final class BFSQueue<T extends TraversalVertex<?>> extends LinkedList<T> {
+	private static final class BFSQueue<T extends TraversalVertex> extends LinkedList<T> {
 
 		private static final long	serialVersionUID	= 1L;
 		private final Consumer<T>	preProcessor , postProcessor;
@@ -76,16 +76,16 @@ public final class Traversals {
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	private static <T> boolean isNew(TraversalVertex<T> v) {
+	private static boolean isNew(TraversalVertex v) {
 		return v.code() == NEW;
 	}
 
-	private static <T> boolean isDone(TraversalVertex<T> v) {
+	private static boolean isDone(TraversalVertex v) {
 		return v.code() == DONE;
 	}
 	//-------------------------------------------- DFS --------------------------------------------------
 
-	public static <V extends TraversalVertex<E>, E> void dfs(Graph<V, ?> graph, V srcVrtx,
+	public static <V extends TraversalVertex> void dfs(Graph<V, ?> graph, V srcVrtx,
 			Consumer<? super V> preProcessing,
 			Consumer<? super V> postProcessing) {
 
@@ -105,7 +105,7 @@ public final class Traversals {
 		srcVrtx.setCode(DONE);
 	}
 
-	public static <V extends TraversalVertex<E>, E> boolean isConnected(Graph<V, ?> graph) {
+	public static <V extends TraversalVertex> boolean isConnected(Graph<V, ?> graph) {
 		Collection<V> vs = graph.vertices();
 
 		if (!vs.isEmpty()) {

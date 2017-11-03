@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import algo.graphs.DataWrapper;
+import algo.ds.adaptablePQ.DataWrapper;
 
 public final class Knapsack01Fractional {
 	private Knapsack01Fractional() {}

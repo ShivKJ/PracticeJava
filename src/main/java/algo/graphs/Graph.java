@@ -5,7 +5,7 @@ import static java.lang.Double.MAX_VALUE;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface Graph<V extends Vertex<?>, W extends Edge<? extends V>> {
+public interface Graph<V extends Vertex, W extends Edge<? extends V>> {
 	Collection<V> vertices();
 
 	Collection<W> edges();

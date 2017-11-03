@@ -2,23 +2,19 @@ package algo.graphs.traversal;
 
 import algo.graphs.Vertex;
 
-public abstract class TraversalVertex<T> implements Vertex<T> {
-	private TraversalVertex<T>	parent;
+public abstract class TraversalVertex implements Vertex {
+	private TraversalVertex		parent;
 	private VertexTraversalCode	code;
-	private Object				vData;
 
 	public TraversalVertex() {
 		this.parent = null;
 	}
 
-	@Override
-	public abstract T getData();
-
-	public void setParent(TraversalVertex<T> parent) {
+	public void setParent(TraversalVertex parent) {
 		this.parent = parent;
 	}
 
-	public TraversalVertex<T> parent() {
+	public TraversalVertex parent() {
 		return parent;
 	}
 
@@ -34,16 +30,5 @@ public abstract class TraversalVertex<T> implements Vertex<T> {
 	public int hashCode() {
 		return uid();
 	}
-
-	@SuppressWarnings("unchecked")
-	public <E> E getvData() {
-		return (E) vData;
-	}
-
-	public <E> void setvData(E vData) {
-		this.vData = vData;
-	}
-
-	public abstract <E> void updateVData(E e);
 
 }

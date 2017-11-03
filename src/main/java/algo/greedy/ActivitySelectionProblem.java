@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import algo.graphs.DataWrapper;
+import algo.ds.adaptablePQ.DataWrapper;
 
 public class ActivitySelectionProblem {
 	private final static Comparator<? super ASP<?>> FINISHER_COMP_ASP = comparingLong(ASP::getFinish);

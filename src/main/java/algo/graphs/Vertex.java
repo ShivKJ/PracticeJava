@@ -1,6 +1,6 @@
 package algo.graphs;
 
-public interface Vertex<T> extends DataWrapper<T> {
+public interface Vertex {
 
 	@Override
 	int hashCode();

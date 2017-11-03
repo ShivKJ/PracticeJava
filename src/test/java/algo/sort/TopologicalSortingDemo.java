@@ -34,7 +34,7 @@ public class TopologicalSortingDemo {
 		graph.connect(a, b);
 		graph.connect(a, c);
 		graph.connect(b, c);
-		Sort<String> sort = new TopologicalSorting<>(graph);
+		Sort<HashableVertex<String>> sort = new TopologicalSorting<>(graph);
 		System.out.println(sort.sort());
 	}
 }
@@ -80,7 +80,7 @@ class HashableGraph<E> implements Graph<HashableVertex<E>, Edge<HashableVertex<E
 
 }
 
-class HashableVertex<T> implements Vertex<T> {
+class HashableVertex<T> implements Vertex {
 	static int								indexer	= 0;
 	private final Set<HashableVertex<T>>	adja;
 	private final T							data;
@@ -115,7 +115,6 @@ class HashableVertex<T> implements Vertex<T> {
 		return adja;
 	}
 
-	@Override
 	public T getData() {
 
 		return data;

@@ -2,7 +2,7 @@ package algo.graphs;
 
 import static java.lang.Double.compare;
 
-public abstract class Edge<T extends Vertex<?>> implements Comparable<Edge<T>> {
+public abstract class Edge<T extends Vertex> implements Comparable<Edge<T>> {
 	private final T src , dst;
 
 	public Edge(T src, T dst) {

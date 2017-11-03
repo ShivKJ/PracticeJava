@@ -15,7 +15,7 @@ import algo.graphs.Edge;
 import algo.graphs.Graph;
 import algo.graphs.Vertex;
 
-class MSTGraph<V extends Vertex<?>, W extends Edge<? extends V>> implements Graph<V, W> {
+class MSTGraph<V extends Vertex, W extends Edge<? extends V>> implements Graph<V, W> {
 	private final Collection<V>					vertices;
 	private final Collection<W>					edges;
 	private final Map<Integer, Map<Integer, W>>	edgeMapper;
