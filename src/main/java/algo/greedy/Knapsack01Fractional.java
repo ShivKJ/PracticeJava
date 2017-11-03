@@ -39,10 +39,10 @@ public final class Knapsack01Fractional {
 		}
 	}
 
-	public static <T> List<KnapSackItem<T>> knapSackFractional(Collection<KnapSackItem<T>> knapSackItems, double W) {
+	public static <T> List<KnapSackItem<T>> knapSackFractional(Collection<? extends KnapSackItem<T>> knapSackItems, double W) {
 		List<KnapSackItem<T>> items = new ArrayList<>(knapSackItems);
 
-		items.sort(reverseOrder(comparingDouble(KnapSackItem::ratio)));
+		items.sort(reverseOrder(comparingDouble(KnapSackItem<T>::ratio)));
 
 		Iterator<KnapSackItem<T>> iter = items.iterator();
 
