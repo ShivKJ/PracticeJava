@@ -43,10 +43,9 @@ public class ActivitySelectionProblem {
 
 		while (iter.hasNext()) {
 			ASP<T> curr = iter.next();
-			if (curr.start > prev.finish) {
-				output.add(curr);
-				prev = curr;
-			}
+			if (curr.start > prev.finish)
+				output.add(prev = curr);
+
 		}
 
 		return output;
