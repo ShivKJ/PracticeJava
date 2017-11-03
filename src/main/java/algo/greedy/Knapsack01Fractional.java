@@ -8,12 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import algo.ds.adaptablePQ.DataWrapper;
-
 public final class Knapsack01Fractional {
 	private Knapsack01Fractional() {}
 
-	public static abstract class KnapSackItem<T> implements DataWrapper<T> {
+	public static class KnapSackItem {
 		private final double	value , weight;
 		private double			weightPicked;
 
@@ -39,25 +37,26 @@ public final class Knapsack01Fractional {
 		}
 	}
 
-	public static <T> List<KnapSackItem<T>> knapSackFractional(Collection<? extends KnapSackItem<T>> knapSackItems, double W) {
-		List<KnapSackItem<T>> items = new ArrayList<>(knapSackItems);
+	@SuppressWarnings("unchecked")
+	public static <T extends KnapSackItem> List<T> knapSackFractional(Collection<? extends T> knapSackItems, double W) {
+		List<T> items = new ArrayList<>(knapSackItems);
 
-		items.sort(reverseOrder(comparingDouble(KnapSackItem<T>::ratio)));
+		items.sort(reverseOrder(comparingDouble(KnapSackItem::ratio)));
 
-		Iterator<KnapSackItem<T>> iter = items.iterator();
+		Iterator<T> iter = items.iterator();
 
 		double w = 0;// how much has been picked
 
-		List<KnapSackItem<T>> output = new ArrayList<>();
+		List<T> output = new ArrayList<>();
 
 		while (iter.hasNext() && w < W) {
-			KnapSackItem<T> item = iter.next();
+			KnapSackItem item = iter.next();
 
 			item.weightPicked = item.weight + w <= W ? item.weight : W - w;
 
 			w += item.weightPicked;
 
-			output.add(item);
+			output.add((T) item);
 		}
 
 		return output;

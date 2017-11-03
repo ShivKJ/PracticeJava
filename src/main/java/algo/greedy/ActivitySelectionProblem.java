@@ -8,12 +8,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import algo.ds.adaptablePQ.DataWrapper;
-
 public class ActivitySelectionProblem {
-	private final static Comparator<? super ASP<?>> FINISHER_COMP_ASP = comparingLong(ASP::getFinish);
+	private final static Comparator<? super ASP> FINISHER_COMP_ASP = comparingLong(ASP::getFinish);
 
-	public abstract static class ASP<T> implements DataWrapper<T> {
+	public static class ASP {
 		private final long start , finish;
 
 		public ASP(long start, long finish) {
@@ -30,20 +28,21 @@ public class ActivitySelectionProblem {
 		}
 	}
 
-	public static <T> List<ASP<T>> aspIterative(Collection<? extends ASP<T>> activities) {
-		List<ASP<T>> acts = new ArrayList<>(activities);
+	public static <T extends ASP> List<T> aspIterative(Collection<? extends T> activities) {
+		List<T> acts = new ArrayList<>(activities);
 
 		acts.sort(FINISHER_COMP_ASP);
 
-		Iterator<ASP<T>> iter = acts.iterator();
-		ASP<T> prev = iter.next();
+		Iterator<T> iter = acts.iterator();
+		T prev = iter.next();
 
-		List<ASP<T>> output = new ArrayList<>();
+		List<T> output = new ArrayList<>();
 		output.add(prev);
 
 		while (iter.hasNext()) {
-			ASP<T> curr = iter.next();
-			if (curr.start > prev.finish)
+			T curr = iter.next();
+
+			if (curr.getStart() > prev.getFinish())
 				output.add(prev = curr);
 
 		}
@@ -51,10 +50,10 @@ public class ActivitySelectionProblem {
 		return output;
 	}
 
-	private final static <T> void aspRecursive(List<ASP<T>> activities, int k, int n, List<ASP<T>> res) {
+	private final static <T extends ASP> void aspRecursive(List<T> activities, int k, int n, List<T> res) {
 		int m = k + 1;
 
-		ASP<T> act = null , kAct = activities.get(k);
+		T act = null , kAct = activities.get(k);
 		while (m <= n && (act = activities.get(m)).getStart() < kAct.getFinish())
 			m++;
 
@@ -64,8 +63,8 @@ public class ActivitySelectionProblem {
 		}
 	}
 
-	public static <T> List<ASP<T>> aspRecursive(Collection<? extends ASP<T>> activities) {
-		List<ASP<T>> acts = new ArrayList<>(activities) , output = new ArrayList<>();
+	public static <T extends ASP> List<T> aspRecursive(Collection<? extends T> activities) {
+		List<T> acts = new ArrayList<>(activities) , output = new ArrayList<>();
 		acts.sort(FINISHER_COMP_ASP);
 
 		output.add(acts.get(0));
