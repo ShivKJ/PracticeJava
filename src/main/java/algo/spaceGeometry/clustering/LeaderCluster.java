@@ -1,6 +1,5 @@
 package algo.spaceGeometry.clustering;
 
-import static java.lang.Double.compare;
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingDouble;
 
@@ -17,9 +16,9 @@ import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
-	private final List<T>													toBeClustered;
-	private final Queue<CentroidCluster<CentroidPoint>>						pq;
-	private final BiPredicate<CentroidCluster<? extends WeightedPoint>, T>	addToCluster;
+	private final List<T>																	toBeClustered;
+	private final Queue<CentroidCluster<CentroidPoint>>										pq;
+	private final BiPredicate<? super CentroidCluster<? extends WeightedPoint>, ? super T>	addToCluster;
 
 	public LeaderCluster(Collection<? extends T> points, DistanceMeasure distanceMeasure, double radius) {
 		this(points, distanceMeasure, radius, Integer.MAX_VALUE);
@@ -46,12 +45,16 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 		this.toBeClustered = new ArrayList<>(points);
 		this.toBeClustered.sort(reverseOrder(comparingDouble(T::weight)));
 
-		this.pq = new PriorityQueue<>();
+		this.pq = new PriorityQueue<>(reverseOrder(comparingDouble(LeaderCluster::centroidWeight)));
 
-		this.addToCluster = (cluster, p) -> addToCluster.test(cluster, p);
+		this.addToCluster = addToCluster;
 	}
 
-	private static class CentroidPoint implements WeightedPoint, Comparable<CentroidPoint> {
+	public static double centroidWeight(CentroidCluster<CentroidPoint> cluster) {
+		return ((WeightedPoint) cluster.getCenter()).weight();
+	}
+
+	private static class CentroidPoint implements WeightedPoint {
 		final double	xy[];
 		double			w;
 
@@ -90,12 +93,6 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 		public double[] getPoint() {
 
 			return xy;
-		}
-
-		@Override
-		public int compareTo(CentroidPoint o) {
-
-			return compare(o.w, w);
 		}
 
 	}
