@@ -17,7 +17,7 @@ import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 	private final List<T>																	toBeClustered;
-	private final Queue<CentroidCluster<CentroidPoint>>										pq;
+	private final Queue<CentroidCluster<T>>													pq;
 	private final BiPredicate<? super CentroidCluster<? extends WeightedPoint>, ? super T>	addToCluster;
 
 	public LeaderCluster(Collection<? extends T> points, DistanceMeasure distanceMeasure, double radius) {
@@ -29,11 +29,13 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 	}
 
 	public LeaderCluster(Collection<? extends T> points, DistanceMeasure distanceMeasure, double radius, int pointCount, double maxWeight) {
-		this(points, distanceMeasure, (cluster, p) -> cluster.getPoints().size() < pointCount &&
-				((WeightedPoint) cluster.getCenter()).weight() + p.weight() <= maxWeight &&
-				cluster.getPoints()
-						.stream()
-						.allMatch(cp -> distanceMeasure.compute(cp.getPoint(), p.getPoint()) <= radius));
+		this(points,
+			distanceMeasure,
+			(cluster, p) -> cluster.getPoints().size() < pointCount
+					&& centroidWeight(cluster) + p.weight() <= maxWeight
+					&& cluster.getPoints()
+							.stream()
+							.allMatch(cp -> distanceMeasure.compute(cp.getPoint(), p.getPoint()) <= radius));
 	}
 
 	public LeaderCluster(Collection<? extends T> points,
@@ -50,7 +52,7 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 		this.addToCluster = addToCluster;
 	}
 
-	public static double centroidWeight(CentroidCluster<CentroidPoint> cluster) {
+	private static double centroidWeight(CentroidCluster<? extends WeightedPoint> cluster) {
 		return ((WeightedPoint) cluster.getCenter()).weight();
 	}
 
@@ -97,29 +99,13 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 
 	}
 
-	private List<CentroidCluster<T>> output() {
-
-		List<CentroidCluster<T>> output = new ArrayList<>(pq.size());
-
-		while (!pq.isEmpty()) {
-			CentroidCluster<CentroidPoint> cluster = pq.poll();
-
-			CentroidCluster<T> centroidCluster = new CentroidCluster<>(cluster.getCenter());
-			cluster.getPoints().forEach(cluster::addPoint);
-
-			output.add(centroidCluster);
-		}
-
-		return output;
-	}
-
 	@Override
 	public List<? extends Cluster<T>> cluster(Collection<T> points) {
 		for (T point : toBeClustered) {
-			Collection<CentroidCluster<CentroidPoint>> bucket = new ArrayList<>(pq.size());
+			Collection<CentroidCluster<T>> bucket = new ArrayList<>(pq.size());
 
 			while (!pq.isEmpty()) {
-				CentroidCluster<CentroidPoint> cluster = pq.poll();
+				CentroidCluster<T> cluster = pq.poll();
 
 				if (addToCluster.test(cluster, point)) {
 					updateCluster(cluster, point);
@@ -135,10 +121,10 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 			pq.addAll(bucket);
 		}
 
-		return output();
+		return new ArrayList<>(pq);
 	}
 
-	private static <T extends WeightedPoint> void updateCluster(CentroidCluster<CentroidPoint> cluster, T point) {
+	private static <T extends WeightedPoint> void updateCluster(CentroidCluster<T> cluster, T point) {
 		CentroidPoint centroidPoint = (CentroidPoint) cluster.getCenter();
 
 		double wCluster = centroidPoint.w , w = point.weight();
@@ -147,6 +133,8 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 		centroidPoint.setX((centroidPoint.X() * wCluster + point.X() * w) / newW);
 		centroidPoint.setY((centroidPoint.Y() * wCluster + point.Y() * w) / newW);
 		centroidPoint.w = newW;
+
+		cluster.addPoint(point);
 
 	}
 
