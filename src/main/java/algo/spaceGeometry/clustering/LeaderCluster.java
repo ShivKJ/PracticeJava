@@ -32,12 +32,14 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 	public LeaderCluster(Collection<? extends T> points, DistanceMeasure distanceMeasure, double radius, int pointCount, double maxWeight) {
 		this(points, distanceMeasure, (cluster, p) -> cluster.getPoints().size() < pointCount &&
 				((WeightedPoint) cluster.getCenter()).weight() + p.weight() <= maxWeight &&
-				distanceMeasure.compute(cluster.getCenter().getPoint(), p.getPoint()) <= radius);
+				cluster.getPoints()
+						.stream()
+						.allMatch(cp -> distanceMeasure.compute(cp.getPoint(), p.getPoint()) <= radius));
 	}
 
 	public LeaderCluster(Collection<? extends T> points,
 			DistanceMeasure distanceMeasure,
-			BiPredicate<CentroidCluster<? extends WeightedPoint>, T> addToCluster) {
+			BiPredicate<? super CentroidCluster<? extends WeightedPoint>, ? super T> addToCluster) {
 
 		super(distanceMeasure);
 
