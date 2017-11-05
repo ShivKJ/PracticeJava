@@ -6,6 +6,7 @@ import static algo.spaceGeometry.PointUtils.line;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 import static java.util.Comparator.comparingDouble;
 
 import java.util.Collection;
@@ -43,11 +44,13 @@ public final class Utils {
 	}
 
 	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {
-		return UtilsAlgo.best(points, t -> true, comparingDouble((E p) -> p.X() * cos(angle) + p.Y() * sin(angle)).thenComparing(resolveConflict));
+		double inRad = toRadians(angle);
+		return UtilsAlgo.best(points, t -> true, comparingDouble((E p) -> p.X() * cos(inRad) + p.Y() * sin(inRad)).thenComparing(resolveConflict));
 	}
 
 	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle) {
-		return UtilsAlgo.best(points, t -> true, comparingDouble((Point p) -> p.X() * cos(angle) + p.Y() * sin(angle)));
+		double inRad = toRadians(angle);
+		return UtilsAlgo.best(points, t -> true, comparingDouble((Point p) -> p.X() * cos(inRad) + p.Y() * sin(inRad)));
 	}
 
 }
