@@ -1,6 +1,8 @@
 package algo.spaceGeometry.clustering;
 
-public interface WeightedPoint {
+import algo.spaceGeometry.Point;
+
+public interface WeightedPoint extends Point {
 	public double weight();
 
 }

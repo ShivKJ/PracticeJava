@@ -1,8 +1,6 @@
 package algo.spaceGeometry;
 
-import org.apache.commons.math3.ml.clustering.Clusterable;
-
-public class XY extends AbstractPoint implements Clusterable {
+public class XY extends AbstractPoint {
 
 	private final double x , y;
 

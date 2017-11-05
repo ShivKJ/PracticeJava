@@ -21,7 +21,7 @@ import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import algo.spaceGeometry.clustering.WeightedPoint;
 
-public class LeaderCluster<T extends WeightedPoint & Clusterable> extends Clusterer<T> {
+public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 	private final BiPredicate<CentroidCluster<? extends T>, T>	addToCluster;
 	private final BiConsumer<CentroidCluster<? extends T>, T>	clusterUpdator;
 
@@ -70,7 +70,7 @@ public class LeaderCluster<T extends WeightedPoint & Clusterable> extends Cluste
 		return new ArrayList<>(pq);
 	}
 
-	public static class Builder<T extends WeightedPoint & Clusterable> {
+	public static class Builder<T extends WeightedPoint> {
 		private double	radius			= Double.MAX_VALUE , maxWeight = radius;
 		private int		maxClusterSize	= Integer.MAX_VALUE;
 
@@ -80,7 +80,7 @@ public class LeaderCluster<T extends WeightedPoint & Clusterable> extends Cluste
 
 		private Builder() {}
 
-		public static <T extends WeightedPoint&Clusterable> Builder<T> newInstance() {
+		public static <T extends WeightedPoint & Clusterable> Builder<T> newInstance() {
 			return new Builder<>();
 		}
 
