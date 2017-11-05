@@ -6,9 +6,9 @@ final class CentroidPoint implements WeightedPoint {
 	final double	xy[];
 	double			w;
 
-	public CentroidPoint(double x, double y, double w) {
-		this.xy = new double[] { x, y };
-		this.w = w;
+	CentroidPoint(WeightedPoint weightedPoint) {
+		this.xy = new double[] { weightedPoint.X(), weightedPoint.Y() };
+		this.w = weightedPoint.weight();
 	}
 
 	@Override
