@@ -12,7 +12,7 @@ import algo.spaceGeometry.clustering.WeightedPoint;
 class LeaderClusterElements {
 	private LeaderClusterElements() {}
 
-	static <T extends WeightedPoint&Clusterable> BiPredicate<CentroidCluster<? extends T>, T> defaultCriteria(DistanceMeasure distanceMeasure, double radius,
+	static <T extends WeightedPoint & Clusterable> BiPredicate<CentroidCluster<? extends T>, T> defaultCriteria(DistanceMeasure distanceMeasure, double radius,
 		int maxClusterSize, double maxWeight) {
 		return (cluster, point) -> cluster.getPoints().size() < maxClusterSize
 				&& centroidWeight(cluster) + point.weight() <= maxWeight
@@ -23,7 +23,7 @@ class LeaderClusterElements {
 		return ((WeightedPoint) cluster.getCenter()).weight();
 	}
 
-	static <T extends WeightedPoint&Clusterable> boolean inRadius(DistanceMeasure distanceMeasure, double radius, Cluster<? extends T> cluster, T point) {
+	static <T extends WeightedPoint & Clusterable> boolean inRadius(DistanceMeasure distanceMeasure, double radius, Cluster<? extends T> cluster, T point) {
 
 		for (T p : cluster.getPoints())
 			if (distanceMeasure.compute(p.getPoint(), point.getPoint()) > radius)
@@ -32,14 +32,16 @@ class LeaderClusterElements {
 		return true;
 	}
 
-	static <T extends WeightedPoint> void updateCluster(CentroidCluster<? extends T> cluster, T point) {
+	static <T extends WeightedPoint & Clusterable> void updateCluster(CentroidCluster<? extends T> cluster, T point) {
 		CentroidPoint centroidPoint = (CentroidPoint) cluster.getCenter();
 
 		double wCluster = centroidPoint.w , w = point.weight();
 		double newW = wCluster + w;
+		double[] xy = centroidPoint.xy , pt = point.getPoint();
 
-		centroidPoint.setX((centroidPoint.X() * wCluster + point.X() * w) / newW);
-		centroidPoint.setY((centroidPoint.Y() * wCluster + point.Y() * w) / newW);
+		for (int i = 0; i < xy.length; i++)
+			xy[i] = (xy[i] * wCluster + pt[i] * w) / newW;
+
 		centroidPoint.w = newW;
 
 	}
