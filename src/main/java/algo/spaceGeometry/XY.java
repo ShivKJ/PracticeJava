@@ -4,24 +4,25 @@ import org.apache.commons.math3.ml.clustering.Clusterable;
 
 public class XY extends AbstractPoint implements Clusterable {
 
-	private final double[] xy;
+	private final double x , y;
 
 	public XY(double x, double y) {
-		this.xy = new double[] { x, y };
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
 	public double X() {
-		return xy[0];
+		return x;
 	}
 
 	@Override
 	public double Y() {
-		return xy[1];
+		return y;
 	}
 
 	@Override
 	public double[] getPoint() {
-		return xy.clone();
+		return new double[] { x, y };
 	}
 }

@@ -30,7 +30,7 @@ public class TestingLeaderCluster {
 		Collection<Point> points = new LinkedList<>();
 
 		PointGeneration.setSeed(10L);
-		points.addAll(PointGeneration.pointsOnCircle(new XY(0, 0), 0, 0.2, 100));
+		points.addAll(PointGeneration.pointsOnCircle(new XY(0, 0), 0, 0.2, 10000));
 		points.addAll(PointGeneration.pointsOnCircle(new XY(1.6, 0), 0, 0.2, 100));
 		points.addAll(PointGeneration.pointsOnCircle(new XY(0, 1), 0, 0.2, 100));
 		points.addAll(PointGeneration.pointsOnCircle(new XY(1, 1), 0, 0.2, 100));
@@ -39,7 +39,7 @@ public class TestingLeaderCluster {
 		LeaderCluster<WPoint> leaderCluster = LeaderCluster.Builder.<WPoint>newInstance()
 				.setDistanceMeasure(new EuclideanDistance())
 				.setMaxClusterSize(80)
-				.setMaxRadius(1)
+				.setMaxRadius(.4)
 				.setMaxWeight(40)
 				.build();
 
@@ -67,23 +67,25 @@ public class TestingLeaderCluster {
 	}
 
 	static class WPoint extends AbstractPoint implements WeightedPoint, Clusterable {
-		transient final double xy[] , w;
+		transient final double	w;
+		final double			x , y;
 
 		public WPoint(Point point, double weight) {
 			this.w = weight;
-			this.xy = new double[] { point.X(), point.Y() };
+			this.x = point.X();
+			this.y = point.Y();
 		}
 
 		@Override
 		public double X() {
 
-			return xy[0];
+			return x;
 		}
 
 		@Override
 		public double Y() {
 
-			return xy[1];
+			return y;
 		}
 
 		@Override
@@ -95,7 +97,7 @@ public class TestingLeaderCluster {
 		@Override
 		public double[] getPoint() {
 
-			return xy;
+			return new double[] { x, y };
 		}
 	}
 }
