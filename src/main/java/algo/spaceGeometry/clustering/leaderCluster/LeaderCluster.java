@@ -49,24 +49,24 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 				if (addToCluster.test(cluster, point)) {
 					clusterUpdator.accept(cluster, point);
 					cluster.addPoint(point);
+					pq.add(cluster);
 					break;
 				}
 
 				bucket.add(cluster);
 			}
 
-			if (pq.isEmpty())
-				pq.add(new CentroidCluster<>(new CentroidPoint(point.X(), point.Y(), point.weight())));
+			if (pq.isEmpty()) {
+				CentroidCluster<T> newCluster = new CentroidCluster<>(new CentroidPoint(point));
+				newCluster.addPoint(point);
+				pq.add(newCluster);
+			}
 
 			pq.addAll(bucket);
+
 		}
-
-		List<Cluster<T>> output = new ArrayList<>(pq.size());
-
-		while (!pq.isEmpty())
-			output.add(pq.remove());
-
-		return output;
+		
+		return new ArrayList<>(pq);
 	}
 
 	public static class Builder<T extends WeightedPoint> {
