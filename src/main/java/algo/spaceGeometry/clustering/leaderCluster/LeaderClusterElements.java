@@ -13,10 +13,9 @@ class LeaderClusterElements {
 
 	static <T extends WeightedPoint> BiPredicate<CentroidCluster<? extends T>, T> defaultCriteria(DistanceMeasure distanceMeasure, double radius,
 		int maxClusterSize, double maxWeight) {
-
-		return (cluster, p) -> cluster.getPoints().size() < maxClusterSize
-				&& centroidWeight(cluster) + p.weight() <= maxWeight
-				&& inRadius(distanceMeasure, radius, cluster, p);
+		return (cluster, point) -> cluster.getPoints().size() < maxClusterSize
+				&& centroidWeight(cluster) + point.weight() <= maxWeight
+				&& inRadius(distanceMeasure, radius, cluster, point);
 	}
 
 	static double centroidWeight(CentroidCluster<? extends WeightedPoint> cluster) {
