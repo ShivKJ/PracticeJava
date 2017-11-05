@@ -30,14 +30,12 @@ public final class Locations {
 		 * If convex hull is empty, then returns OUTSIDE.
 		 * Start and end point of convex hull should be same if it is not empty of single point convex hull.
 		 */
-
 		if (convexHull.isEmpty())
 			return OUTSIDE;
 
 		int size = convexHull.size();
 
 		Iterator<? extends Point> iter = convexHull.iterator();
-
 		Point a = iter.next();
 
 		if (size == 1)
@@ -71,10 +69,12 @@ public final class Locations {
 	}
 
 	public static PointLocation pointLocWrtLineSegment(Point ab, Point pa, Point pb) {
-		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) ? ON : OUTSIDE;
+		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) && crossProductZDirection(pa, pb) == ZERO ? ON
+				: OUTSIDE;
 	}
 
 	public static PointLocation pointLocWrtToTriangle(Point a, Point b, Point c, double area, Point p) {
+
 		if (isZero(area)) {
 			Point pb = line(p, b);
 			return pointLocWrtLineSegment(line(a, b), line(p, a), pb) == ON || pointLocWrtLineSegment(line(b, c), pb, line(p, c)) == ON
