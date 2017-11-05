@@ -17,7 +17,7 @@ import algo.spaceGeometry.Point;
 import algo.spaceGeometry.pointLocation.Direction;
 import algo.spaceGeometry.pointLocation.Locations;
 
-public abstract class ConvexHull<E extends Point> extends ArrayList<E> implements Set<E> {
+public abstract class ConvexHull<E extends Point> extends ArrayList<E> {
 
 	private static final long	serialVersionUID	= 1L;
 	protected boolean			closed;

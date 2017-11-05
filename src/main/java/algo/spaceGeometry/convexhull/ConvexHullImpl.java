@@ -72,7 +72,7 @@ class ConvexHullImpl<E extends Point> extends ConvexHull<E> {
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return wrapperSet.containsAll(c);
+		return c.stream().allMatch(this::contains);
 	}
 
 }
