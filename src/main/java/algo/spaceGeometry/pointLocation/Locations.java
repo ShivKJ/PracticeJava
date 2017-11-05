@@ -69,17 +69,19 @@ public final class Locations {
 	}
 
 	public static PointLocation pointLocWrtLineSegment(Point ab, Point pa, Point pb) {
-		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X())) && isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y())) && crossProductZDirection(pa, pb) == ZERO ? ON
-				: OUTSIDE;
+		return isEqual(abs(ab.X()), abs(pa.X()) + abs(pb.X()))
+				&& isEqual(abs(ab.Y()), abs(pa.Y()) + abs(pb.Y()))
+				&& crossProductZDirection(pa, pb) == ZERO ? ON : OUTSIDE;
 	}
 
 	public static PointLocation pointLocWrtToTriangle(Point a, Point b, Point c, double area, Point p) {
 
 		if (isZero(area)) {
 			Point pb = line(p, b);
-			return pointLocWrtLineSegment(line(a, b), line(p, a), pb) == ON || pointLocWrtLineSegment(line(b, c), pb, line(p, c)) == ON
-					? ON
-					: OUTSIDE;
+			return pointLocWrtLineSegment(line(a, b), line(p, a), pb) == ON
+					|| pointLocWrtLineSegment(line(b, c), pb, line(p, c)) == ON
+							? ON
+							: OUTSIDE;
 		}
 		return pointWrtCHull(asList(a, b, c, a), p);
 	}

@@ -1,9 +1,8 @@
 package algo.spaceGeometry;
 
-import static algo.spaceGeometry.Utils.isEqual;
-import static java.lang.Double.doubleToLongBits;
+import org.apache.commons.math3.ml.clustering.Clusterable;
 
-public class XY implements Point {
+public class XY extends AbstractPoint implements Clusterable {
 
 	private final double x , y;
 
@@ -23,25 +22,8 @@ public class XY implements Point {
 	}
 
 	@Override
-	public String toString() {
-		return "[" + x + ", " + y + "]";
-	}
+	public double[] getPoint() {
 
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Point
-				&& isEqual(((Point) obj).X(), x)
-				&& isEqual(((Point) obj).Y(), y);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-
-		long temp = doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ temp >>> 32);
-		temp = doubleToLongBits(y);
-		return prime * result + (int) (temp ^ temp >>> 32);
+		return new double[] { x, y };
 	}
 }

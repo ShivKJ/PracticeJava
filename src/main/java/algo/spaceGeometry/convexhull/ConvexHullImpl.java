@@ -1,13 +1,14 @@
 package algo.spaceGeometry.convexhull;
 
+import static algo.spaceGeometry.pointLocation.Locations.pointWrtCHull;
+import static algo.spaceGeometry.pointLocation.PointLocation.OUTSIDE;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import algo.spaceGeometry.Point;
-import algo.spaceGeometry.pointLocation.Locations;
-import algo.spaceGeometry.pointLocation.PointLocation;
 
 class ConvexHullImpl<E extends Point> extends ConvexHull<E> {
 	private static final long	serialVersionUID	= 1L;
@@ -61,7 +62,7 @@ class ConvexHullImpl<E extends Point> extends ConvexHull<E> {
 	@Override
 	public boolean contains(Object o) {
 		return o instanceof Point &&
-				(wrapperSet.contains(o) || Locations.pointWrtCHull(this, (Point) o) != PointLocation.OUTSIDE);
+				(wrapperSet.contains(o) || pointWrtCHull(this, (Point) o) != OUTSIDE);
 	}
 
 	@Override

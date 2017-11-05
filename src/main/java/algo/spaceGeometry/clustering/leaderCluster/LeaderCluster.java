@@ -15,12 +15,13 @@ import java.util.function.BiPredicate;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import algo.spaceGeometry.clustering.WeightedPoint;
 
-public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
+public class LeaderCluster<T extends WeightedPoint & Clusterable> extends Clusterer<T> {
 	private final BiPredicate<CentroidCluster<? extends T>, T>	addToCluster;
 	private final BiConsumer<CentroidCluster<? extends T>, T>	clusterUpdator;
 
@@ -65,11 +66,11 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 			pq.addAll(bucket);
 
 		}
-		
+
 		return new ArrayList<>(pq);
 	}
 
-	public static class Builder<T extends WeightedPoint> {
+	public static class Builder<T extends WeightedPoint & Clusterable> {
 		private double	radius			= Double.MAX_VALUE , maxWeight = radius;
 		private int		maxClusterSize	= Integer.MAX_VALUE;
 
@@ -79,7 +80,7 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 
 		private Builder() {}
 
-		public static <T extends WeightedPoint> Builder<T> newInstance() {
+		public static <T extends WeightedPoint&Clusterable> Builder<T> newInstance() {
 			return new Builder<>();
 		}
 

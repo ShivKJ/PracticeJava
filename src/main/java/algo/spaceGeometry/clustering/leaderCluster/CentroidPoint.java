@@ -1,8 +1,10 @@
 package algo.spaceGeometry.clustering.leaderCluster;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
+
 import algo.spaceGeometry.clustering.WeightedPoint;
 
-final class CentroidPoint implements WeightedPoint {
+final class CentroidPoint implements WeightedPoint,Clusterable {
 	final double	xy[];
 	double			w;
 

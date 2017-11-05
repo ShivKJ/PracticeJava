@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
+import org.apache.commons.math3.ml.clustering.Clusterable;
 
 import algo.spaceGeometry.Point;
 
@@ -50,7 +51,7 @@ public final class ConvexHulls {
 		return cHull(convexSubHull);
 	}
 
-	public static <E extends Point> ConvexHull<E> cHullKmeans(Collection<? extends E> points, int k, int iterations) {
+	public static <E extends Clusterable & Point> ConvexHull<E> cHullKmeans(Collection<? extends E> points, int k, int iterations) {
 
 		return cHull(kmeans(points, k, iterations).stream()
 				.map(CentroidCluster::getPoints)
@@ -58,7 +59,7 @@ public final class ConvexHulls {
 				.collect(ArrayList<E>::new, List<E>::addAll, List<E>::addAll));
 	}
 
-	public static <E extends Point> ConvexHull<E> cHullKmeans(Collection<? extends E> points, int k) {
+	public static <E extends Point & Clusterable> ConvexHull<E> cHullKmeans(Collection<? extends E> points, int k) {
 		return cHullKmeans(points, k, MAX_VALUE);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.function.BiPredicate;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import algo.spaceGeometry.clustering.WeightedPoint;
@@ -11,7 +12,7 @@ import algo.spaceGeometry.clustering.WeightedPoint;
 class LeaderClusterElements {
 	private LeaderClusterElements() {}
 
-	static <T extends WeightedPoint> BiPredicate<CentroidCluster<? extends T>, T> defaultCriteria(DistanceMeasure distanceMeasure, double radius,
+	static <T extends WeightedPoint&Clusterable> BiPredicate<CentroidCluster<? extends T>, T> defaultCriteria(DistanceMeasure distanceMeasure, double radius,
 		int maxClusterSize, double maxWeight) {
 		return (cluster, point) -> cluster.getPoints().size() < maxClusterSize
 				&& centroidWeight(cluster) + point.weight() <= maxWeight
@@ -22,7 +23,7 @@ class LeaderClusterElements {
 		return ((WeightedPoint) cluster.getCenter()).weight();
 	}
 
-	static <T extends WeightedPoint> boolean inRadius(DistanceMeasure distanceMeasure, double radius, Cluster<? extends T> cluster, T point) {
+	static <T extends WeightedPoint&Clusterable> boolean inRadius(DistanceMeasure distanceMeasure, double radius, Cluster<? extends T> cluster, T point) {
 
 		for (T p : cluster.getPoints())
 			if (distanceMeasure.compute(p.getPoint(), point.getPoint()) > radius)
