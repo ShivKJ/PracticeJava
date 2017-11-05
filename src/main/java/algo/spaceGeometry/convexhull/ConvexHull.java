@@ -41,14 +41,17 @@ public abstract class ConvexHull<E extends Point> extends ArrayList<E> implement
 	}
 
 	private static boolean isConvex(List<? extends Point> convexHull) throws PolygonNotClosed {
-		Set<Point> linkedMap = new LinkedHashSet<>(convexHull);
-		int size = linkedMap.size();
+		Set<Point> linkedSet = new LinkedHashSet<>(convexHull);
+		int size = linkedSet.size();
+
+		if (size <= 1)
+			return true;
 
 		if (size == 2 && !convexHull.get(0).equals(convexHull.get(convexHull.size() - 1)))
 			return false;// convex hull is not closed.
 		else if (size > 2) {
-			Iterator<? extends Point> iter = linkedMap.iterator();
-			Point o = iter.next() , last = convexHull.get(size - 1) , a = iter.next();
+			Iterator<? extends Point> iter = linkedSet.iterator();
+			Point o = iter.next() , last = convexHull.get(convexHull.size() - 1) , a = iter.next();
 
 			if (!last.equals(o))
 				throw new PolygonNotClosed();
