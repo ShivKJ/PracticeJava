@@ -37,6 +37,10 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 		this(emptyList());
 	}
 
+	public <P> ArrayPriorityQueue(Comparator<? super P> priorityComp) {
+		this(emptyList(), priorityComp);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <P extends Comparable<P>> void updatePriority(E e, P newPriority) {

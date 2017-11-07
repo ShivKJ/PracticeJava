@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
-import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 import algo.io.IO;
@@ -66,7 +65,7 @@ public class TestingLeaderCluster {
 			IO.toJson(ConvexHulls.cHull(cluster.getPoints()), dirPath + i++ + ".json");
 	}
 
-	static class WPoint extends AbstractPoint implements WeightedPoint, Clusterable {
+	static class WPoint extends AbstractPoint implements WeightedPoint {
 		transient final double	w;
 		final double			x , y;
 
