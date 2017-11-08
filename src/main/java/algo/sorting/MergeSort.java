@@ -12,60 +12,59 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MergeSort<T extends Comparable<T>> implements Sort<T> {
-	private final Collection<T>	input;
-	private T[]					arr;
-	private Comparator<T>		nullLast;
+	@SuppressWarnings("rawtypes")
+	private final static Comparator<Comparable> NULL_LAST = nullsLast(naturalOrder());
 
-	@SuppressWarnings("unchecked")
-	public MergeSort(Collection<? extends T> data) {
-		this.input = (Collection<T>) data;
+	private final T[] arr;
+
+	public MergeSort(Collection<? extends T> input) {
+		this.arr = input.isEmpty() ? null : input.toArray(get(input.iterator().next(), input.size()));
+	}
+
+	public MergeSort(T[] input) {
+		this.arr = input.clone();
 	}
 
 	@Override
 	public List<T> sort() {
-		if (input.isEmpty())
+		if (arr == null)
 			return emptyList();
 
-		int size = input.size();
-
-		this.arr = input.toArray(get(input.iterator().next(), size));
-		this.nullLast = nullsLast(naturalOrder());
-
-		mergeSort(0, size - 1);
+		mergeSort(0, arr.length - 1);
 
 		return asList(this.arr);
 	}
 
-	private void mergeSort(int p, int r) {
-		if (p < r) {
-			int q = (p + r) / 2;
+	private void mergeSort(int from, int to) {
+		if (from < to) {
+			int mid = (from + to) / 2;
 
-			mergeSort(p, q);
-			mergeSort(q + 1, r);
+			mergeSort(from, mid);
+			mergeSort(mid + 1, to);
 
-			merge(p, q, r);
+			mergeSorted(from, mid, to);
 		}
 	}
 
-	private void merge(int p, int q, int r) {
-		int n1 = q - p + 1 , n2 = r - q;
+	private void mergeSorted(int from, int mid, int to) {
+		int leftSize = mid - from + 1 , rightSize = to - mid;
 
-		T[] L = get(n1 + 1) , R = get(n2 + 1);
+		T[] left = get(leftSize + 1) , right = get(rightSize + 1);
 
-		arraycopy(arr, p, L, 0, n1);
-		arraycopy(arr, q + 1, R, 0, n2);
+		arraycopy(arr, from, left, 0, leftSize);
+		arraycopy(arr, mid + 1, right, 0, rightSize);
 
-		for (int k = p, i = 0, j = 0; k <= r; k++)
-			arr[k] = nullLast.compare(L[i], R[j]) < 0 ? L[i++] : R[j++];
+		for (int indx = from, l = 0, r = 0; indx <= to; indx++)
+			arr[indx] = NULL_LAST.compare(left[l], right[r]) < 0 ? left[l++] : right[r++];
 
+	}
+
+	private T[] get(int size) {
+		return get(arr[0], size);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> T[] get(T t, int size) {
 		return (T[]) newInstance(t.getClass(), size);
-	}
-
-	private T[] get(int size) {
-		return get(arr[0], size);
 	}
 }
