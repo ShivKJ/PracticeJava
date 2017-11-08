@@ -1,7 +1,6 @@
 package algo.sorting;
 
 import static java.lang.System.arraycopy;
-import static java.lang.reflect.Array.newInstance;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.naturalOrder;
@@ -11,23 +10,21 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-public class MergeSort<T extends Comparable<T>> implements Sort<T> {
+public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 	@SuppressWarnings("rawtypes")
 	private final static Comparator<Comparable> NULL_LAST = nullsLast(naturalOrder());
 
-	private final T[] arr;
-
 	public MergeSort(Collection<? extends T> input) {
-		this.arr = input.isEmpty() ? null : input.toArray(get(input.iterator().next(), input.size()));
+		super(input);
 	}
 
 	public MergeSort(T[] input) {
-		this.arr = input.clone();
+		super(input);
 	}
 
 	@Override
 	public List<T> sort() {
-		if (arr == null)
+		if (isTrivial())
 			return emptyList();
 
 		mergeSort(0, arr.length - 1);
@@ -63,8 +60,4 @@ public class MergeSort<T extends Comparable<T>> implements Sort<T> {
 		return get(arr[0], size);
 	}
 
-	@SuppressWarnings("unchecked")
-	private static <T> T[] get(T t, int size) {
-		return (T[]) newInstance(t.getClass(), size);
-	}
 }

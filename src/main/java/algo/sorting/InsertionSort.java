@@ -1,27 +1,37 @@
 package algo.sorting;
 
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
+import java.util.Collection;
 import java.util.List;
 
-public class InsertionSort<T extends Comparable<T>> implements Sort<T> {
-	private final List<T> data;
+public class InsertionSort<T extends Comparable<T>> extends ElementSorter<T> {
 
-	public InsertionSort(List<? extends T> data) {
-		this.data = new ArrayList<>(data);
+	public InsertionSort(Collection<? extends T> data) {
+		super(data);
+	}
+
+	public InsertionSort(T[] data) {
+		super(data);
 	}
 
 	@Override
 	public List<T> sort() {
-		for (int j = 1; j < data.size(); j++) {
-			T jth = data.get(j);
+		if (isTrivial())
+			return emptyList();
+
+		for (int j = 1; j < arr.length; j++) {
+			T jth = arr[j];
 			int i = j - 1;
 
-			while (i >= 0 && data.get(i).compareTo(jth) > 0)
-				data.set(i + 1, data.get(i--));
+			while (i >= 0 && arr[i].compareTo(jth) > 0)
+				arr[i + 1] = arr[i--];
 
-			data.set(i + 1, jth);
+			arr[i + 1] = jth;
 		}
-		return data;
+
+		return asList(arr);
 	}
 
 }
