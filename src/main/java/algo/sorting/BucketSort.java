@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
-public class CountSort<T extends Comparable<T>> extends ElementSorter<T> {
+public class BucketSort<T extends Comparable<T>> extends ElementSorter<T> {
 	private ToIntFunction<T>	hasher;
 	private final int			noBucket;
 
-	public CountSort(Collection<? extends T> input, ToDoubleFunction<T> hasher, int noBucket) {
+	public BucketSort(Collection<? extends T> input, ToDoubleFunction<T> hasher, int noBucket) {
 		super(input);
 		this.hasher = e -> (int) (hasher.applyAsDouble(e) * noBucket);
 		this.noBucket = noBucket;
 	}
 
-	public CountSort(T[] arr, ToDoubleFunction<T> hasher, int noBucket) {
+	public BucketSort(T[] arr, ToDoubleFunction<T> hasher, int noBucket) {
 		super(arr);
-		
+
 		this.hasher = e -> (int) (hasher.applyAsDouble(e) * noBucket);
 		this.noBucket = noBucket;
 	}

@@ -10,7 +10,7 @@ import java.util.Random;
 
 import com.google.common.base.Stopwatch;
 
-class CountingSort {
+class BucketSorting {
 	public static void main(String[] args) {
 		Random random = new Random(10L);
 		//		System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "10");
@@ -18,7 +18,7 @@ class CountingSort {
 		Double[] arr = random.doubles(3000000, 0, 1).boxed().toArray(Double[]::new);
 
 		Stopwatch stopwatch = createStarted();
-		List<Double> list = new CountSort<>(arr, Double::doubleValue, 2).sort();
+		List<Double> list = new BucketSort<>(arr, Double::doubleValue, 2).sort();
 		System.out.println(isInOrder(list, naturalOrder()));
 		System.out.println(stopwatch.elapsed(MILLISECONDS));
 
