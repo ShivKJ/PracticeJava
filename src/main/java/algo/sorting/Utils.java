@@ -18,4 +18,9 @@ public class Utils {
 	public static <T> T[] makeArray(T t, int size) {
 		return (T[]) newInstance(t.getClass(), size);
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] makeArray(T t, int... size) {
+		return (T[]) newInstance(t.getClass(), size);
+	}
 }
