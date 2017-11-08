@@ -1,6 +1,6 @@
 package algo.sorting;
 
-import static java.lang.reflect.Array.newInstance;
+import static algo.sorting.Utils.makeArray;
 
 import java.util.Collection;
 
@@ -8,7 +8,7 @@ public abstract class ElementSorter<T extends Comparable<T>> implements Sort<T> 
 	protected final T[] arr;
 
 	public ElementSorter(Collection<? extends T> input) {
-		this.arr = input.isEmpty() ? null : input.toArray(get(input.iterator().next(), input.size()));
+		this.arr = input.isEmpty() ? null : input.toArray(makeArray(input.iterator().next(), input.size()));
 	}
 
 	public ElementSorter(T[] arr) {
@@ -19,8 +19,4 @@ public abstract class ElementSorter<T extends Comparable<T>> implements Sort<T> 
 		return arr == null || arr.length == 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected static <T> T[] get(T t, int size) {
-		return (T[]) newInstance(t.getClass(), size);
-	}
 }

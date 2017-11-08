@@ -1,4 +1,4 @@
-package algo.sort;
+package algo.sorting;
 
 import java.util.Collection;
 import java.util.HashSet;

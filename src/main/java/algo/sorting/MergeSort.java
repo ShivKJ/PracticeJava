@@ -1,5 +1,6 @@
 package algo.sorting;
 
+import static algo.sorting.Utils.makeArray;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -46,7 +47,7 @@ public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 	private void mergeSorted(int from, int mid, int to) {
 		int leftSize = mid - from + 1 , rightSize = to - mid;
 
-		T[] left = get(leftSize + 1) , right = get(rightSize + 1);
+		T[] left = createArr(leftSize + 1) , right = createArr(rightSize + 1);
 
 		arraycopy(arr, from, left, 0, leftSize);
 		arraycopy(arr, mid + 1, right, 0, rightSize);
@@ -56,8 +57,8 @@ public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 
 	}
 
-	private T[] get(int size) {
-		return get(arr[0], size);
+	private T[] createArr(int size) {
+		return makeArray(arr[0], size);
 	}
 
 }

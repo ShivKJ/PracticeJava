@@ -1,4 +1,4 @@
-package algo.sort;
+package algo.sorting;
 
 import static com.google.common.base.Stopwatch.createStarted;
 import static com.google.common.collect.Comparators.isInOrder;
@@ -10,16 +10,16 @@ import java.util.Random;
 
 import com.google.common.base.Stopwatch;
 
-import algo.sorting.InsertionSort;
+import algo.sorting.MergeSort;
 
-class InsertionSort1 {
+class MergeSorting2 {
 	public static void main(String[] args) {
 		Random random = new Random(10L);
-		Double[] arr = random.doubles(20000, 0, 100).boxed().toArray(Double[]::new);
+		Double[] arr = random.doubles(3000000, 0, 100).boxed().toArray(Double[]::new);
 
 		Stopwatch stopwatch = createStarted();
 
-		List<Double> list = new InsertionSort<>(arr).sort();
+		List<Double> list = new MergeSort<>(arr).sort();
 
 		System.out.println(isInOrder(list, naturalOrder()));
 		System.out.println(stopwatch.elapsed(MILLISECONDS));
