@@ -40,7 +40,7 @@ public final class Utils {
 	}
 
 	public static double area(Point a, Point b, Point c) {
-		return abs(crossProduct(line(a, b), line(a, c)));
+		return abs(crossProduct(line(a, b), line(a, c))) / 2;
 	}
 
 	public static <E extends Point> Optional<E> getFarthestPoint(Collection<? extends E> points, double angle, Comparator<? super E> resolveConflict) {

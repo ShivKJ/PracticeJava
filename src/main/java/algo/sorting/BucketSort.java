@@ -13,8 +13,8 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
 public class BucketSort<T extends Comparable<T>> extends ElementSorter<T> {
-	private ToIntFunction<T>	hasher;
-	private final int			noBucket;
+	private final ToIntFunction<T>	hasher;
+	private final int				noBucket;
 
 	public BucketSort(Collection<? extends T> input, ToDoubleFunction<T> hasher, int noBucket) {
 		super(input);

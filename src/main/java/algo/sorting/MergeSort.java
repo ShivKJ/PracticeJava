@@ -35,7 +35,7 @@ public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 
 	private void mergeSort(int from, int to) {
 		if (from < to) {
-			int mid = (from + to) / 2;
+			int mid = from + to >> 1;
 
 			mergeSort(from, mid);
 			mergeSort(mid + 1, to);
