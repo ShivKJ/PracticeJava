@@ -18,7 +18,7 @@ class BucketSorting {
 		Double[] arr = random.doubles(3000000, 0, 1).boxed().toArray(Double[]::new);
 
 		Stopwatch stopwatch = createStarted();
-		List<Double> list = new BucketSort<>(arr, Double::doubleValue, 2).sort();
+		List<Double> list = new BucketSort<>(arr, new Double[] { 0., 0.3, 1.}).sort();
 		System.out.println(isInOrder(list, naturalOrder()));
 		System.out.println(stopwatch.elapsed(MILLISECONDS));
 

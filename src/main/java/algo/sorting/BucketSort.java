@@ -2,48 +2,68 @@ package algo.sorting;
 
 import static algo.sorting.Utils.makeArray;
 import static com.google.common.base.Predicates.notNull;
+import static com.google.common.collect.Comparators.isInOrder;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.binarySearch;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
 
 public class BucketSort<T extends Comparable<T>> extends ElementSorter<T> {
-	private final ToIntFunction<T>	hasher;
-	private final int				noBucket;
+	private final List<T>	bkt;
+	private T[]				bucket;
 
-	public BucketSort(Collection<? extends T> input, ToDoubleFunction<T> hasher, int noBucket) {
+	@SuppressWarnings("unchecked")
+	public BucketSort(Collection<? extends T> input, List<? extends T> buket) {
 		super(input);
-		this.hasher = e -> (int) (hasher.applyAsDouble(e) * noBucket);
-		this.noBucket = noBucket;
+		this.bkt = unmodifiableList((List<T>) buket);
+
 	}
 
-	public BucketSort(T[] arr, ToDoubleFunction<T> hasher, int noBucket) {
+	public BucketSort(T[] arr, T[] bucket) {
 		super(arr);
+		this.bkt = unmodifiableList(asList(bucket));
+	}
 
-		this.hasher = e -> (int) (hasher.applyAsDouble(e) * noBucket);
-		this.noBucket = noBucket;
+	private void initializeBucket() {
+		if (!isInOrder(bkt, T::compareTo) || bkt.size() <= 1)
+			throw new IllegalArgumentException();
+
+		this.bucket = makeArray(bkt.get(0), bkt.size());
+		int i = 0;
+		for (T e : bkt)
+			this.bucket[i++] = e;
+
+	}
+
+	private int indx(T e) {
+		int indx = binarySearch(bucket, e);
+
+		return indx < 0 ? -indx - 1 : indx;
 	}
 
 	public T[][] getBuckets() {
-		int[] counts = new int[noBucket + 1];
+		initializeBucket();
+
+		int bucketSize = bucket.length;
+		int[] counts = new int[bucketSize];
 
 		for (T e : arr)
-			counts[hasher.applyAsInt(e)]++;
+			counts[indx(e)]++;
 
-		T[][] output = makeArray(arr, noBucket + 1);
+		T[][] output = makeArray(arr, bucketSize);
 
-		for (int i = 0; i < noBucket + 1; i++)
+		for (int i = 0; i < bucketSize; i++)
 			output[i] = makeArray(arr[0], counts[i]);
 
-		int[] indx = new int[noBucket + 1];
+		int[] indx = new int[bucketSize];
 
 		for (T e : arr) {
-			int currIndex = hasher.applyAsInt(e);
+			int currIndex = indx(e);
 			output[currIndex][indx[currIndex]++] = e;
 		}
 
