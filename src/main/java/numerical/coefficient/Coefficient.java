@@ -3,6 +3,10 @@ package numerical.coefficient;
 import static java.lang.Math.E;
 import static java.lang.Math.log;
 import static java.lang.Math.pow;
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.valueOf;
+
+import java.math.BigInteger;
 
 public class Coefficient {
 
@@ -19,5 +23,14 @@ public class Coefficient {
 		z += r * log(p) + (n - r) * log(1 - p);
 
 		return pow(E, z);
+	}
+
+	public static BigInteger binomialCoefficient(int n, int r) {
+		BigInteger z = ONE;
+
+		for (int i = 0; i < r; i++)
+			z = z.multiply(valueOf(n - i)).divide(valueOf(i + 1));
+
+		return z;
 	}
 }

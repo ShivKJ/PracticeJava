@@ -10,3 +10,7 @@ target/
 *.txt
 *#*
 *Config*
+*.png
+*.jpeg
+*.xml
+
