@@ -8,21 +8,18 @@ import static java.math.BigInteger.valueOf;
 
 import java.math.BigInteger;
 
-public class Coefficient {
+public class Utils {
 
 	public static double binomialDistributionCoeff(int n, int r, double p) {
-
 		if (r > n - r)
 			return binomialDistributionCoeff(n, n - r, 1 - p);
 
-		double z = 0;
+		double z = 1;
 
-		for (int i = 0; i < r; i++)
-			z += log(n - i) - log(i + 1);
+		for (int i = r; i > 0; i--)
+			z *= p / (1 - p) * (n - i + 1) / i;
 
-		z += r * log(p) + (n - r) * log(1 - p);
-
-		return pow(E, z);
+		return pow(E, log(z) + n * log(1 - p));
 	}
 
 	public static BigInteger binomialCoefficient(int n, int r) {
@@ -33,4 +30,5 @@ public class Coefficient {
 
 		return z;
 	}
+	
 }
