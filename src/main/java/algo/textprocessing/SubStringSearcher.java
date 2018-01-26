@@ -18,15 +18,43 @@ public class SubStringSearcher {
 
 		return true;
 	}
+	
+	//---------------------------------------------------------------------------
+
+	public static int kmp(char[] text, char[] pattern) {
+		final int l = pattern.length;
+
+		if (l == 0)
+			return 0;
+
+		final int L = text.length , fail[] = failureFunction(pattern);
+		int pattIndex = 0 , textIndex = 0;
+
+		while (textIndex < L)
+			if (text[textIndex] == pattern[pattIndex]) {
+				if (pattIndex == l - 1)
+					return textIndex - pattIndex;
+
+				textIndex++;
+				pattIndex++;
+				
+			} else if (pattIndex > 0)
+				pattIndex = fail[pattIndex - 1];
+			else
+				textIndex++;
+
+		return -1;
+
+	}
 
 	/**
-	 * This function is used to avoid unnecessary comparison of pattern with text.
+	 * This function is used in KMP to avoid unnecessary comparison of pattern with text.
 	 * If text matches up to some length with pattern, and then there is mismatch
 	 * then with help of the failure function, we can start afresh comparison from 
 	 * the very mismatch point in text, no need to go back to any previous char in 
 	 * text for comparison.
 	 * 
-	 * prefixLength[index]: length of longest prefix which is also a suffix up-to this index.
+	 * prefixLength[index]: length of longest prefix which is also a suffix for this index.
 	 * 
 	 * @param pattern
 	 * @return prefixLength array
@@ -94,28 +122,4 @@ public class SubStringSearcher {
 		return prefixLength;
 	}
 
-	public static int kmp(char[] text, char[] pattern) {
-		final int l = pattern.length;
-
-		if (l == 0)
-			return 0;
-
-		final int L = text.length , fail[] = failureFunction(pattern);
-		int patIndex = 0 , textIndex = 0;
-
-		while (textIndex < L)
-			if (text[textIndex] == pattern[patIndex]) {
-				if (patIndex == l - 1)
-					return textIndex - patIndex;
-
-				textIndex++;
-				patIndex++;
-			} else if (patIndex > 0)
-				patIndex = fail[patIndex - 1];
-			else
-				textIndex++;
-
-		return -1;
-
-	}
 }
