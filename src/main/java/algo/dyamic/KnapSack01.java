@@ -39,15 +39,10 @@ public class KnapSack01 {
 			T item = knapsackItems[itemIdx];
 
 			for (int w = 1; w <= W; w++)
-				if (itemIdx == 0) {// base case
-					if (item.weight <= w)
-						arr[itemIdx][w] = item.value;
-				} else if (w < item.weight)
-					//weight is less than item weight, then we can not take it, so setting value from itemIdx - 1. 
-					arr[itemIdx][w] = arr[itemIdx - 1][w];
+				if (w < item.weight)
+					arr[itemIdx][w] = itemIdx == 0 ? 0 : arr[itemIdx - 1][w];
 				else
-					// we can either take it or leave new item.
-					arr[itemIdx][w] = max(item.value + arr[itemIdx - 1][w - item.weight], arr[itemIdx - 1][w]);
+					arr[itemIdx][w] = itemIdx == 0 ? item.value : max(item.value + arr[itemIdx - 1][w - item.weight], arr[itemIdx - 1][w]);
 
 		}
 
@@ -57,22 +52,19 @@ public class KnapSack01 {
 	private static <T extends KnapSackItem> List<T> output(T[] knapsackItems, int W, int[][] arr) {
 		List<T> items = new LinkedList<>();
 
-		int w = W;
-
-		for (int itemIdx = knapsackItems.length - 1; w > 0 && itemIdx > 0; itemIdx--) {
+		for (int w = W, itemIdx = knapsackItems.length - 1; w > 0 && itemIdx > 0; itemIdx--) {
 			if (arr[itemIdx][w] == arr[itemIdx - 1][w])
 				//so, we could not have taken this item. Need to go upward.
 				while (--itemIdx > 0 && arr[itemIdx][w] == arr[itemIdx - 1][w]);
 
-			if (itemIdx > 0) {
-				items.add(knapsackItems[itemIdx]);
-				w -= knapsackItems[itemIdx].weight;
+			T item = knapsackItems[itemIdx];
+			
+			if (w >= item.weight) {// also handles case if itemIdx = 0
+				items.add(item);
+				w -= item.weight;
 			}
 		}
-
-		if (w >= knapsackItems[0].weight) // base case, as itemIndex 0 is not handled in above loop
-			items.add(knapsackItems[0]);
-
+		
 		return items;
 	}
 
