@@ -8,6 +8,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Activity Selection Problem: Given some activity having start and end time, selecting max number of
+ * non overlapping activity.
+ * 
+ * @author shiv
+ */
 public class ActivitySelectionProblem {
 	private final static Comparator<? super ASP> FINISHER_COMP_ASP = comparingLong(ASP::getFinish);
 
@@ -28,15 +34,31 @@ public class ActivitySelectionProblem {
 		}
 	}
 
-	public static <T extends ASP> List<T> aspIterative(Collection<? extends T> activities) {
-		List<T> acts = new ArrayList<>(activities);
+	/**
+	 * We approach the problem greedily. This problem can be solved with both
+	 * iterative and recursive method.
+	 * 
+	 * First sorting activities in increasing order of their finishing time.
+	 * 
+	 * Picking first activity. It has to be in optimal list of non overlapping activities(P).
+	 * Because if it is not taken, then either we decrease number of activities in P or 
+	 * leaving less reason for next activity to search.
+	 * 
+	 * Now we search for next activity which start after the previously taken activity.
+	 * 
+	 * This process is repeated until we have examined all activities.
+	 * 
+	 * @param activities
+	 * @return optimal list of non overlapping activities.
+	 */
+	public static <T extends ASP> List<T> aspIterative(Collection<T> activities) {
+		List<T> acts = new ArrayList<>(activities) , output = new ArrayList<>();
 
 		acts.sort(FINISHER_COMP_ASP);
 
 		Iterator<T> iter = acts.iterator();
-		T prev = iter.next();
 
-		List<T> output = new ArrayList<>();
+		T prev = iter.next();
 		output.add(prev);
 
 		while (iter.hasNext()) {
@@ -50,21 +72,23 @@ public class ActivitySelectionProblem {
 		return output;
 	}
 
-	private final static <T extends ASP> void aspRecursive(List<T> activities, int k, int n, List<T> res) {
+	private final static <T extends ASP> void aspRecursive(List<T> activities, int k, int n, List<T> output) {
 		int m = k + 1;
 
-		T act = null , kAct = activities.get(k);
-		while (m <= n && (act = activities.get(m)).getStart() < kAct.getFinish())
+		T act = null , addedAct = activities.get(k);
+		while (m <= n && (act = activities.get(m)).getStart() < addedAct.getFinish())
+			// any act which start before added act, can not be in res list. So m -> m + 1
 			m++;
 
 		if (m <= n) {
-			res.add(act);
-			aspRecursive(activities, m, n, res);
+			output.add(act);
+			aspRecursive(activities, m, n, output);
 		}
 	}
 
-	public static <T extends ASP> List<T> aspRecursive(Collection<? extends T> activities) {
+	public static <T extends ASP> List<T> aspRecursive(Collection<T> activities) {
 		List<T> acts = new ArrayList<>(activities) , output = new ArrayList<>();
+
 		acts.sort(FINISHER_COMP_ASP);
 
 		output.add(acts.get(0));
