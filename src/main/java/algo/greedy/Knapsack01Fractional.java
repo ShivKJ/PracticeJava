@@ -38,9 +38,9 @@ public final class Knapsack01Fractional {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends KnapSackItem> List<T> knapSackFractional(Collection<? extends T> knapSackItems, double W) {
+	public static <T extends KnapSackItem> List<T> knapSackFractional(Collection<T> knapSackItems, double W) {
 		List<T> items = new ArrayList<>(knapSackItems);
-
+		
 		items.sort(reverseOrder(comparingDouble(KnapSackItem::ratio)));
 
 		Iterator<T> iter = items.iterator();

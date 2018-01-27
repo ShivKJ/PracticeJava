@@ -20,13 +20,15 @@ public class QuickSort<T extends Comparable<T>> extends ElementSorter<T> {
 	}
 
 	private int partition(int from, int to) {// p < r
-		T pivot = arr[to];
+		T pivot = arr[to];// pivoting last element.
 
-		int pivotIndex = from;
+		int pivotIndex = from;// final index of pivot element.
 
 		for (int j = from; j < to; j++)
 			if (arr[j].compareTo(pivot) < 0)
 				swap(arr, pivotIndex++, j);
+		// if jth element is less than pivot element, then swapping with element at pivotIndex.
+		// In this way all element less than pivot element are at index less than pivotIndex.
 
 		swap(arr, pivotIndex, to);
 

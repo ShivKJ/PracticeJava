@@ -10,6 +10,12 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+/**
+ * This class is MinHeap implementation using Array.
+ * @author shiv
+ *
+ * @param <E>
+ */
 public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?>>> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
 
 	private final ArrayList<E>	nodes;
@@ -21,6 +27,7 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 		if (priorityComp != null)
 			this.compNodes = (e1, e2) -> priorityComp.compare((P) e1.getPriority(), (P) e2.getPriority());
 		else
+			// it is assumed that priority is comparable.
 			this.compNodes = (e1, e2) -> ((Comparable) e1.getPriority()).compareTo(e2.getPriority());
 
 		this.nodes = new ArrayList<>(nodes.size());
@@ -49,6 +56,10 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 
 		try {
 			oldPriority = (P) e.getPriority();
+			// While implementation requires that node be comparable, but when it comes
+			// to updation we emphasis that priority which is attribute of node changes the state of 
+			// node in tree. We thus require that the type of priority stored in node and new type to
+			// updated be of same class.
 		} catch (ClassCastException e1) {
 			e1.printStackTrace();
 		}
@@ -76,6 +87,7 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 		if (!isEmpty())
 			bubbleDown(nodes.get(0));
 
+		// TODO: need to think if setting code should be property of priority queue.
 		currNode.setCode(NOT_IN_PRIM_PRIORITY_QUEUE);
 
 		return currNode;

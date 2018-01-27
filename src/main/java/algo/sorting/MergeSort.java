@@ -45,7 +45,7 @@ public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 	}
 
 	private void mergeSorted(int from, int mid, int to) {
-		int leftSize = mid - from + 1 , rightSize = to - mid;
+		int leftSize = mid - from + 1 , rightSize = to - mid;// in left, mid is included.
 
 		T[] left = createArr(leftSize + 1) , right = createArr(rightSize + 1);
 
@@ -54,6 +54,8 @@ public class MergeSort<T extends Comparable<T>> extends ElementSorter<T> {
 
 		for (int indx = from, l = 0, r = 0; indx <= to; indx++)
 			arr[indx] = NULL_LAST.compare(left[l], right[r]) < 0 ? left[l++] : right[r++];
+		// either left index or right index is increased. last element of left and right are null.
+		// Null is always considered largest hence NULL_LAST 
 
 	}
 

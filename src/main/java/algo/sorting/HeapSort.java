@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class HeapSort<T extends Comparable<T>> extends ElementSorter<T> {
-	private T[] heaped;
+	private T[] heaped;// temporary array to create heap.
 
 	public HeapSort(Collection<? extends T> input) {
 		super(input);
@@ -35,6 +35,7 @@ public class HeapSort<T extends Comparable<T>> extends ElementSorter<T> {
 			arr[i] = heaped[0];
 			heaped[0] = heaped[currentPointer];
 			bubbleDown(0, currentPointer);
+			// setting last element to head of root node and then putting it to correct place.
 		}
 	}
 
@@ -64,7 +65,7 @@ public class HeapSort<T extends Comparable<T>> extends ElementSorter<T> {
 
 		for (int i = 0; i < arr.length; i++) {
 			heaped[i] = arr[i];
-			bubbleUp(i);
+			bubbleUp(i); // putting element at correct place.
 		}
 	}
 

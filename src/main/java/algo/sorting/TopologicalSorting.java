@@ -13,6 +13,10 @@ import algo.graphs.Graph;
 import algo.graphs.Vertex;
 
 public class TopologicalSorting<T extends Vertex> implements Sort<T> {
+	/* 
+	 * It is simply DFS, just that we need to maintain the order of visit.
+	 */
+
 	private final Graph<T, ?>	graph;
 	private final Collection<T>	visitedNodes;
 	private final Queue<T>		outputStack;
@@ -21,7 +25,7 @@ public class TopologicalSorting<T extends Vertex> implements Sort<T> {
 	public TopologicalSorting(Graph<? extends Vertex, ?> graph) {
 		this.graph = (Graph<T, ?>) graph;
 		this.visitedNodes = new HashSet<>();
-		this.outputStack = asLifoQueue(new LinkedList<>());
+		this.outputStack = asLifoQueue(new LinkedList<>());// stack implementation
 	}
 
 	@Override
@@ -40,6 +44,6 @@ public class TopologicalSorting<T extends Vertex> implements Sort<T> {
 			if (!visitedNodes.contains(adjacentVertex))
 				processVertex(adjacentVertex);
 
-		outputStack.offer(sourceVertex);
+		outputStack.offer(sourceVertex);// source vertex is added at top.
 	}
 }

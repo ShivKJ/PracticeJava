@@ -8,7 +8,22 @@ import java.util.Collection;
 import java.util.List;
 
 public class BubbleSort<T extends Comparable<T>> extends ElementSorter<T> {
-
+	/*
+	 * One of the sorting technique in which larger element is pushed
+	 * one side of array.
+	 * 
+	 *                 12        10       8      3
+	 *                 
+	 *     Step 1:     12        10       3      8
+	 *                 12         3       10     8
+	 *                 3         12       10     8
+	 *     
+	 *     Step 2:     3         12        8     10
+	 *                 3          8       12     10
+	 *                 3          8       10     12
+	 *     
+	 *  In every step, on small element is pushed to correct sorted position. 
+	 */
 	public BubbleSort(Collection<? extends T> input) {
 
 		super(input);
@@ -33,4 +48,7 @@ public class BubbleSort<T extends Comparable<T>> extends ElementSorter<T> {
 		return asList(arr);
 	}
 
+	public static void main(String[] args) {
+		System.out.println(new BubbleSort<>(asList(1, 10, 8, 3)).sort());
+	}
 }
