@@ -77,7 +77,8 @@ public class ActivitySelectionProblem {
 
 		T act = null , addedAct = activities.get(k);
 		while (m <= n && (act = activities.get(m)).getStart() < addedAct.getFinish())
-			// any act which start before added act, can not be in res list. So m -> m + 1
+			// any act which start before added act, can not be in output list. 
+			// So searching for next activity. i.e. m -> m + 1
 			m++;
 
 		if (m <= n) {

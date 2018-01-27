@@ -13,8 +13,9 @@ public final class Utils {
 	private Utils() {}
 
 	public static <T extends TraversalVertex, P extends Comparable<P>> Map<T, IndexedPNode<T, P>> traversalVertexToPQNode(Collection<T> vertices,
-			P defaultVal) {
-		return vertices.stream().collect(toMap(identity(), e -> new IndexedPNodeImpl<>(e, defaultVal)));
+	    P defaultVal) {
+		return vertices.stream()
+		               .collect(toMap(identity(), e -> new IndexedPNodeImpl<>(e, defaultVal)));
 	}
 
 }
