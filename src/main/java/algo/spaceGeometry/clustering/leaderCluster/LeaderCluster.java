@@ -22,12 +22,26 @@ import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import algo.spaceGeometry.clustering.WeightedPoint;
 
 public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
+	/*
+	 * Generic implementation of Leader cluster.
+	 * It requires three parameter:
+	 * 1) DistanceMeasure: to calculate distance between two spatial point.
+	 * 2) Criteria to add point to cluster
+	 * 3) Modification done to cluster once a point is chosen to be added to cluster.
+	 * 
+	 * Steps:
+	 * 1) Points are sorted in decreasing order of their weight
+	 * 2) A point is added to cluster if it satisfies the criteria. If no such cluster
+	 * 	  exists then new cluster is created with this very point. Cluster with largest
+	 *    weight is chosen first.
+	 * 3) Cluster is modified.
+	 */
 	private final BiPredicate<CentroidCluster<? extends T>, T>	addToCluster;
 	private final BiConsumer<CentroidCluster<? extends T>, T>	clusterUpdator;
 
 	private LeaderCluster(DistanceMeasure distanceMeasure,
-			BiPredicate<CentroidCluster<? extends T>, T> addToCluster,
-			BiConsumer<CentroidCluster<? extends T>, T> clusterUpdator) {
+	        BiPredicate<CentroidCluster<? extends T>, T> addToCluster,
+	        BiConsumer<CentroidCluster<? extends T>, T> clusterUpdator) {
 
 		super(distanceMeasure);
 		this.addToCluster = addToCluster;
@@ -57,7 +71,7 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 				bucket.add(cluster);
 			}
 
-			if (pq.isEmpty()) {
+			if (pq.isEmpty()) {// no cluster can contain the point so creating new one.
 				CentroidCluster<T> newCluster = new CentroidCluster<>(new CentroidPoint(point));
 				newCluster.addPoint(point);
 				pq.add(newCluster);
@@ -123,8 +137,8 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 			BiPredicate<CentroidCluster<? extends T>, T> addingCriteria = defaultCriteria(distanceMeasure, radius, maxClusterSize, maxWeight);
 
 			return new LeaderCluster<>(distanceMeasure,
-					addToCluster == null ? addingCriteria : addingCriteria.and(addToCluster),
-					clusterUpdator);
+			        addToCluster == null ? addingCriteria : addingCriteria.and(addToCluster),
+			        clusterUpdator);
 		}
 	}
 
