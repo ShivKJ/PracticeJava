@@ -16,10 +16,29 @@ public final class Traversals {
 	public Traversals() {}
 
 	//-----------------------------------------  BFS -----------------------------------------------------
+	/**
+	 * This function implements breadth first search starting from a source vertex.
+	 * 
+	 * It is required that VertexTraversalCode for all vertices is set to NEW.
+	 * else they will be avoided in traversal process.
+	 * 
+	 * Implementation uses Queue data structure(FIFO). 
+	 * Key idea is to poll vertex from queue and enqueue adjacent unvisited vertices.
+	 *   
+	 * During enqueuing and dequeuing operation, the vertex can be processed via 
+	 * Consumer preProcessor and postProcessor. 
+	 * VertexTraversalCode is updated during these operation accordingly.
+	 * 
+	 * 
+	 * @param graph
+	 * @param srcVrtx
+	 * @param preProcessor
+	 * @param postProcessor
+	 */
 
 	public static final <T extends TraversalVertex> void bfs(Graph<T, ?> graph, T srcVrtx,
-			Consumer<? super T> preProcessor,
-			Consumer<? super T> postProcessor) {
+	    Consumer<? super T> preProcessor,
+	    Consumer<? super T> postProcessor) {
 		// Only those vertices will be processed which have status code "NEW". 
 		if (!isNew(srcVrtx))
 			return;
@@ -35,7 +54,7 @@ public final class Traversals {
 
 			for (T v : graph.adjacentVertices(curr))
 				if (isNew(v)) {
-					v.setParent(curr);
+					v.setParent(curr);// setting v parent to curr for tracing.
 					queue.add(v);
 				}
 		}
@@ -83,11 +102,23 @@ public final class Traversals {
 	private static boolean isDone(TraversalVertex v) {
 		return v.code() == DONE;
 	}
+
 	//-------------------------------------------- DFS --------------------------------------------------
 
+	/**
+	 * This function implements depth first search.
+	 * 
+	 * It is required that VertexTraversalCode for all vertices is set to NEW
+	 * else they will be avoided in traversal process.
+	 * 
+	 * @param graph
+	 * @param srcVrtx
+	 * @param preProcessing
+	 * @param postProcessing
+	 */
 	public static <V extends TraversalVertex> void dfs(Graph<V, ?> graph, V srcVrtx,
-			Consumer<? super V> preProcessing,
-			Consumer<? super V> postProcessing) {
+	    Consumer<? super V> preProcessing,
+	    Consumer<? super V> postProcessing) {
 
 		if (!isNew(srcVrtx))
 			return;
