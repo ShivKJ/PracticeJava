@@ -87,7 +87,6 @@ public final class MSTs {
 		public int uid() {
 			throw new UnsupportedOperationException();
 		}
-
 	}
 
 	/**

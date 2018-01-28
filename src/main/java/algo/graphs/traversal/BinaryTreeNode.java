@@ -1,10 +1,20 @@
 package algo.graphs.traversal;
 
+import static java.util.Optional.empty;
+
 import java.util.Optional;
 
 public abstract class BinaryTreeNode extends TreeNode {
-	public abstract Optional<BinaryTreeNode> left();
+	public Optional<BinaryTreeNode> left() {
+		return empty();
+	}
 
-	public abstract Optional<BinaryTreeNode> right();
+	public Optional<BinaryTreeNode> right() {
+		return empty();
+	}
+
+	public abstract double leftEdge();
+
+	public abstract double rightEdge();
 
 }

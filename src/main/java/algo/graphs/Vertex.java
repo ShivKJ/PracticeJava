@@ -13,4 +13,12 @@ public interface Vertex {
 
 	int uid();
 
+	default <T> T userData() {
+		return null;
+	}
+
+	default <T> void setUserData(T data) {
+		throw new UnsupportedOperationException();
+	}
+
 }
