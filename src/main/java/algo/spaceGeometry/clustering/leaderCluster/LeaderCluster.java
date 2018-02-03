@@ -6,10 +6,10 @@ import static java.util.Comparator.comparingDouble;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
@@ -53,22 +53,20 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 		List<T> toBeClustered = new ArrayList<>(points);
 		toBeClustered.sort(reverseOrder(comparingDouble(T::weight)));
 
-		Queue<CentroidCluster<T>> pq = new PriorityQueue<>(reverseOrder(comparingDouble(LeaderClusterElements::centroidWeight)));
+		SortedSet<CentroidCluster<T>> pq = new TreeSet<>(reverseOrder(comparingDouble(LeaderClusterElements::centroidWeight)));
 
 		for (T point : toBeClustered) {
-			Collection<CentroidCluster<T>> bucket = new LinkedList<>();
+			Iterator<CentroidCluster<T>> iterCluster = pq.iterator();
 
-			while (!pq.isEmpty()) {
-				CentroidCluster<T> cluster = pq.remove();
+			while (iterCluster.hasNext()) {
+				CentroidCluster<T> cluster = iterCluster.next();
 
 				if (addToCluster.test(cluster, point)) {
+					iterCluster.remove();
 					clusterUpdator.accept(cluster, point);
-					cluster.addPoint(point);
 					pq.add(cluster);
 					break;
 				}
-
-				bucket.add(cluster);
 			}
 
 			if (pq.isEmpty()) {// no cluster can contain the point so creating new one.
@@ -76,9 +74,6 @@ public class LeaderCluster<T extends WeightedPoint> extends Clusterer<T> {
 				newCluster.addPoint(point);
 				pq.add(newCluster);
 			}
-
-			pq.addAll(bucket);
-
 		}
 
 		return new ArrayList<>(pq);
