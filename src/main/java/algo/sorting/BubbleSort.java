@@ -47,8 +47,4 @@ public class BubbleSort<T extends Comparable<T>> extends ElementSorter<T> {
 
 		return asList(arr);
 	}
-
-	public static void main(String[] args) {
-		System.out.println(new BubbleSort<>(asList(1, 10, 8, 3)).sort());
-	}
 }

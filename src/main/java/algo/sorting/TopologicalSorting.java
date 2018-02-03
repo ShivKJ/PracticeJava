@@ -3,11 +3,11 @@ package algo.sorting;
 import static java.util.Collections.asLifoQueue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import algo.graphs.Graph;
 import algo.graphs.Vertex;
@@ -18,7 +18,7 @@ public class TopologicalSorting<T extends Vertex> implements Sort<T> {
 	 */
 
 	private final Graph<T, ?>	graph;
-	private final Collection<T>	visitedNodes;
+	private final Set<T>		visitedNodes;
 	private final Queue<T>		outputStack;
 
 	@SuppressWarnings("unchecked")
