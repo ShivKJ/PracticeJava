@@ -2,16 +2,31 @@ package algo.tree;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
+/**
+ * 
+ * @author Shiv_Krishna_Jaiswal
+ *
+ * @param <K>
+ * @param <V>
+ */
 public class AVL<K extends Comparable<K>, V> {
-	private final static class AVLNode<K extends Comparable<K>, V> {
+	private final static class AVLNode<K extends Comparable<K>, V> implements Entry<K, V> {
 		final K			k;
-		final V			v;
+		V				v;
 		AVLNode<K, V>	p , l , r;
 		int				h;
 
@@ -49,8 +64,29 @@ public class AVL<K extends Comparable<K>, V> {
 			return lh() - rh();
 		}
 
-		V v() {
+		@Override
+		public String toString() {
+
+			return format("%s=%s", k, v);
+		}
+
+		@Override
+		public K getKey() {
+
+			return k;
+		}
+
+		@Override
+		public V getValue() {
+
 			return v;
+		}
+
+		@Override
+		public V setValue(V value) {
+			V oldV = v;
+			this.v = value;
+			return oldV;
 		}
 	}
 
@@ -60,6 +96,89 @@ public class AVL<K extends Comparable<K>, V> {
 	public AVL() {
 		this.root = null;
 		this.size = 0;
+	}
+
+	/**
+	 * Storing value v with key k. If a key already exists in Tree, then
+	 * replacing old value with new value.
+	 * 
+	 * Returns previously associated value or Null.
+	 * 
+	 * @param k
+	 * @param v
+	 * @return 
+	 */
+	public V put(K k, V v) {
+		AVLNode<K, V> x = this.root , y = null;
+		int comp = 0;
+
+		while (x != null) {
+			y = x;
+
+			comp = k.compareTo(x.k);
+
+			if (comp == 0) {
+				V oldV = x.v;
+				x.v = v;
+				return oldV;
+			}
+
+			x = comp < 0 ? x.l : x.r;
+		}
+
+		AVLNode<K, V> n = new AVLNode<>(k, v);
+
+		if (y == null)
+			this.root = n;
+		else if (comp < 0)
+			y.l = n;
+		else
+			y.r = n;
+
+		n.p = y;
+
+		insertBalance(n);
+
+		this.size++;
+
+		return null;
+
+	}
+
+	private void insertBalance(AVLNode<K, V> x) {
+		while (x.p != null && x.p.p != null) {
+			x.updateHeight();
+			x.p.updateHeight();
+			x.p.p.updateHeight();
+
+			if (!x.p.p.isBalanced()) {
+				balence(x);
+				break;
+			}
+			x = x.p;
+		}
+	}
+
+	private void balence(AVLNode<K, V> x) {
+		AVLNode<K, V> y = x.p , z = x.p.p;
+
+		if (y == z.l) {
+			if (x == y.r) {
+				leftR(y);
+				y.updateHeight();
+				x.updateHeight();
+			}
+			rightR(z);
+		} else {
+			if (x == y.l) {
+				rightR(y);
+				y.updateHeight();
+				x.updateHeight();
+			}
+			leftR(z);
+		}
+
+		z.updateHeight();
 	}
 
 	private void leftR(AVLNode<K, V> x) {
@@ -118,63 +237,27 @@ public class AVL<K extends Comparable<K>, V> {
 		y.p = x;
 	}
 
-	public void put(K k, V v) {
-		AVLNode<K, V> n = new AVLNode<>(k, v) , x = this.root , y = null;
-
-		while (x != null) {
-			y = x;
-			x = k.compareTo(x.k) <= 0 ? x.l : x.r;
-		}
-
-		if (y == null)
-			this.root = n;
-		else if (k.compareTo(y.k) <= 0)
-			y.l = n;
-		else
-			y.r = n;
-
-		n.p = y;
-
-		insertBalance(n);
-
-		this.size++;
-
+	/**
+	 * Retrieving value corresponding to a key k.
+	 * If no such key exists, then returning null.
+	 *  
+	 * @param k
+	 * @return
+	 */
+	public V get(K k) {
+		return getOrDefault(k, null);
 	}
 
-	private void insertBalance(AVLNode<K, V> x) {
-		while (x.p != null && x.p.p != null) {
-			x.updateHeight();
-			x.p.updateHeight();
-			x.p.p.updateHeight();
-
-			if (!x.p.p.isBalanced()) {
-				balence(x);
-				break;
-			}
-			x = x.p;
-		}
-	}
-
-	private void balence(AVLNode<K, V> x) {
-		AVLNode<K, V> y = x.p , z = x.p.p;
-
-		if (y == z.l) {
-			if (x == y.r) {
-				leftR(y);
-				y.updateHeight();
-				x.updateHeight();
-			}
-			rightR(z);
-		} else {
-			if (x == y.l) {
-				rightR(y);
-				y.updateHeight();
-				x.updateHeight();
-			}
-			leftR(z);
-		}
-
-		z.updateHeight();
+	/**
+	 * Retrieving value corresponding to a key k.
+	 * If no such key exists, then returning default value.
+	 *  
+	 * @param k
+	 * @param v
+	 * @return
+	 */
+	public V getOrDefault(K k, V v) {
+		return getNode(k).map(Entry::getValue).orElse(v);
 	}
 
 	private Optional<AVLNode<K, V>> getNode(K k) {
@@ -192,10 +275,12 @@ public class AVL<K extends Comparable<K>, V> {
 		return empty();
 	}
 
-	public V get(K k) {
-		return getNode(k).map(AVLNode::v).orElse(null);
-	}
-
+	/**
+	 * Removing data corresponding to key k when
+	 * k is present in Tree.
+	 * 
+	 * @param k
+	 */
 	public void remove(K k) {
 		getNode(k).ifPresent(this::removeNode);
 	}
@@ -232,6 +317,18 @@ public class AVL<K extends Comparable<K>, V> {
 
 	}
 
+	private void transplant(AVLNode<K, V> u, AVLNode<K, V> v) {
+		if (u.p == null)
+			this.root = v;
+		else if (u.p.l == u)
+			u.p.l = v;
+		else
+			u.p.r = v;
+
+		if (v != null)
+			v.p = u.p;
+	}
+
 	private static <K extends Comparable<K>, V> AVLNode<K, V> min(AVLNode<K, V> n) {
 		while (n.l != null)
 			n = n.l;
@@ -258,23 +355,99 @@ public class AVL<K extends Comparable<K>, V> {
 		}
 	}
 
-	private void transplant(AVLNode<K, V> u, AVLNode<K, V> v) {
-		if (u.p == null)
-			this.root = v;
-		else if (u.p.l == u)
-			u.p.l = v;
-		else
-			u.p.r = v;
-
-		if (v != null)
-			v.p = u.p;
-	}
-
+	/**
+	 * Returns number of element in Tree.
+	 */
 	public int size() {
 		return size;
 	}
 
+	/**
+	 * Returns if Tree has no Node.
+	 */
 	public boolean isEmpty() {
 		return this.root == null;
 	}
+
+	private final static class EntrySet<K extends Comparable<K>, V> extends AbstractSet<Entry<K, V>> {
+		final List<Entry<K, V>> sortedList;
+
+		public EntrySet(List<Entry<K, V>> sortedList) {
+			this.sortedList = sortedList;
+		}
+
+		@Override
+		public Iterator<Entry<K, V>> iterator() {
+			Iterator<Entry<K, V>> iter = sortedList.iterator();
+
+			return new Iterator<Entry<K, V>>() {
+
+				@Override
+				public boolean hasNext() {
+
+					return iter.hasNext();
+				}
+
+				@Override
+				public Entry<K, V> next() {
+
+					return iter.next();
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException();
+				}
+			};
+		}
+
+		@Override
+		public int size() {
+			return sortedList.size();
+		}
+
+	}
+
+	/**
+	 * Returns set containing entries.
+	 * @return
+	 */
+	public Set<Entry<K, V>> entrySet() {
+		List<Entry<K, V>> entries = new ArrayList<>(size);
+
+		inorder(root, entries);
+
+		return new EntrySet<>(entries);
+	}
+
+	private static <K extends Comparable<K>, V> void inorder(AVLNode<K, V> n, Collection<Entry<K, V>> coll) {
+		if (n.l != null)
+			inorder(n.l, coll);
+
+		coll.add(n);
+
+		if (n.r != null)
+			inorder(n.r, coll);
+
+	}
+
+	/**
+	 * Returns if data corresponding to key is present.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean containsKey(K key) {
+		return getNode(key).isPresent();
+	}
+
+	/**
+	 * Removes all Nodes from Tree.
+	 */
+
+	public void clear() {
+		this.root = null;
+		this.size = 0;
+	}
+
 }
