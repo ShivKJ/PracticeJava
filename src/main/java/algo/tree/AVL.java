@@ -269,7 +269,7 @@ public class AVL<K extends Comparable<K>, V> {
 			if (comp == 0)
 				return of(x);
 
-			x = comp <= 0 ? x.l : x.r;
+			x = comp < 0 ? x.l : x.r;
 		}
 
 		return empty();
