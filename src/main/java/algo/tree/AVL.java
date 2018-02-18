@@ -1,5 +1,7 @@
 package algo.tree;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
@@ -36,11 +38,11 @@ public class AVL<K extends Comparable<K>, V> {
 		}
 
 		boolean isBalanced() {
-			return Math.abs(heightDiff()) <= 1;
+			return abs(heightDiff()) <= 1;
 		}
 
 		void updateHeight() {
-			this.h = 1 + Math.max(lh(), rh());
+			this.h = 1 + max(lh(), rh());
 		}
 
 		int heightDiff() {
@@ -117,7 +119,7 @@ public class AVL<K extends Comparable<K>, V> {
 	}
 
 	public void put(K k, V v) {
-		AVLNode<K, V> n = new AVLNode<>(k, v) , x = root , y = null;
+		AVLNode<K, V> n = new AVLNode<>(k, v) , x = this.root , y = null;
 
 		while (x != null) {
 			y = x;
@@ -125,16 +127,17 @@ public class AVL<K extends Comparable<K>, V> {
 		}
 
 		if (y == null)
-			root = y;
+			this.root = n;
 		else if (k.compareTo(y.k) <= 0)
 			y.l = n;
 		else
 			y.r = n;
 
 		n.p = y;
-		this.size++;
 
 		insertBalance(n);
+
+		this.size++;
 
 	}
 
@@ -148,6 +151,7 @@ public class AVL<K extends Comparable<K>, V> {
 				balence(x);
 				break;
 			}
+			x = x.p;
 		}
 	}
 
@@ -206,6 +210,7 @@ public class AVL<K extends Comparable<K>, V> {
 			transplant(z, z.l);
 		} else {
 			AVLNode<K, V> y = min(z.r);
+
 			if (y.p != z) {
 				balancingNode = y.p;
 				transplant(y, y.r);
@@ -213,12 +218,24 @@ public class AVL<K extends Comparable<K>, V> {
 				z.r.p = y;
 			} else
 				balancingNode = y;
+
+			transplant(z, y);
+
+			y.l = z.l;
+			z.l.p = y;
 		}
-		this.size--;
 
 		if (balancingNode != null)
 			deleteBalance(balancingNode);
 
+		this.size--;
+
+	}
+
+	private static <K extends Comparable<K>, V> AVLNode<K, V> min(AVLNode<K, V> n) {
+		while (n.l != null)
+			n = n.l;
+		return n;
 	}
 
 	private void deleteBalance(AVLNode<K, V> z) {
@@ -226,25 +243,19 @@ public class AVL<K extends Comparable<K>, V> {
 			z.updateHeight();
 			int zhDiff = z.heightDiff();
 
-			if (Math.abs(zhDiff) > 1) {
+			if (abs(zhDiff) > 1) {
 				if (zhDiff > 0) {
 					AVLNode<K, V> y = z.l;
 					balence(y.heightDiff() >= 0 ? y.l : y.r);
 				} else {
 					AVLNode<K, V> y = z.r;
-					balence(y.heightDiff() >= 0 ? y.r : y.l);
+					balence(y.heightDiff() <= 0 ? y.r : y.l);
 				}
 				z.updateHeight();
 			}
 
 			z = z.p;
 		}
-	}
-
-	private static <K extends Comparable<K>, V> AVLNode<K, V> min(AVLNode<K, V> n) {
-		while (n.l != null)
-			n = n.l;
-		return n;
 	}
 
 	private void transplant(AVLNode<K, V> u, AVLNode<K, V> v) {
