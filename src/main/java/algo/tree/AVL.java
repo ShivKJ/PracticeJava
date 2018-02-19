@@ -16,7 +16,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	private int				size;
 
 	public AVL() {
-		this.root = nil();
+		super();
 		this.size = 0;
 	}
 
@@ -32,12 +32,12 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	 */
 	@Override
 	public V put(K k, V v) {
-		AVLNode<K, V> x = this.root , y = nil();
+		AVLNode<K, V> x = root() , y = nil();
 		int comp = 0;
 
 		while (x != nil()) {
 
-			comp = k.compareTo(x.k);
+			comp = k.compareTo(x.getKey());
 
 			if (comp == 0)
 				return x.setValue(v);
@@ -201,6 +201,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	}
 
 	//--------------------------- AVL Node Implementation--------------------------
+
 	private final static class AVLNode<K extends Comparable<K>, V> extends Node<K, V> {
 		AVLNode<K, V>	p , l , r;
 		int				h;
@@ -237,7 +238,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		@Override
 		public String toString() {
 
-			return this == nil() ? "NIL" : format("%s=%s", k, v);
+			return this == nil() ? "NIL" : format("%s=%s", getKey(), getValue());
 		}
 
 		@SuppressWarnings("unchecked")

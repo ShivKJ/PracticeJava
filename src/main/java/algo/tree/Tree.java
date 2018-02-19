@@ -18,6 +18,10 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		return null;
 	}
 
+	public Tree() {
+		root(nil());
+	}
+
 	public abstract <T extends Node<K, V>> T root();
 
 	public abstract <T extends Node<K, V>> void root(T root);
@@ -33,8 +37,8 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	}
 
 	public static abstract class Node<K extends Comparable<K>, V> implements Entry<K, V> {
-		final K	k;
-		V		v;
+		private final K	k;
+		private V		v;
 
 		public Node(K k, V v) {
 			super();
