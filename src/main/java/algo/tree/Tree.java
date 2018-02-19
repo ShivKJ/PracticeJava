@@ -32,6 +32,8 @@ public abstract class Tree<K extends Comparable<K>, V> {
 
 	public abstract void remove(K k);
 
+	public abstract void clear();
+
 	public boolean isEmpty() {
 		return root() == nil();
 	}

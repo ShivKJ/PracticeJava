@@ -182,7 +182,6 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	/**
 	 * Removes all Nodes from Tree.
 	 */
-
 	public void clear() {
 		this.root = nil();
 		this.size = 0;
