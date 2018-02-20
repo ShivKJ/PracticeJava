@@ -1,7 +1,7 @@
 package algo.tree;
 
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -156,6 +156,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	}
 
 	public <T extends Node<K, V>> T min(T n) {
+
 		while (n.l() != nil())
 			n = n.l();
 		return n;
@@ -225,6 +226,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 
 	public Optional<Node<K, V>> getNode(K k) {
 		Node<K, V> x = root();
+
 		while (x != nil()) {
 			int comp = k.compareTo(x.getKey());
 			if (comp == 0)
@@ -233,7 +235,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 			x = comp < 0 ? x.l() : x.r();
 		}
 
-		return empty();
+		return ofNullable(nil());
 	}
 
 	/**

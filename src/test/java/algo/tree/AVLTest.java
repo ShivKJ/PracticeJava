@@ -20,10 +20,10 @@ public class AVLTest {
 
 	@Test
 	public void testPut() {
-		Random random = new Random(100L);
 
 		AVL<Integer, String> avl = new AVL<>();
 
+		Random random = new Random(100L);
 		List<Integer> list = random.ints(100000).distinct().boxed().collect(toList());
 
 		for (Integer integer : list)
