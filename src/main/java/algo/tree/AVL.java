@@ -34,7 +34,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		AVLNode<K, V> x = root() , y = nil();
 		int comp = 0;
 
-		while (x != nil()) {
+		while (x != nil()) {// Finding node where new key can be inserted.
 
 			comp = k.compareTo(x.getKey());
 
@@ -48,7 +48,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		AVLNode<K, V> n = new AVLNode<K, V>(k, v);
 
 		if (y == nil())
-			this.root = n;
+			this.root = n;// tree is empty, so setting new node to point to root.
 		else if (comp < 0)
 			y.l = n;
 		else
@@ -70,6 +70,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 			updateHeight(x.p.p);
 
 			if (!isBalanced(x.p.p)) {
+				// balancing locally also preserves AVL properties globally.
 				balence(x);
 				break;
 			}
@@ -110,6 +111,11 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		getNode(k).filter(x -> x != nil()).map(AVLNode.class::cast).ifPresent(this::removeNode);
 	}
 
+	/**
+	 * To remove a node from Tree, we first remove it using simple deletion operation
+	 * for BST. This could violate AVL property. To balance that, deleteBalance is used.
+	 * @param z
+	 */
 	private void removeNode(AVLNode<K, V> z) {
 		AVLNode<K, V> balancingNode = nil();
 
