@@ -16,9 +16,9 @@ public abstract class Tree<K extends Comparable<K>, V> {
 
 	public abstract <T> T nil();
 
-	public abstract <T extends Node> T root();
+	public abstract <T extends Node<K, V>> T root();
 
-	public abstract <T extends Node> void root(T root);
+	public abstract <T extends Node<K, V>> void root(T root);
 
 	public abstract int size();
 
@@ -32,27 +32,26 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		return root() == nil();
 	}
 
-	public abstract class Node implements Entry<K, V> {
+	public static abstract class Node<K extends Comparable<K>, V> implements Entry<K, V> {
 		private final K	k;
 		private V		v;
 
 		public Node(K k, V v) {
-			super();
 			this.k = k;
 			this.v = v;
 		}
 
-		public abstract <T extends Node> T l();
+		public abstract <T extends Node<K, V>> T l();
 
-		public abstract <T extends Node> void l(T l);
+		public abstract <T extends Node<K, V>> void l(T l);
 
-		public abstract <T extends Node> T p();
+		public abstract <T extends Node<K, V>> T p();
 
-		public abstract <T extends Node> void p(T p);
+		public abstract <T extends Node<K, V>> void p(T p);
 
-		public abstract <T extends Node> T r();
+		public abstract <T extends Node<K, V>> T r();
 
-		public abstract <T extends Node> void r(T r);
+		public abstract <T extends Node<K, V>> void r(T r);
 
 		@Override
 		public K getKey() {
@@ -76,17 +75,17 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		@Override
 		public String toString() {
 
-			return this == nil() ? "NIL" : k + "=" + v;
+			return k + "=" + v;
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T cast(Node n) {
+	public static <T, K extends Comparable<K>, V> T cast(Node<K, V> n) {
 		return (T) n;
 	}
 
-	public void lr(Node x) {
+	public void lr(Node<K, V> x) {
 		/*
 		            |                               |
 		            x                               y
@@ -96,7 +95,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		            B   G                       A   B
 		 */
 
-		Node y = x.r();
+		Node<K, V> y = x.r();
 		x.r(y.l());
 
 		if (y.l() != nil())
@@ -115,7 +114,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		x.p(y);
 	}
 
-	public void rr(Node y) {
+	public void rr(Node<K, V> y) {
 		/*
 		            |                               |
 		            y                               x
@@ -124,7 +123,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		         / \                                 / \
 		        A   B                               B   G
 		 */
-		Node x = y.l();
+		Node<K, V> x = y.l();
 
 		y.l(x.r());
 
@@ -144,7 +143,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		y.p(x);
 	}
 
-	public void transplant(Node u, Node v) {
+	public void transplant(Node<K, V> u, Node<K, V> v) {
 		if (u.p() == nil())
 			root(v);
 		else if (u.p().l() == u)
@@ -156,13 +155,13 @@ public abstract class Tree<K extends Comparable<K>, V> {
 			v.p(u.p());
 	}
 
-	public <T extends Node> T min(T n) {
+	public <T extends Node<K, V>> T min(T n) {
 		while (n.l() != nil())
 			n = n.l();
 		return n;
 	}
 
-	public void inorder(Node n, Collection<Entry<K, V>> coll) {
+	public void inorder(Node<K, V> n, Collection<Entry<K, V>> coll) {
 		if (n.l() != nil())
 			inorder(n.l(), coll);
 
@@ -224,8 +223,8 @@ public abstract class Tree<K extends Comparable<K>, V> {
 
 	}
 
-	public Optional<Node> getNode(K k) {
-		Node x = root();
+	public Optional<Node<K, V>> getNode(K k) {
+		Node<K, V> x = root();
 		while (x != nil()) {
 			int comp = k.compareTo(x.getKey());
 			if (comp == 0)
@@ -267,7 +266,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	 * @return
 	 */
 	public boolean containsKey(K key) {
-		return getNode(key).isPresent();
+		return getNode(key).filter(x -> x != nil()).isPresent();
 	}
 
 }

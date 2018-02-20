@@ -11,8 +11,8 @@ import static java.lang.Math.max;
  * @param <V>
  */
 public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
-	private AVLNode	root;
-	private int		size;
+	private AVLNode<K, V>	root;
+	private int				size;
 
 	public AVL() {
 		root(nil());
@@ -31,7 +31,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	 */
 	@Override
 	public V put(K k, V v) {
-		AVLNode x = root() , y = nil();
+		AVLNode<K, V> x = root() , y = nil();
 		int comp = 0;
 
 		while (x != nil()) {
@@ -45,7 +45,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 			x = comp < 0 ? x.l : x.r;
 		}
 
-		AVLNode n = new AVLNode(k, v);
+		AVLNode<K, V> n = new AVLNode<K, V>(k, v);
 
 		if (y == nil())
 			this.root = n;
@@ -63,13 +63,13 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	}
 
-	private void insertBalance(AVLNode x) {
+	private void insertBalance(AVLNode<K, V> x) {
 		while (x.p != nil() && x.p.p != nil()) {
-			x.updateHeight();
-			x.p.updateHeight();
-			x.p.p.updateHeight();
+			updateHeight(x);
+			updateHeight(x.p);
+			updateHeight(x.p.p);
 
-			if (!x.p.p.isBalanced()) {
+			if (!isBalanced(x.p.p)) {
 				balence(x);
 				break;
 			}
@@ -77,26 +77,26 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		}
 	}
 
-	private void balence(AVLNode x) {
-		AVLNode y = x.p , z = x.p.p;
+	private void balence(AVLNode<K, V> x) {
+		AVLNode<K, V> y = x.p , z = x.p.p;
 
 		if (y == z.l) {
 			if (x == y.r) {
 				lr(y);
-				y.updateHeight();
-				x.updateHeight();
+				updateHeight(y);
+				updateHeight(x);
 			}
 			rr(z);
 		} else {
 			if (x == y.l) {
 				rr(y);
-				y.updateHeight();
-				x.updateHeight();
+				updateHeight(y);
+				updateHeight(x);
 			}
 			lr(z);
 		}
 
-		z.updateHeight();
+		updateHeight(z);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		getNode(k).filter(x -> x != nil()).map(AVLNode.class::cast).ifPresent(this::removeNode);
 	}
 
-	private void removeNode(AVLNode z) {
-		AVLNode balancingNode = nil();
+	private void removeNode(AVLNode<K, V> z) {
+		AVLNode<K, V> balancingNode = nil();
 
 		if (z.l == nil()) {
 			balancingNode = z.p;
@@ -124,7 +124,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 			transplant(z, z.l);
 
 		} else {
-			AVLNode y = min(z.r);
+			AVLNode<K, V> y = min(z.r);
 
 			if (y.p != z) {
 
@@ -149,21 +149,21 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	}
 
-	private void deleteBalance(AVLNode z) {
+	private void deleteBalance(AVLNode<K, V> z) {
 		while (z != nil()) {
-			z.updateHeight();
+			updateHeight(z);
 
-			int zhDiff = z.heightDiff();
+			int zhDiff = heightDiff(z);
 
 			if (abs(zhDiff) > 1) {
 				if (zhDiff > 0) {
-					AVLNode y = z.l;
-					balence(y.heightDiff() >= 0 ? y.l : y.r);
+					AVLNode<K, V> y = z.l;
+					balence(heightDiff(y) >= 0 ? y.l : y.r);
 				} else {
-					AVLNode y = z.r;
-					balence(y.heightDiff() <= 0 ? y.r : y.l);
+					AVLNode<K, V> y = z.r;
+					balence(heightDiff(y) <= 0 ? y.r : y.l);
 				}
-				z.updateHeight();
+				updateHeight(z);
 			}
 
 			z = z.p;
@@ -179,7 +179,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	}
 
 	/**
-	 * Removes all Nodes from Tree.
+	 * Removes all Node<K,V>s from Tree.
 	 */
 	@Override
 	public void clear() {
@@ -187,90 +187,82 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		this.size = 0;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Node> T root() {
+	public <T extends Node<K, V>> T root() {
 
-		return (T) root;
-	}
-
-	@Override
-	public <T extends Node> void root(T root) {
-		this.root = cast(root);
-	}
-
-	//--------------------------- AVL Node Implementation--------------------------
-
-	private final class AVLNode extends Node {
-		AVLNode	p , l , r;
-		int		h;
-
-		AVLNode(K k, V v) {
-			super(k, v);
-			this.h = 1;
-		}
-
-		int height(AVLNode n) {
-			return n == nil() ? 0 : n.h;
-		}
-
-		int lh() {
-			return height(l);
-		}
-
-		int rh() {
-			return height(r);
-		}
-
-		boolean isBalanced() {
-			return abs(heightDiff()) <= 1;
-		}
-
-		void updateHeight() {
-			this.h = 1 + max(lh(), rh());
-		}
-
-		int heightDiff() {
-			return lh() - rh();
-		}
-
-		@Override
-		public <T extends Node> T l() {
-
-			return cast(l);
-		}
-
-		@Override
-		public <T extends Node> void l(T l) {
-			this.l = cast(l);
-		}
-
-		@Override
-		public <T extends Node> T p() {
-
-			return cast(p);
-		}
-
-		@Override
-		public <T extends Node> void p(T p) {
-			this.p = cast(p);
-		}
-
-		@Override
-		public <T extends Node> T r() {
-
-			return cast(r);
-		}
-
-		@Override
-		public <T extends Node> void r(T r) {
-			this.r = cast(r);
-		}
-
+		return cast(root);
 	}
 
 	@Override
 	public <T> T nil() {
 		return null;
 	}
+
+	@Override
+	public <T extends Node<K, V>> void root(T root) {
+		this.root = cast(root);
+	}
+
+	int height(AVLNode<K, V> n) {
+		return n == nil() ? 0 : n.h;
+	}
+
+	boolean isBalanced(AVLNode<K, V> n) {
+		return abs(heightDiff(n)) <= 1;
+	}
+
+	int heightDiff(AVLNode<K, V> n) {
+		return height(n.l) - height(n.r);
+	}
+
+	void updateHeight(AVLNode<K, V> n) {
+		n.h = 1 + max(height(n.l), height(n.r));
+	}
+
+	//--------------------------- AVL Node<K,V> Implementation--------------------------
+
+	private static final class AVLNode<K extends Comparable<K>, V> extends Node<K, V> {
+		AVLNode<K, V>	p , l , r;
+		int				h;
+
+		AVLNode(K k, V v) {
+			super(k, v);
+			this.h = 1;
+		}
+
+		@Override
+		public <T extends Node<K, V>> T l() {
+
+			return cast(l);
+		}
+
+		@Override
+		public <T extends Node<K, V>> void l(T l) {
+			this.l = cast(l);
+		}
+
+		@Override
+		public <T extends Node<K, V>> T p() {
+
+			return cast(p);
+		}
+
+		@Override
+		public <T extends Node<K, V>> void p(T p) {
+			this.p = cast(p);
+		}
+
+		@Override
+		public <T extends Node<K, V>> T r() {
+
+			return cast(r);
+		}
+
+		@Override
+		public <T extends Node<K, V>> void r(T r) {
+			this.r = cast(r);
+		}
+
+	}
+
 }
