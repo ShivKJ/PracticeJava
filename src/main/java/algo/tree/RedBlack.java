@@ -1,21 +1,18 @@
 package algo.tree;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
-import java.util.Random;
 
 public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
-	private static final boolean		RED	= true , BLACK = false;
-	private static final BTNode<?, ?>	NIL	= new BTNode<>(null, null, BLACK);
+	private static final boolean	RED	= true , BLACK = false;
+	private final BTNode			NIL	= new BTNode(null, null, BLACK);
 
-	@SuppressWarnings("unchecked")
-	public static <T> T nil() {
-		return (T) NIL;
+	@Override
+	public <T> T nil() {
+		return cast(NIL);
 	}
 
-	private BTNode<K, V>	root;
-	private int				size;
+	private BTNode	root;
+	private int		size;
 
 	public RedBlack() {
 		this.root = nil();
@@ -34,7 +31,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 	 */
 	@Override
 	public V put(K k, V v) {
-		BTNode<K, V> x = this.root , y = nil();
+		BTNode x = this.root , y = nil();
 		int comp = 0;
 
 		while (x != nil()) {
@@ -48,7 +45,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 			x = comp < 0 ? x.l : x.r;
 		}
 
-		BTNode<K, V> n = new BTNode<>(k, v);
+		BTNode n = new BTNode(k, v);
 
 		if (y == nil())
 			this.root = n;
@@ -67,10 +64,10 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	}
 
-	private void insertBalance(BTNode<K, V> z) {
+	private void insertBalance(BTNode z) {
 		while (z.p.color == RED) {
 			if (z.p == z.p.p.l) {
-				BTNode<K, V> uncle = z.p.p.r;
+				BTNode uncle = z.p.p.r;
 
 				if (uncle.color == RED) {
 					z.p.color = uncle.color = BLACK;
@@ -86,7 +83,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 					rr(z.p.p);
 				}
 			} else {
-				BTNode<K, V> uncle = z.p.p.l;
+				BTNode uncle = z.p.p.l;
 				if (uncle.color == RED) {
 					z.p.color = uncle.color = BLACK;
 					z.p.p.color = RED;
@@ -111,9 +108,9 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 		getNode(key).filter(x -> x != nil()).map(BTNode.class::cast).ifPresent(this::removeNode);
 	}
 
-	private void removeNode(BTNode<K, V> z) {
+	private void removeNode(BTNode z) {
 		boolean yCol = z.color;
-		BTNode<K, V> x = null;
+		BTNode x = null;
 
 		if (z.l == nil()) {
 			x = z.r;
@@ -122,7 +119,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 			x = z.l;
 			transplant(z, z.l);
 		} else {
-			BTNode<K, V> y = min(z.r);
+			BTNode y = min(z.r);
 			yCol = y.color;
 			x = y.r;
 
@@ -136,50 +133,34 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 
 			y.l = z.l;
 			z.l.p = y;
+			y.color = z.color;
 		}
 
-		if (yCol == BLACK)
+		if (yCol == BLACK && x != nil())
 			deleteBalance(x);
 
 		this.size--;
 
 	}
 
-	public void preorder(BTNode<K, V> n, int h, List<Integer> blackDepth) {
+	void preorder(BTNode n, int h, List<Integer> blackDepth) {
 		if (n.color == BLACK)
 			h++;
 
 		if (n.l == nil() && n.r == nil())
 			blackDepth.add(h);
-		else if (n.l == nil())
-			preorder(n.r, h, blackDepth);
-		else if (n.r == nil())
+
+		if (n.l != nil())
 			preorder(n.l, h, blackDepth);
-		else {
+
+		if (n.r != nil())
 			preorder(n.r, h, blackDepth);
-			preorder(n.l, h, blackDepth);
-		}
 	}
 
-	public static void main(String[] args) {
-		RedBlack<Integer, String> tree = new RedBlack<>();
-		int max = 100;
-		List<Integer> list = new Random(0).ints(max, 0, 10).distinct().boxed().collect(toList());
-		System.out.println(list);
-		for (Integer integer : list)
-			tree.put(integer, null);
-
-		System.out.println("Inserted");
-
-		for (Integer integer : list)
-			tree.remove(integer);
-
-	}
-
-	private void deleteBalance(BTNode<K, V> x) {
+	private void deleteBalance(BTNode x) {
 		while (x != root && x.color == BLACK) {
 			if (x == x.p.l) {
-				BTNode<K, V> sib = x.p.r;
+				BTNode sib = x.p.r;
 
 				if (sib.color == RED) {
 					sib.color = BLACK;
@@ -205,7 +186,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 					x = root;
 				}
 			} else {
-				BTNode<K, V> sib = x.p.l;
+				BTNode sib = x.p.l;
 
 				if (sib.color == RED) {
 					sib.color = BLACK;
@@ -236,15 +217,14 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 		x.color = BLACK;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Node<K, V>> T root() {
-		return (T) this.root;
+	public <T extends Node> T root() {
+		return cast(this.root);
 	}
 
 	@Override
-	public <T extends Node<K, V>> void root(T root) {
-		this.root = (BTNode<K, V>) root;
+	public <T extends Node> void root(T root) {
+		this.root = cast(root);
 	}
 
 	@Override
@@ -260,9 +240,9 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 	}
 
 	//------------------------- BTNode implementation-------------------------------
-	private static class BTNode<K extends Comparable<K>, V> extends Node<K, V> {
-		BTNode<K, V>	p , l , r;
-		boolean			color;
+	private class BTNode extends Node {
+		BTNode	p , l , r;
+		boolean	color;
 
 		public BTNode(K k, V v) {
 			this(k, v, RED);
@@ -277,45 +257,36 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 		}
 
 		@Override
-		public String toString() {
+		public <T extends Node> T l() {
 
-			return this == NIL ? "NIL" : getKey() + "=" + getValue();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T l() {
-
-			return (T) l;
+			return cast(l);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void l(T l) {
-			this.l = (BTNode<K, V>) l;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T p() {
-
-			return (T) p;
+		public <T extends Node> void l(T l) {
+			this.l = cast(l);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void p(T p) {
-			this.p = (BTNode<K, V>) p;
-		}
+		public <T extends Node> T p() {
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T r() {
-
-			return (T) r;
+			return cast(p);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void r(T r) {
-			this.r = (BTNode<K, V>) r;
+		public <T extends Node> void p(T p) {
+			this.p = cast(p);
+		}
+
+		@Override
+		public <T extends Node> T r() {
+
+			return cast(r);
+		}
+
+		@Override
+		public <T extends Node> void r(T r) {
+			this.r = cast(r);
 		}
 	}
 

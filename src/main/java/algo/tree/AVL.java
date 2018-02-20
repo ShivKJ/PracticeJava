@@ -2,7 +2,6 @@ package algo.tree;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static java.lang.String.format;
 
 /**
  * 
@@ -12,11 +11,11 @@ import static java.lang.String.format;
  * @param <V>
  */
 public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
-	private AVLNode<K, V>	root;
-	private int				size;
+	private AVLNode	root;
+	private int		size;
 
 	public AVL() {
-		super();
+		root(nil());
 		this.size = 0;
 	}
 
@@ -32,7 +31,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	 */
 	@Override
 	public V put(K k, V v) {
-		AVLNode<K, V> x = root() , y = nil();
+		AVLNode x = root() , y = nil();
 		int comp = 0;
 
 		while (x != nil()) {
@@ -46,7 +45,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 			x = comp < 0 ? x.l : x.r;
 		}
 
-		AVLNode<K, V> n = new AVLNode<>(k, v);
+		AVLNode n = new AVLNode(k, v);
 
 		if (y == nil())
 			this.root = n;
@@ -64,7 +63,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	}
 
-	private void insertBalance(AVLNode<K, V> x) {
+	private void insertBalance(AVLNode x) {
 		while (x.p != nil() && x.p.p != nil()) {
 			x.updateHeight();
 			x.p.updateHeight();
@@ -78,8 +77,8 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		}
 	}
 
-	private void balence(AVLNode<K, V> x) {
-		AVLNode<K, V> y = x.p , z = x.p.p;
+	private void balence(AVLNode x) {
+		AVLNode y = x.p , z = x.p.p;
 
 		if (y == z.l) {
 			if (x == y.r) {
@@ -111,8 +110,8 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		getNode(k).filter(x -> x != nil()).map(AVLNode.class::cast).ifPresent(this::removeNode);
 	}
 
-	private void removeNode(AVLNode<K, V> z) {
-		AVLNode<K, V> balancingNode = nil();
+	private void removeNode(AVLNode z) {
+		AVLNode balancingNode = nil();
 
 		if (z.l == nil()) {
 			balancingNode = z.p;
@@ -125,7 +124,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 			transplant(z, z.l);
 
 		} else {
-			AVLNode<K, V> y = min(z.r);
+			AVLNode y = min(z.r);
 
 			if (y.p != z) {
 
@@ -150,7 +149,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	}
 
-	private void deleteBalance(AVLNode<K, V> z) {
+	private void deleteBalance(AVLNode z) {
 		while (z != nil()) {
 			z.updateHeight();
 
@@ -158,10 +157,10 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 			if (abs(zhDiff) > 1) {
 				if (zhDiff > 0) {
-					AVLNode<K, V> y = z.l;
+					AVLNode y = z.l;
 					balence(y.heightDiff() >= 0 ? y.l : y.r);
 				} else {
-					AVLNode<K, V> y = z.r;
+					AVLNode y = z.r;
 					balence(y.heightDiff() <= 0 ? y.r : y.l);
 				}
 				z.updateHeight();
@@ -182,6 +181,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	/**
 	 * Removes all Nodes from Tree.
 	 */
+	@Override
 	public void clear() {
 		this.root = nil();
 		this.size = 0;
@@ -189,28 +189,28 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Node<K, V>> T root() {
+	public <T extends Node> T root() {
 
 		return (T) root;
 	}
 
 	@Override
-	public <T extends Node<K, V>> void root(T root) {
-		this.root = (AVLNode<K, V>) root;
+	public <T extends Node> void root(T root) {
+		this.root = cast(root);
 	}
 
 	//--------------------------- AVL Node Implementation--------------------------
 
-	private final static class AVLNode<K extends Comparable<K>, V> extends Node<K, V> {
-		AVLNode<K, V>	p , l , r;
-		int				h;
+	private final class AVLNode extends Node {
+		AVLNode	p , l , r;
+		int		h;
 
 		AVLNode(K k, V v) {
 			super(k, v);
 			this.h = 1;
 		}
 
-		static <K extends Comparable<K>, V> int height(AVLNode<K, V> n) {
+		int height(AVLNode n) {
 			return n == nil() ? 0 : n.h;
 		}
 
@@ -235,45 +235,42 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 		}
 
 		@Override
-		public String toString() {
+		public <T extends Node> T l() {
 
-			return this == nil() ? "NIL" : format("%s=%s", getKey(), getValue());
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T l() {
-
-			return (T) l;
+			return cast(l);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void l(T l) {
-			this.l = (AVLNode<K, V>) l;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T p() {
-
-			return (T) p;
+		public <T extends Node> void l(T l) {
+			this.l = cast(l);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void p(T p) {
-			this.p = (AVLNode<K, V>) p;
-		}
+		public <T extends Node> T p() {
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends Node<K, V>> T r() {
-
-			return (T) r;
+			return cast(p);
 		}
 
 		@Override
-		public <T extends Node<K, V>> void r(T r) {
-			this.r = (AVLNode<K, V>) r;
+		public <T extends Node> void p(T p) {
+			this.p = cast(p);
 		}
+
+		@Override
+		public <T extends Node> T r() {
+
+			return cast(r);
+		}
+
+		@Override
+		public <T extends Node> void r(T r) {
+			this.r = cast(r);
+		}
+
+	}
+
+	@Override
+	public <T> T nil() {
+		return null;
 	}
 }
