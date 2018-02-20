@@ -194,13 +194,14 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	}
 
 	@Override
-	public <T> T nil() {
-		return null;
+	public <T extends Node<K, V>> void root(T root) {
+		this.root = cast(root);
 	}
 
 	@Override
-	public <T extends Node<K, V>> void root(T root) {
-		this.root = cast(root);
+	public <T> T nil() {
+
+		return null;
 	}
 
 	int height(AVLNode<K, V> n) {
