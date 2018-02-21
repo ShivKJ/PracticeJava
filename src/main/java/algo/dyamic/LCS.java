@@ -1,4 +1,4 @@
-package algo.greedy;
+package algo.dyamic;
 
 import static java.lang.Math.max;
 
@@ -34,12 +34,13 @@ public class LCS {
 				m[i + 1][j + 1] = a[i] == b[j] ? m[i][j] + 1 : max(m[i + 1][j], m[i][j + 1]);
 
 		final int L = m[A][B];
-
-		i = A;
-		j = B;
-
+		
 		if (L > 0) {
 			final char[] result = new char[L];
+
+			i = A;
+			j = B;
+
 			int k = L - 1;
 
 			do {
