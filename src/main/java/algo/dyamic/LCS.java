@@ -1,54 +1,61 @@
 package algo.dyamic;
 
 import static java.lang.Math.max;
+import static java.util.Arrays.fill;
+import static java.util.Collections.singletonList;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class LCS {
+	private final static String EMPTY_STRING = "";
+
 	/**
 	 * Finds longest common sub-sequence in given two String.
+	 * <br>
 	 * Methods uses Dynamic programming approach, to utilize
 	 * already calculated results for sub-problem.
-	 * 
-	 * Let X = <x[1], x[2], ... x[m]> and Y = <y[1],  y[2], ... y[n]> 
-	 * be sequences, and let Z = <z[1], ... z[k]> be any LCS of X and Y .
-	 * 
+	 * <br>
+	 * Let X = {x[1], x[2], ... x[m]} and Y = {y[1],  y[2], ... y[n]} 
+	 * be sequences, and let Z = {z[1], ... z[k]} be any LCS of X and Y .
+	 * <br>
 	 * 1. If x[m] = y[n], then z[k] = x[m] = y[n] and Z[1:k-1] is an 
-	 *    LCS of X[1:m-1] and Y[n-1].
+	 *    LCS of X[1:m-1] and Y[n-1].<br>
 	 * 2. If x[m] is not y[n] , then  ́z[k] is not x[m] implies that Z 
-	 * 	  is an LCS of X[1:m-1] and Y .
+	 * 	  is an LCS of X[1:m-1] and Y .<br>
 	 * 3. If x[m] is not y[n] , then  ́z[k] is not y[n] implies that Z 
 	 * 	  is an LCS of X and Y[1:n-1].
-	 * 
+	 * <br>
 	 * @param a
 	 * @param b
 	 * 
-	 * @return memoization_matrix
+	 * @return Largest Common String
 	 */
 	public static String lcs(char[] a, char[] b) {
 
-		final int A = a.length , B = b.length , m[][] = new int[A + 1][B + 1];
+		final int A = a.length , B = b.length , MAT[][] = new int[A + 1][B + 1];
 
 		int i = 0 , j = 0;
 
 		for (; i < A; i++, j = 0)
 			for (; j < B; j++)
-				m[i + 1][j + 1] = a[i] == b[j] ? m[i][j] + 1 : max(m[i + 1][j], m[i][j + 1]);
+				MAT[i + 1][j + 1] = a[i] == b[j] ? MAT[i][j] + 1 : max(MAT[i + 1][j], MAT[i][j + 1]);
 
-		final int L = m[A][B];
-		
-		if (L > 0) {
-			final char[] result = new char[L];
+		final int LCS_LENGTH = MAT[A][B];
+
+		if (LCS_LENGTH > 0) {
+			final char[] result = new char[LCS_LENGTH];
+			int k = LCS_LENGTH - 1;
 
 			i = A;
 			j = B;
 
-			int k = L - 1;
-
 			do {
-				final int f = m[i][j];
+				final int f = MAT[i][j];
 
-				while (f == m[i - 1][j])
+				while (f == MAT[i - 1][j])
 					i--;
-				while (f == m[i][j - 1])
+				while (f == MAT[i][j - 1])
 					j--;
 
 				result[k--] = a[i - 1];
@@ -57,7 +64,37 @@ public class LCS {
 			return new String(result);
 		}
 
-		return "";
+		return EMPTY_STRING;
 	}
 
+	public static List<Integer> lcs(int[] arr) {
+		final int[] memoizedArray = new int[arr.length];
+		fill(memoizedArray, 1);
+
+		@SuppressWarnings("unchecked")
+		final List<Integer>[] LCS = new List[arr.length];// LCS[i] = lcs up to arr[0:i]
+
+		List<Integer> output = null;
+
+		for (int i = 0; i < memoizedArray.length; i++) {
+			for (int j = 0; j < i; j++)
+				if (arr[j] < arr[i])
+					if (memoizedArray[j] + 1 > memoizedArray[i]) {
+						memoizedArray[i] = memoizedArray[j] + 1;
+						LCS[i] = LCS[j];
+					}
+
+			if (LCS[i] == null)
+				LCS[i] = singletonList(arr[i]);
+			else {
+				LCS[i] = new LinkedList<>(LCS[i]);
+				LCS[i].add(arr[i]);
+			}
+
+			if (output == null || output.size() < LCS[i].size())
+				output = LCS[i];
+		}
+
+		return output;
+	}
 }
