@@ -67,6 +67,11 @@ public class LCS {
 		return EMPTY_STRING;
 	}
 
+	/**
+	 * Finds largest monotonically increasing sub sequence in a given array.
+	 * @param arr
+	 * @return
+	 */
 	public static List<Integer> lcs(int[] arr) {
 		final int[] memoizedArray = new int[arr.length];
 		fill(memoizedArray, 1);
