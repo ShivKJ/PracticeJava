@@ -224,7 +224,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 
 	}
 
-	public Optional<Node<K, V>> getNode(K k) {
+	protected Optional<Node<K, V>> getNode(K k) {
 		Node<K, V> x = root();
 
 		while (x != nil()) {
@@ -258,7 +258,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	 * @return
 	 */
 	public V getOrDefault(K k, V v) {
-		return getNode(k).filter(x -> x != nil()).map(Entry::getValue).orElse(v);
+		return getNode(k).filter(this::notNull).map(Entry::getValue).orElse(v);
 	}
 
 	/**
@@ -268,7 +268,10 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	 * @return
 	 */
 	public boolean containsKey(K key) {
-		return getNode(key).filter(x -> x != nil()).isPresent();
+		return getNode(key).filter(this::notNull).isPresent();
 	}
 
+	protected boolean notNull(Node<K, V> t) {
+		return t != nil();
+	}
 }

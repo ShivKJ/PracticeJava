@@ -108,7 +108,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	 */
 	@Override
 	public void remove(K k) {
-		getNode(k).filter(x -> x != nil()).map(AVLNode.class::cast).ifPresent(this::removeNode);
+		getNode(k).filter(this::notNull).map(AVLNode.class::cast).ifPresent(this::removeNode);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class AVL<K extends Comparable<K>, V> extends Tree<K, V> {
 	}
 
 	int height(AVLNode<K, V> n) {
-		return n == nil() ? 0 : n.h;
+		return notNull(n) ? n.h : 0;
 	}
 
 	boolean isBalanced(AVLNode<K, V> n) {
