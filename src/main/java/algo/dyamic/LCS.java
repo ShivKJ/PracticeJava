@@ -70,7 +70,7 @@ public class LCS {
 	/**
 	 * Finds largest monotonically increasing sub sequence in a given array.
 	 * @param arr
-	 * @return
+	 * @return longest monotonically increasing sub-sequence  
 	 */
 	public static List<Integer> lcs(int[] arr) {
 		final int L = arr.length , memoizedArray[] = new int[L];
