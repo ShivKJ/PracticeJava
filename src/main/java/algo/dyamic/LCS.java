@@ -73,15 +73,15 @@ public class LCS {
 	 * @return
 	 */
 	public static List<Integer> lcs(int[] arr) {
-		final int[] memoizedArray = new int[arr.length];
+		final int L = arr.length , memoizedArray[] = new int[L];
 		fill(memoizedArray, 1);
 
 		@SuppressWarnings("unchecked")
-		final List<Integer>[] LCS = new List[arr.length];// LCS[i] = lcs up to arr[0:i]
+		final List<Integer>[] LCS = new List[L];// LCS[i] = lcs up to arr[0:i]
 
 		List<Integer> output = null;
 
-		for (int i = 0; i < memoizedArray.length; i++) {
+		for (int i = 0; i < L; i++) {
 			for (int j = 0; j < i; j++)
 				if (arr[j] < arr[i])
 					if (memoizedArray[j] + 1 > memoizedArray[i]) {
