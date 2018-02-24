@@ -35,6 +35,7 @@ public abstract class Tree<K extends Comparable<K>, V> {
 	public static abstract class Node<K extends Comparable<K>, V> implements Entry<K, V> {
 		private final K	k;
 		private V		v;
+		private Object	userData;
 
 		public Node(K k, V v) {
 			this.k = k;
@@ -76,6 +77,15 @@ public abstract class Tree<K extends Comparable<K>, V> {
 		public String toString() {
 
 			return k + "=" + v;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T getUserData() {
+			return (T) userData;
+		}
+
+		public void setUserData(Object userData) {
+			this.userData = userData;
 		}
 
 	}
