@@ -92,7 +92,6 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 	private void bubbleDown(E node) {
 		int index = node.index() , leftChildIndex = (index << 1) + 1 , rightChildIndex = leftChildIndex + 1;
 		E min = node;
-
 		if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes.get(leftChildIndex)) > 0)
 			min = nodes.get(leftChildIndex);
 
@@ -149,12 +148,28 @@ public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
+		int oldSize = effectiveSize , size = c.size();
+		nodes.ensureCapacity(effectiveSize + size);
 
-		int oldSize = effectiveSize;
+		if (effectiveSize == 0) {// building heap in O(n)
+			nodes.clear();
 
-		nodes.ensureCapacity(effectiveSize + c.size());
+			int i = 0;
 
-		c.forEach(this::add);
+			for (; i < size; i++)
+				nodes.add(null);
+
+			effectiveSize = size;// dictates how many level, bubbling down is allowed
+
+			i = size - 1;
+			
+			for (E e : c) {
+				e.setIndex(i);
+				nodes.set(i--, e);
+				bubbleDown(e);
+			}
+		} else
+			c.forEach(this::add);
 
 		return oldSize != effectiveSize;
 	}
