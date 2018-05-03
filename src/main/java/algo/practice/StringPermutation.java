@@ -9,7 +9,7 @@ public class StringPermutation {
 	 * for example: 
 	 * permutation of "abc": abc, acb, bac, bca, cab, cba
 	 * 
-	 * To use function: Create a collection to hold permutation, envoke
+	 * To use function: Create a collection to hold permutation, invoke
 	 * perm("",str,collectionToHoldPerm)
 	 * 
 	 * @param prefix
