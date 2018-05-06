@@ -1,6 +1,6 @@
 package algo.numberTheoreticAlgorithm;
 
-import java.util.Arrays;
+import static java.lang.Math.abs;
 
 public final class Basics {
 	private Basics() {}
@@ -19,6 +19,28 @@ public final class Basics {
 
 	public static int gcd(int a, int b) {
 		return b == 0 ? a : gcd(b, a % b);
+	}
+
+	public static int binaryGCD(int a, int b) {
+		if (b > a)
+			return binaryGCD(b, a);
+
+		if (b <= 1)
+			return a;
+
+		boolean aEven = (a & 1) == 0 , bEven = (b & 1) == 0;
+
+		if (aEven & bEven)
+			return 2 * binaryGCD(a >> 1, b >> 1);
+
+		if (aEven)
+			return binaryGCD(a >> 1, b);
+
+		if (bEven)
+			return binaryGCD(a, b >> 1);
+
+		return binaryGCD(b, abs(a - b) >> 1);
+
 	}
 
 	public static int[] gcdExtended(int a, int b) {
@@ -81,11 +103,4 @@ public final class Basics {
 		throw new IllegalArgumentException("No solution exists");
 
 	}
-
-	public static void main(String[] args) {
-		System.out.println(Arrays.toString(gcdExtended(100, 74)));
-		System.out.println(multiplicativeInverse(4, 11));
-
-	}
-
 }
