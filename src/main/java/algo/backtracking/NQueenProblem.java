@@ -1,16 +1,28 @@
 package algo.backtracking;
 
 import static java.lang.Math.abs;
+import static java.lang.System.out;
+import static java.util.Collections.unmodifiableList;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class NQueenProblem {
-	public static int[] solution(int n) {
-		int[] position = new int[n];
-		return solution(position, 0) ? position : new int[0];
+	private List<int[]> solutions;
+
+	public List<int[]> solution(int n) {
+		this.solutions = new LinkedList<>();
+
+		solution(new int[n], 0);
+
+		return unmodifiableList(solutions);
 	}
 
-	public static boolean solution(int[] pos, int row) {
-		if (pos.length == row)
-			return true;
+	private boolean solution(int[] pos, int row) {
+		if (pos.length == row) {
+			solutions.add(pos.clone());
+			return false;// throwing false only to find next solution.
+		}
 
 		for (int col = 0; col < pos.length; col++) {
 			boolean safe = true;
@@ -26,21 +38,19 @@ public class NQueenProblem {
 				if (solution(pos, row + 1))
 					return true;
 			}
-
+			
 		}
+
 		return false;
 	}
 
 	public static void print(int[] pos) {
 		for (int i : pos) {
 			for (int k = 0; k < pos.length; k++)
-				System.out.print((k == i ? 'Q' : '*') + "  ");
-			System.out.println();
+				out.print((k == i ? 'Q' : '*') + "  ");
+			out.println();
 		}
-	}
-
-	public static void main(String[] args) {
-		print(solution(4));
+		out.println();
 	}
 
 }
