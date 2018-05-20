@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 import static java.lang.System.out;
 import static java.util.Collections.unmodifiableList;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,16 +23,19 @@ public class NQueenProblem {
 	 * 
 	 */
 
-	private boolean		exploreAllSolution;	// flag for whether or not to explore all solutions.
-	private List<int[]>	solutions;			// keeps all solution if flag exploreAllSolution is True, else one solution
+	private boolean			exploreAllSolution;	// flag for whether or not to explore all solutions.
+	private List<byte[]>	solutions;			// keeps all solution if flag exploreAllSolution is True, else one solution
 
-	public List<int[]> solution(int n, boolean allSolutions) {
-		this.solutions = new LinkedList<>();
-		this.exploreAllSolution = allSolutions;
+	private NQueenProblem(boolean exploreAllSolution) {
+		this.exploreAllSolution = exploreAllSolution;
+		this.solutions = exploreAllSolution ? new LinkedList<>() : new ArrayList<>(1);
+	}
 
-		solution(new int[n], 0);
+	public static List<byte[]> solution(int n, boolean allSolutions) {
+		NQueenProblem problem = new NQueenProblem(allSolutions);
+		problem.hasSolution(new byte[n], 0);
 
-		return unmodifiableList(solutions);
+		return unmodifiableList(problem.solutions);
 	}
 
 	/**
@@ -53,7 +57,7 @@ public class NQueenProblem {
 	 * @param row
 	 * @return
 	 */
-	private boolean solution(int[] pos, int row) {
+	private boolean hasSolution(byte[] pos, int row) {
 		if (pos.length == row) {
 			solutions.add(pos.clone());
 
@@ -71,8 +75,8 @@ public class NQueenProblem {
 				}
 
 			if (safe) {
-				pos[row] = col;
-				if (solution(pos, row + 1))// once a column is found on row then searching to place a queen on row + 1
+				pos[row] = (byte) col;
+				if (hasSolution(pos, row + 1))// once a column is found on row then searching to place a queen on row + 1
 					return true;
 			}
 
@@ -81,13 +85,12 @@ public class NQueenProblem {
 		return false;
 	}
 
-	public static void print(int[] pos) {
-		for (int i : pos) {
+	public static void print(byte[] pos) {
+		for (byte i : pos) {
 			for (int k = 0; k < pos.length; k++)
 				out.print((k == i ? 'Q' : '*') + "  ");
 			out.println();
 		}
 		out.println();
 	}
-
 }
