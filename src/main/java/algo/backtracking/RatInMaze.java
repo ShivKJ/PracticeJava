@@ -34,35 +34,19 @@ public class RatInMaze {
 		return new Boolean[0][0];
 	}
 
-	private static String getString(String str) {
-		return format("%-4s", str);
-	}
-
-	public static void print(Boolean[][] sol) {
-		for (Boolean[] row : sol) {
-			for (Boolean block : row)
-				if (block == BLOCKED)
-					out.print(getString("X"));
-				else if (block == OCCUPIED)
-					out.print(getString("*"));
-				else
-					out.print(getString("o"));
-			out.println();
-		}
-	}
-
 	private boolean hasSol(int r, int c) {
 		if (r == endRow && c == endCol)
 			return true;
 
 		for (int[] move : nextMoves(r, c)) {
 			int nextR = move[0] , nextC = move[1];
+
 			mat[nextR][nextC] = OCCUPIED;
 
-			if (!hasSol(nextR, nextC))
-				mat[nextR][nextC] = FREE;
-			else
+			if (hasSol(nextR, nextC))
 				return true;
+
+			mat[nextR][nextC] = FREE;
 		}
 
 		return false;
@@ -85,4 +69,22 @@ public class RatInMaze {
 
 		return moves;
 	}
+
+	private static String getString(String str) {
+		return format("%-4s", str);
+	}
+
+	public static void print(Boolean[][] sol) {
+		for (Boolean[] row : sol) {
+			for (Boolean block : row)
+				if (block == BLOCKED)
+					out.print(getString("X"));
+				else if (block == OCCUPIED)
+					out.print(getString("*"));
+				else
+					out.print(getString("o"));
+			out.println();
+		}
+	}
+
 }
