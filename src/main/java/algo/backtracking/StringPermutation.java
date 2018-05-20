@@ -1,8 +1,10 @@
-package algo.practice;
+package algo.backtracking;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class StringPermutation {
+	private StringPermutation() {}
 
 	/**
 	 * Generates all permutation of a String containing distinct characters.
@@ -16,14 +18,23 @@ public class StringPermutation {
 	 * @param str
 	 * @param permutations
 	 */
-	public static void permu(String prefix, String str, Collection<String> permutations) {
+
+	private static void permutation(String prefix, String str, Collection<String> permutations) {
 		if (str.isEmpty())
 			permutations.add(prefix);
 		else {
 			for (int i = 0; i < str.length(); i++)
-				permu(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1), permutations);
+				permutation(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1), permutations);
 
 		}
+	}
+
+	public static Collection<String> permutation(String str) {
+		Collection<String> per = new LinkedList<>();
+
+		permutation("", str, per);
+
+		return per;
 	}
 
 }
