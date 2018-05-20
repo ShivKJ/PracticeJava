@@ -17,14 +17,20 @@ public class KnightProblem {
 		this.totalSteps = n * n;
 		this.movement = new int[n][n];
 
-		this.movement[0][0] = 1;
-
 	}
 
 	public static int[][] solve(int n) {
-		KnightProblem problem = new KnightProblem(n);
+		return solve(0, 0, n);
+	}
 
-		if (problem.isCorrect(0, 0, 1))
+	public static int[][] solve(int startRow, int startCol, int n) {
+		if (startCol >= n || startCol >= n)
+			throw new IllegalArgumentException(startRow + " , " + startCol + " is not a valid start for N: " + n);
+
+		KnightProblem problem = new KnightProblem(n);
+		problem.movement[startRow][startCol] = 1;
+
+		if (problem.isCorrect(startRow, startCol, 1))
 			return problem.movement;
 
 		return new int[0][0];
@@ -36,14 +42,13 @@ public class KnightProblem {
 
 		for (int[] move : nextMoves(r, c)) {
 			int nextR = move[0] , nextC = move[1];
+			movement[nextR][nextC] = step + 1;
 
-			if (movement[nextR][nextC] == 0) {
-				movement[nextR][nextC] = step + 1;
-				if (!isCorrect(nextR, nextC, step + 1))
-					movement[nextR][nextC] = 0;
-				else
-					return true;
-			}
+			if (!isCorrect(nextR, nextC, step + 1))
+				movement[nextR][nextC] = 0;
+			else
+				return true;
+
 		}
 		return false;
 	}
