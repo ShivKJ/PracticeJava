@@ -8,11 +8,11 @@ import static java.util.stream.Collectors.joining;
 import java.util.LinkedList;
 import java.util.List;
 
-public class KnightProblem {
+public class EulerKnightProblem {
 
 	private final int movement[][] , totalSteps , N;
 
-	private KnightProblem(int n) {
+	private EulerKnightProblem(int n) {
 		this.N = n;
 		this.totalSteps = n * n;
 		this.movement = new int[n][n];
@@ -27,7 +27,7 @@ public class KnightProblem {
 		if (startCol >= n || startCol >= n)
 			throw new IllegalArgumentException(startRow + " , " + startCol + " is not a valid start for N: " + n);
 
-		KnightProblem problem = new KnightProblem(n);
+		EulerKnightProblem problem = new EulerKnightProblem(n);
 		problem.movement[startRow][startCol] = 1;
 
 		if (problem.isCorrect(startRow, startCol, 1))

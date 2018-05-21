@@ -6,13 +6,13 @@ import static java.lang.System.out;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RatInMaze {
+public class RatInMazeProblem {
 	private static final Boolean FREE = true , OCCUPIED = false , BLOCKED = null;
 
 	private final Boolean[][]	mat;
 	private final int			endRow , endCol;
 
-	private RatInMaze(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
+	private RatInMazeProblem(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
 		this.mat = new Boolean[blockerMatrix.length][blockerMatrix[0].length];
 
 		for (int i = 0; i < blockerMatrix.length; i++)
@@ -24,7 +24,7 @@ public class RatInMaze {
 	}
 
 	public static Boolean[][] solution(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
-		RatInMaze ratInMaze = new RatInMaze(blockerMatrix, startRow, startCol, endRow, endCol);
+		RatInMazeProblem ratInMaze = new RatInMazeProblem(blockerMatrix, startRow, startCol, endRow, endCol);
 
 		ratInMaze.mat[startRow][startCol] = OCCUPIED;
 

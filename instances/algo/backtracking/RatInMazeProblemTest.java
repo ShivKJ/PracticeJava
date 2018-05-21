@@ -1,6 +1,6 @@
 package algo.backtracking;
 
-public class RatInMazeTest {
+public class RatInMazeProblemTest {
 	public static void main(String[] args) {
 		/*
 		 * This is the blocker matrix
@@ -20,6 +20,6 @@ public class RatInMazeTest {
 		    { false, false, false, false }
 		};
 
-		RatInMaze.print(RatInMaze.solution(blocker, 0, 0, 3, 3));
+		RatInMazeProblem.print(RatInMazeProblem.solution(blocker, 0, 0, 3, 3));
 	}
 }
