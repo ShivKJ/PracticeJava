@@ -83,6 +83,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>io.jenetics</groupId>
+			<artifactId>jenetics</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>utils</groupId>
 			<artifactId>basics</artifactId>
 			<version>0.1</version>

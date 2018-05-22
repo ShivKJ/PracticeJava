@@ -99,6 +99,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	@Override
 	public void remove(K key) {
+		// need to debug
 		getNode(key).filter(this::notNull).map(RBNode.class::cast).ifPresent(this::removeNode);
 	}
 
@@ -229,7 +230,7 @@ public class RedBlack<K extends Comparable<K>, V> extends Tree<K, V> {
 
 	@Override
 	public void clear() {
-		this.root=nil();
+		this.root = nil();
 		this.size = 0;
 	}
 
