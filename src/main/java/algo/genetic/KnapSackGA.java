@@ -1,13 +1,19 @@
 package algo.genetic;
 
+import static io.jenetics.engine.EvolutionResult.toBestPhenotype;
+import static io.jenetics.engine.EvolutionStatistics.ofNumber;
+import static io.jenetics.engine.Limits.bySteadyFitness;
 import static java.lang.Integer.parseInt;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Paths.get;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.stream.Collector;
+
+import org.slf4j.Logger;
 
 import algo.dyamic.KnapSack01.KnapSackItem;
 
@@ -22,13 +28,12 @@ import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Codecs;
 import io.jenetics.engine.Engine;
-import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
-import io.jenetics.engine.Limits;
 import io.jenetics.util.Factory;
 import io.jenetics.util.ISeq;
 
 public class KnapSackGA {
+	private static final Logger		LOGGER	= getLogger(KnapSackGA.class);
 	private final KnapSackItem[]	items;
 	private final int				capacity;
 
@@ -42,15 +47,14 @@ public class KnapSackGA {
 		return new KnapSackItem(parseInt(split[1]), parseInt(split[0]));
 	}
 
-	private static void run(String file) throws IOException {
+	public static Phenotype<BitGene, Integer> run(String file) throws IOException {
 		try (BufferedReader reader = newBufferedReader(get(file))) {
 			int capacity = parseInt(reader.readLine().split("\\s+")[1]);
 
 			KnapSackItem[] items = reader.lines()
 			                             .map(KnapSackGA::getItem)
 			                             .toArray(KnapSackItem[]::new);
-			KnapSackGA ga = new KnapSackGA(items, capacity);
-			System.out.println(ga.solve());
+			return new KnapSackGA(items, capacity).solve();
 
 		} catch (IOException e) {
 			throw new IOException();
@@ -79,7 +83,7 @@ public class KnapSackGA {
 		};
 	}
 
-	private int solve() {
+	private Phenotype<BitGene, Integer> solve() {
 		Factory<Genotype<BitGene>> factory = () -> Genotype.of(BitChromosome.of(items.length, 0.001));;
 
 		Engine<BitGene, Integer> engine = Engine.builder(fitness(capacity), Codecs.ofSubSet(ISeq.of(items)))
@@ -92,22 +96,15 @@ public class KnapSackGA {
 		                                                new SinglePointCrossover<>(0.01),
 		                                                new UniformCrossover<>(0.01))
 		                                        .build();
+		EvolutionStatistics<Integer, ?> statistics = ofNumber();
+		Phenotype<BitGene, Integer> sol = engine.stream()
+		                                        .limit(bySteadyFitness(100))
+		                                        .limit(500)
+		                                        .peek(statistics)
+		                                        .collect(toBestPhenotype());
+		LOGGER.info("\n" + statistics.toString());
 
-		EvolutionStatistics<Integer, ?> statistics = EvolutionStatistics.ofNumber();
-
-		Phenotype<BitGene, Integer> solution = engine.stream()
-		                                             .limit(Limits.bySteadyFitness(100))
-		                                             .limit(500)
-		                                             .peek(statistics)
-		                                             .collect(EvolutionResult.toBestPhenotype());
-		System.out.println(statistics);
-		return solution.getFitness();
+		return sol;
 	}
 
-	public static void main(String[] args) throws IOException {
-		if (args.length == 0)
-			args = new String[] { "data/knapsack/ks_10000_0.txt" };
-
-		run(args[0]);
-	}
 }
