@@ -29,7 +29,6 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Codecs;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionStatistics;
-import io.jenetics.util.Factory;
 import io.jenetics.util.ISeq;
 
 public class KnapSackGA {
@@ -84,24 +83,25 @@ public class KnapSackGA {
 	}
 
 	private Phenotype<BitGene, Integer> solve() {
-		Factory<Genotype<BitGene>> factory = () -> Genotype.of(BitChromosome.of(items.length, 0.001));;
-
 		Engine<BitGene, Integer> engine = Engine.builder(fitness(capacity), Codecs.ofSubSet(ISeq.of(items)))
 		                                        .maximizing()
 		                                        .populationSize(1000)
-		                                        .genotypeFactory(factory)
+		                                        .genotypeFactory(() -> Genotype.of(BitChromosome.of(items.length, 0.001)))
 		                                        .survivorsSelector(new TournamentSelector<>(200))
 		                                        .offspringSelector(new RouletteWheelSelector<>())
 		                                        .alterers(new Mutator<>(0.01),
 		                                                new SinglePointCrossover<>(0.01),
 		                                                new UniformCrossover<>(0.01))
 		                                        .build();
+
 		EvolutionStatistics<Integer, ?> statistics = ofNumber();
+
 		Phenotype<BitGene, Integer> sol = engine.stream()
 		                                        .limit(bySteadyFitness(100))
 		                                        .limit(500)
 		                                        .peek(statistics)
 		                                        .collect(toBestPhenotype());
+
 		LOGGER.info("\n" + statistics.toString());
 
 		return sol;
