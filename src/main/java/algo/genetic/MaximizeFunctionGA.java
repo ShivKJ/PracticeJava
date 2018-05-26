@@ -20,12 +20,12 @@ import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.util.DoubleRange;
 
-public class MaximizeFunction {
-	private static final Logger			LOGGER	= getLogger(MaximizeFunction.class);
+public class MaximizeFunctionGA {
+	private static final Logger			LOGGER	= getLogger(MaximizeFunctionGA.class);
 	private final double				min , max;
 	private final DoubleUnaryOperator	function;
 
-	public MaximizeFunction(double min, double max, DoubleUnaryOperator function) {
+	public MaximizeFunctionGA(double min, double max, DoubleUnaryOperator function) {
 		this.min = min;
 		this.max = max;
 		this.function = function;
