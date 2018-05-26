@@ -10,7 +10,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.function.Function;
 import java.util.stream.Collector;
 
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import algo.dyamic.KnapSack01.KnapSackItem;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
+import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -46,6 +46,10 @@ public class KnapSackGA {
 		return new KnapSackItem(parseInt(split[1]), parseInt(split[0]));
 	}
 
+	public static Phenotype<BitGene, Integer> run(KnapSackItem[] items, int capacity) {
+		return new KnapSackGA(items, capacity).solve();
+	}
+
 	public static Phenotype<BitGene, Integer> run(String file) throws IOException {
 		try (BufferedReader reader = newBufferedReader(get(file))) {
 			int capacity = parseInt(reader.readLine().split("\\s+")[1]);
@@ -53,8 +57,8 @@ public class KnapSackGA {
 			KnapSackItem[] items = reader.lines()
 			                             .map(KnapSackGA::getItem)
 			                             .toArray(KnapSackItem[]::new);
-			return new KnapSackGA(items, capacity).solve();
-
+			return run(items, capacity);
+			
 		} catch (IOException e) {
 			throw new IOException();
 		}
@@ -75,20 +79,33 @@ public class KnapSackGA {
 		        r -> new KnapSackItem(r[0], r[1]));
 	}
 
-	private static Function<ISeq<KnapSackItem>, Integer> fitness(int capacity) {
-		return items -> {
-			KnapSackItem item = items.stream().collect(toSum());
-			return capacity > item.weight() ? item.value() : capacity - item.weight();
-		};
+	private Integer fitness(ISeq<KnapSackItem> items) {
+		KnapSackItem item = items.stream().collect(toSum());
+		return capacity > item.weight() ? item.value() : capacity - item.weight();
+	}
+
+	private boolean genotypeValidator(Genotype<BitGene> x) {
+		int picked = 0;
+		Chromosome<BitGene> chromosome = x.getChromosome();
+
+		for (int i = 0; i < items.length; i++)
+			if (chromosome.getGene(i).booleanValue()) {
+				picked += items[i].weight();
+				if (picked > capacity)
+					return false;
+			}
+
+		return true;
 	}
 
 	private Phenotype<BitGene, Integer> solve() {
-		Engine<BitGene, Integer> engine = Engine.builder(fitness(capacity), Codecs.ofSubSet(ISeq.of(items)))
+		Engine<BitGene, Integer> engine = Engine.builder(this::fitness, Codecs.ofSubSet(ISeq.of(items)))
 		                                        .maximizing()
 		                                        .populationSize(1000)
 		                                        .genotypeFactory(() -> Genotype.of(BitChromosome.of(items.length, 0.001)))
 		                                        .survivorsSelector(new TournamentSelector<>(200))
 		                                        .offspringSelector(new RouletteWheelSelector<>())
+		                                        .genotypeValidator(this::genotypeValidator)
 		                                        .alterers(new Mutator<>(0.01),
 		                                                new SinglePointCrossover<>(0.01),
 		                                                new UniformCrossover<>(0.01))
