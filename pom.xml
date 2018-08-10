@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -85,14 +86,9 @@
 		<dependency>
 			<groupId>io.jenetics</groupId>
 			<artifactId>jenetics</artifactId>
-			<version>4.1.0</version>
+			<version>4.2.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>utils</groupId>
-			<artifactId>basics</artifactId>
-			<version>0.1</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -124,6 +120,15 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.3</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.ortools</groupId>
+			<artifactId>ortools</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>/home/skj/work/tools/or-tools/lib/com.google.ortools.jar</systemPath>
+		</dependency>
+
 	</dependencies>
 
 </project>
