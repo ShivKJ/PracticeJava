@@ -1,16 +1,22 @@
 package algo.backtracking;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static java.lang.String.format;
 import static java.lang.System.out;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class EulerKnightProblem {
 
-	private final int movement[][] , totalSteps , N;
+	/**
+	 *
+	 *
+	 */
+	private final int[][] movement;
+	private final int totalSteps;
+	private final int N;
 
 	private EulerKnightProblem(int n) {
 		this.N = n;
@@ -24,7 +30,7 @@ public class EulerKnightProblem {
 	}
 
 	public static int[][] solve(int startRow, int startCol, int n) {
-		if (startCol >= n || startCol >= n)
+		if (startRow >= n || startCol >= n)
 			throw new IllegalArgumentException(startRow + " , " + startCol + " is not a valid start for N: " + n);
 
 		EulerKnightProblem problem = new EulerKnightProblem(n);
@@ -90,7 +96,7 @@ public class EulerKnightProblem {
 	}
 
 	public static void print(int[][] steps) {
-		stream(steps).map(x -> stream(x).mapToObj(y -> format("%-5d", y)).collect(joining())).forEach(out::println);;
+		stream(steps).map(x -> stream(x).mapToObj(y -> format("%-5d", y)).collect(joining())).forEach(out::println);
 	}
 
 }
