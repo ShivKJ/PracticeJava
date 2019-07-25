@@ -1,9 +1,9 @@
 package algo.heap;
 
-public interface PNode<E, P extends Comparable<P>> extends DataWrapper<E> {
+public interface PNode<E, P extends Comparable<P>>extends DataWrapper<E> {
 
-	void setPriority(Object p);
+    void setPriority(Object p);
 
-	P getPriority();
+    P getPriority();
 
 }

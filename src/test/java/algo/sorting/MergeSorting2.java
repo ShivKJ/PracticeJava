@@ -10,18 +10,16 @@ import java.util.Random;
 
 import com.google.common.base.Stopwatch;
 
-import algo.sorting.MergeSort;
-
 class MergeSorting2 {
-	public static void main(String[] args) {
-		Random random = new Random(10L);
-		Double[] arr = random.doubles(3000000, 0, 100).boxed().toArray(Double[]::new);
+    public static void main(String[] args) {
+        Random random = new Random(10L);
+        Double[] arr = random.doubles(3000000, 0, 100).boxed().toArray(Double[]::new);
 
-		Stopwatch stopwatch = createStarted();
+        Stopwatch stopwatch = createStarted();
 
-		List<Double> list = new MergeSort<>(arr).sort();
+        List<Double> list = new MergeSort<>(arr).sort();
 
-		System.out.println(isInOrder(list, naturalOrder()));
-		System.out.println(stopwatch.elapsed(MILLISECONDS));
-	}
+        System.out.println(isInOrder(list, naturalOrder()));
+        System.out.println(stopwatch.elapsed(MILLISECONDS));
+    }
 }

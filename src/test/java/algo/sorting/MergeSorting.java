@@ -12,17 +12,15 @@ import java.util.Random;
 
 import com.google.common.base.Stopwatch;
 
-import algo.sorting.MergeSort;
-
 class MergeSorting {
-	public static void main(String[] args) {
-		Random random = new Random(10L);
-		List<Double> list = random.doubles(3000000, 0, 100).boxed().collect(toList());
+    public static void main(String[] args) {
+        Random random = new Random(10L);
+        List<Double> list = random.doubles(3000000, 0, 100).boxed().collect(toList());
 
-		Stopwatch stopwatch = createStarted();
+        Stopwatch stopwatch = createStarted();
 
-		List<Double> sortedList = new MergeSort<>(list).sort();
-		out.println(isInOrder(sortedList, naturalOrder()));
-		out.println(stopwatch.elapsed(MILLISECONDS));
-	}
+        List<Double> sortedList = new MergeSort<>(list).sort();
+        out.println(isInOrder(sortedList, naturalOrder()));
+        out.println(stopwatch.elapsed(MILLISECONDS));
+    }
 }

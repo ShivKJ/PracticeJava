@@ -23,38 +23,38 @@ import io.jenetics.engine.Problem;
 import io.jenetics.util.ISeq;
 
 public class SubSetGA implements Problem<ISeq<Integer>, EnumGene<Integer>, Integer> {
-	private final static Logger	LOGGER	= getLogger(SubSetGA.class);
-	private final ISeq<Integer>	candidates;
-	private final int			setSize;
+    private final static Logger LOGGER = getLogger(SubSetGA.class);
+    private final ISeq<Integer> candidates;
+    private final int           setSize;
 
-	public SubSetGA(Collection<Integer> items, int size) {
-		this.candidates = ISeq.of(items);
-		this.setSize = size;
+    public SubSetGA(Collection<Integer> items, int size) {
+        this.candidates = ISeq.of(items);
+        this.setSize = size;
 
-	}
+    }
 
-	@Override
-	public Function<ISeq<Integer>, Integer> fitness() {
-		return sol -> abs(sol.stream().mapToInt(Integer::valueOf).sum());
-	}
+    @Override
+    public Function<ISeq<Integer>, Integer> fitness() {
+        return sol -> abs(sol.stream().mapToInt(Integer::valueOf).sum());
+    }
 
-	@Override
-	public Codec<ISeq<Integer>, EnumGene<Integer>> codec() {
-		return Codecs.ofSubSet(candidates, setSize);
-	}
+    @Override
+    public Codec<ISeq<Integer>, EnumGene<Integer>> codec() {
+        return Codecs.ofSubSet(candidates, setSize);
+    }
 
-	public Phenotype<EnumGene<Integer>, Integer> run() {
-		EvolutionStatistics<Integer, ?> statistics = ofNumber();
-		Phenotype<EnumGene<Integer>, Integer> res = Engine.builder(this)
-		                                                  .populationSize(100)
-		                                                  .minimizing()
-		                                                  .alterers(new PartiallyMatchedCrossover<>(0.1), new Mutator<>(0.1))
-		                                                  .build()
-		                                                  .stream()
-		                                                  .limit(bySteadyFitness(100))
-		                                                  .peek(statistics)
-		                                                  .collect(toBestPhenotype());
-		LOGGER.info("\n" + statistics.toString());
-		return res;
-	}
+    public Phenotype<EnumGene<Integer>, Integer> run() {
+        EvolutionStatistics<Integer, ?> statistics = ofNumber();
+        Phenotype<EnumGene<Integer>, Integer> res = Engine.builder(this)
+                                                          .populationSize(100)
+                                                          .minimizing()
+                                                          .alterers(new PartiallyMatchedCrossover<>(0.1), new Mutator<>(0.1))
+                                                          .build()
+                                                          .stream()
+                                                          .limit(bySteadyFitness(100))
+                                                          .peek(statistics)
+                                                          .collect(toBestPhenotype());
+        LOGGER.info("\n" + statistics.toString());
+        return res;
+    }
 }
