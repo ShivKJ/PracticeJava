@@ -14,39 +14,39 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestingQuickSort {
-	private static final Random		random	= new Random();
-	private static List<Integer>	toBeSorted;
-	private static List<Integer>	sortedList;
+    private static final Random  random = new Random();
+    private static List<Integer> toBeSorted;
+    private static List<Integer> sortedList;
 
-	private List<Integer> instanceList;
+    private List<Integer> instanceList;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		TestingQuickSort.toBeSorted = random.ints(1000).boxed().collect(toList());
-		TestingQuickSort.sortedList = toBeSorted.stream().sorted().collect(toList());
-	}
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        TestingQuickSort.toBeSorted = random.ints(1000).boxed().collect(toList());
+        TestingQuickSort.sortedList = toBeSorted.stream().sorted().collect(toList());
+    }
 
-	@AfterClass
-	public static void tearDownAfterClass() {
-		TestingQuickSort.sortedList.clear();
-		TestingQuickSort.toBeSorted.clear();
-	}
+    @AfterClass
+    public static void tearDownAfterClass() {
+        TestingQuickSort.sortedList.clear();
+        TestingQuickSort.toBeSorted.clear();
+    }
 
-	@Before
-	public void setUp() {
-		this.instanceList = new ArrayList<>(toBeSorted);
-	}
+    @Before
+    public void setUp() {
+        this.instanceList = new ArrayList<>(toBeSorted);
+    }
 
-	@After
-	public void tearDown() {
-		this.instanceList.clear();
-	}
+    @After
+    public void tearDown() {
+        this.instanceList.clear();
+    }
 
-	@Test(timeout = 10)
+    @Test(timeout = 10)
 
-	public final void testSort() {
-		assertEquals(new QuickSort<>(this.instanceList).sort(), sortedList);
+    public final void testSort() {
+        assertEquals(new QuickSort<>(this.instanceList).sort(), sortedList);
 
-	}
+    }
 
 }

@@ -16,244 +16,244 @@ import java.util.Iterator;
  *
  * @param <E>
  */
-public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?>>> extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
+public class ArrayPriorityQueue<E extends IndexedPNode<?, ? extends Comparable<?>>>extends AbstractQueue<E> implements AdaptablePriorityQueue<E> {
 
-	private final ArrayList<E>	nodes;
-	private int					effectiveSize;
-	private final Comparator<E>	compNodes;
+    private final ArrayList<E>  nodes;
+    private int                 effectiveSize;
+    private final Comparator<E> compNodes;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <P> ArrayPriorityQueue(Collection<? extends E> nodes, Comparator<? super P> priorityComp) {
-		if (priorityComp != null)
-			this.compNodes = (e1, e2) -> priorityComp.compare((P) e1.getPriority(), (P) e2.getPriority());
-		else
-			// it is assumed that priority is comparable.
-			this.compNodes = (e1, e2) -> ((Comparable) e1.getPriority()).compareTo(e2.getPriority());
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <P> ArrayPriorityQueue(Collection<? extends E> nodes, Comparator<? super P> priorityComp) {
+        if (priorityComp != null)
+            this.compNodes = (e1, e2) -> priorityComp.compare((P) e1.getPriority(), (P) e2.getPriority());
+        else
+            // it is assumed that priority is comparable.
+            this.compNodes = (e1, e2) -> ((Comparable) e1.getPriority()).compareTo(e2.getPriority());
 
-		this.nodes = new ArrayList<>(nodes.size());
-		this.effectiveSize = 0;
+        this.nodes = new ArrayList<>(nodes.size());
+        this.effectiveSize = 0;
 
-		addAll(nodes);
-	}
+        addAll(nodes);
+    }
 
-	public <P> ArrayPriorityQueue(Collection<? extends E> nodes) {
-		this(nodes, null);
-	}
+    public <P> ArrayPriorityQueue(Collection<? extends E> nodes) {
+        this(nodes, null);
+    }
 
-	public ArrayPriorityQueue() {
-		this(emptyList());
-	}
+    public ArrayPriorityQueue() {
+        this(emptyList());
+    }
 
-	public <P> ArrayPriorityQueue(Comparator<? super P> priorityComp) {
-		this(emptyList(), priorityComp);
-	}
+    public <P> ArrayPriorityQueue(Comparator<? super P> priorityComp) {
+        this(emptyList(), priorityComp);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <P extends Comparable<P>> void updatePriority(E e, P newPriority) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public <P extends Comparable<P>> void updatePriority(E e, P newPriority) {
 
-		P oldPriority = null;
+        P oldPriority = null;
 
-		try {
-			oldPriority = (P) e.getPriority();
-			// While implementation requires that node be comparable, but when it comes
-			// to updation we emphasis that priority which is attribute of node changes the state of 
-			// node in tree. We thus require that the type of priority stored in node and new type to
-			// updated be of same class.
-		} catch (ClassCastException e1) {
-			e1.printStackTrace();
-		}
+        try {
+            oldPriority = (P) e.getPriority();
+            // While implementation requires that node be comparable, but when it comes
+            // to updation we emphasis that priority which is attribute of node changes the state of
+            // node in tree. We thus require that the type of priority stored in node and new type to
+            // updated be of same class.
+        } catch (ClassCastException e1) {
+            e1.printStackTrace();
+        }
 
-		int comp = newPriority.compareTo(oldPriority);
+        int comp = newPriority.compareTo(oldPriority);
 
-		e.setPriority(newPriority);
+        e.setPriority(newPriority);
 
-		if (comp < 0)
-			bubbleUp(e);
-		else if (comp > 0)
-			bubbleDown(e);
-	}
+        if (comp < 0)
+            bubbleUp(e);
+        else if (comp > 0)
+            bubbleDown(e);
+    }
 
-	@Override
-	public E poll() {
-		E currNode = nodes.get(0);
-		int lastIndex = effectiveSize - 1;
+    @Override
+    public E poll() {
+        E currNode = nodes.get(0);
+        int lastIndex = effectiveSize - 1;
 
-		swap(currNode, nodes.get(lastIndex));
+        swap(currNode, nodes.get(lastIndex));
 
-		nodes.set(--effectiveSize, null);
+        nodes.set(--effectiveSize, null);
 
-		if (!isEmpty())
-			bubbleDown(nodes.get(0));
+        if (!isEmpty())
+            bubbleDown(nodes.get(0));
 
-		return currNode;
-	}
+        return currNode;
+    }
 
-	private void bubbleDown(E node) {
-		int index = node.index() , leftChildIndex = (index << 1) + 1 , rightChildIndex = leftChildIndex + 1;
-		E min = node;
-		if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes.get(leftChildIndex)) > 0)
-			min = nodes.get(leftChildIndex);
+    private void bubbleDown(E node) {
+        int index = node.index(), leftChildIndex = (index << 1) + 1, rightChildIndex = leftChildIndex + 1;
+        E min = node;
+        if (leftChildIndex < effectiveSize && compNodes.compare(min, nodes.get(leftChildIndex)) > 0)
+            min = nodes.get(leftChildIndex);
 
-		if (rightChildIndex < effectiveSize && compNodes.compare(min, nodes.get(rightChildIndex)) > 0)
-			min = nodes.get(rightChildIndex);
+        if (rightChildIndex < effectiveSize && compNodes.compare(min, nodes.get(rightChildIndex)) > 0)
+            min = nodes.get(rightChildIndex);
 
-		if (min != node) {
-			swap(node, min);
-			bubbleDown(node);
-		}
+        if (min != node) {
+            swap(node, min);
+            bubbleDown(node);
+        }
 
-	}
+    }
 
-	private void bubbleUp(E node) {
-		int index = node.index();
+    private void bubbleUp(E node) {
+        int index = node.index();
 
-		while (index != 0) {
-			E parent = nodes.get((index + 1 >> 1) - 1);
+        while (index != 0) {
+            E parent = nodes.get((index + 1 >> 1) - 1);
 
-			if (compNodes.compare(parent, node) > 0) {
-				swap(parent, node);
-				index = node.index();
-			} else
-				break;
-		}
-	}
+            if (compNodes.compare(parent, node) > 0) {
+                swap(parent, node);
+                index = node.index();
+            } else
+                break;
+        }
+    }
 
-	private void swap(E a, E b) {
-		int aIndex = a.index() , bIndex = b.index();
+    private void swap(E a, E b) {
+        int aIndex = a.index(), bIndex = b.index();
 
-		a.setIndex(bIndex);
-		b.setIndex(aIndex);
+        a.setIndex(bIndex);
+        b.setIndex(aIndex);
 
-		nodes.set(aIndex, b);
-		nodes.set(bIndex, a);
+        nodes.set(aIndex, b);
+        nodes.set(bIndex, a);
 
-	}
+    }
 
-	@Override
-	public boolean add(E e) {
-		e.setIndex(effectiveSize);
+    @Override
+    public boolean add(E e) {
+        e.setIndex(effectiveSize);
 
-		if (effectiveSize < nodes.size())
-			nodes.set(effectiveSize, e);
-		else
-			nodes.add(e);
+        if (effectiveSize < nodes.size())
+            nodes.set(effectiveSize, e);
+        else
+            nodes.add(e);
 
-		effectiveSize++;
+        effectiveSize++;
 
-		bubbleUp(e);
+        bubbleUp(e);
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends E> c) {
-		int oldSize = effectiveSize , size = c.size();
-		nodes.ensureCapacity(effectiveSize + size);
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        int oldSize = effectiveSize, size = c.size();
+        nodes.ensureCapacity(effectiveSize + size);
 
-		if (effectiveSize == 0) {// building heap in O(n)
-			nodes.clear();
+        if (effectiveSize == 0) {// building heap in O(n)
+            nodes.clear();
 
-			int i = 0;
+            int i = 0;
 
-			for (; i < size; i++)
-				nodes.add(null);
+            for (; i < size; i++)
+                nodes.add(null);
 
-			effectiveSize = size;// dictates how many level, bubbling down is allowed
+            effectiveSize = size;// dictates how many level, bubbling down is allowed
 
-			i = size - 1;
-			
-			for (E e : c) {
-				e.setIndex(i);
-				nodes.set(i--, e);
-				bubbleDown(e);
-			}
-		} else
-			c.forEach(this::add);
+            i = size - 1;
 
-		return oldSize != effectiveSize;
-	}
+            for (E e : c) {
+                e.setIndex(i);
+                nodes.set(i--, e);
+                bubbleDown(e);
+            }
+        } else
+            c.forEach(this::add);
 
-	@Override
-	public String toString() {
-		return nodes.stream().limit(size()).map(String::valueOf).collect(joining(", ", "[", "]"));
-	}
+        return oldSize != effectiveSize;
+    }
 
-	@Override
-	public int size() {
-		return effectiveSize;
-	}
+    @Override
+    public String toString() {
+        return nodes.stream().limit(size()).map(String::valueOf).collect(joining(", ", "[", "]"));
+    }
 
-	private final class Iter implements Iterator<E> {
-		final Iterator<E>	iterator	= nodes.iterator();
-		E					next		= iterator.hasNext() ? iterator.next() : null;
+    @Override
+    public int size() {
+        return effectiveSize;
+    }
 
-		@Override
-		public boolean hasNext() {
-			return next != null;
-		}
+    private final class Iter implements Iterator<E> {
+        final Iterator<E> iterator = nodes.iterator();
+        E                 next     = iterator.hasNext() ? iterator.next() : null;
 
-		@Override
-		public E next() {
-			E tmp = next;
-			next = iterator.next();
-			return tmp;
-		}
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public E next() {
+            E tmp = next;
+            next = iterator.next();
+            return tmp;
+        }
 
-	}
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
 
-	@Override
-	public Iterator<E> iterator() {
-		return new Iter();
-	}
+    }
 
-	@Override
-	public boolean offer(E e) {
-		return add(e);
-	}
+    @Override
+    public Iterator<E> iterator() {
+        return new Iter();
+    }
 
-	@Override
-	public E peek() {
-		return nodes.get(0);
-	}
+    @Override
+    public boolean offer(E e) {
+        return add(e);
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
+    @Override
+    public E peek() {
+        return nodes.get(0);
+    }
 
-	@Override
-	public Object[] toArray() {
-		Object[] output = new Object[effectiveSize];
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
 
-		for (int i = 0; i < effectiveSize; i++)
-			output[i] = nodes.get(i);
+    @Override
+    public Object[] toArray() {
+        Object[] output = new Object[effectiveSize];
 
-		return output;
-	}
+        for (int i = 0; i < effectiveSize; i++)
+            output[i] = nodes.get(i);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T[] toArray(T[] a) {
-		if (a.length < size())
-			a = (T[]) Array.newInstance(a.getClass().getComponentType(), effectiveSize);
+        return output;
+    }
 
-		for (int i = 0; i < effectiveSize; i++)
-			a[i] = (T) nodes.get(i);
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T[] toArray(T[] a) {
+        if (a.length < size())
+            a = (T[]) Array.newInstance(a.getClass().getComponentType(), effectiveSize);
 
-		return a;
+        for (int i = 0; i < effectiveSize; i++)
+            a[i] = (T) nodes.get(i);
 
-	}
+        return a;
 
-	@Override
-	public void clear() {
-		nodes.clear();
-		effectiveSize = 0;
-	}
+    }
+
+    @Override
+    public void clear() {
+        nodes.clear();
+        effectiveSize = 0;
+    }
 
 }

@@ -15,7 +15,6 @@ import java.util.stream.Collector;
 import org.slf4j.Logger;
 
 import algo.dyamic.KnapSack01.KnapSackItem;
-
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
@@ -32,96 +31,96 @@ import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.util.ISeq;
 
 public class KnapSackGA {
-	private static final Logger		LOGGER	= getLogger(KnapSackGA.class);
-	private final KnapSackItem[]	items;
-	private final int				capacity;
+    private static final Logger  LOGGER = getLogger(KnapSackGA.class);
+    private final KnapSackItem[] items;
+    private final int            capacity;
 
-	private KnapSackGA(KnapSackItem[] items, int capacity) {
-		this.items = items;
-		this.capacity = capacity;
-	}
+    private KnapSackGA(KnapSackItem[] items, int capacity) {
+        this.items = items;
+        this.capacity = capacity;
+    }
 
-	private static KnapSackItem getItem(String line) {
-		String[] split = line.split("\\s+");
-		return new KnapSackItem(parseInt(split[1]), parseInt(split[0]));
-	}
+    private static KnapSackItem getItem(String line) {
+        String[] split = line.split("\\s+");
+        return new KnapSackItem(parseInt(split[1]), parseInt(split[0]));
+    }
 
-	public static Phenotype<BitGene, Integer> run(KnapSackItem[] items, int capacity) {
-		return new KnapSackGA(items, capacity).solve();
-	}
+    public static Phenotype<BitGene, Integer> run(KnapSackItem[] items, int capacity) {
+        return new KnapSackGA(items, capacity).solve();
+    }
 
-	public static Phenotype<BitGene, Integer> run(String file) throws IOException {
-		try (BufferedReader reader = newBufferedReader(get(file))) {
-			int capacity = parseInt(reader.readLine().split("\\s+")[1]);
+    public static Phenotype<BitGene, Integer> run(String file) throws IOException {
+        try (BufferedReader reader = newBufferedReader(get(file))) {
+            int capacity = parseInt(reader.readLine().split("\\s+")[1]);
 
-			KnapSackItem[] items = reader.lines()
-			                             .map(KnapSackGA::getItem)
-			                             .toArray(KnapSackItem[]::new);
-			return run(items, capacity);
-			
-		} catch (IOException e) {
-			throw new IOException();
-		}
+            KnapSackItem[] items = reader.lines()
+                                         .map(KnapSackGA::getItem)
+                                         .toArray(KnapSackItem[]::new);
+            return run(items, capacity);
 
-	}
+        } catch (IOException e) {
+            throw new IOException();
+        }
 
-	private static Collector<KnapSackItem, ?, KnapSackItem> toSum() {
-		return Collector.of(() -> new int[2],
-		        (a, b) -> {
-			        a[0] += b.weight();
-			        a[1] += b.value();
-		        },
-		        (a, b) -> {
-			        a[0] += b[0];
-			        a[1] += b[1];
-			        return a;
-		        },
-		        r -> new KnapSackItem(r[0], r[1]));
-	}
+    }
 
-	private Integer fitness(ISeq<KnapSackItem> items) {
-		KnapSackItem item = items.stream().collect(toSum());
-		return capacity > item.weight() ? item.value() : capacity - item.weight();
-	}
+    private static Collector<KnapSackItem, ?, KnapSackItem> toSum() {
+        return Collector.of(() -> new int[2],
+                            (a, b) -> {
+                                a[0] += b.weight();
+                                a[1] += b.value();
+                            },
+                            (a, b) -> {
+                                a[0] += b[0];
+                                a[1] += b[1];
+                                return a;
+                            },
+                            r -> new KnapSackItem(r[0], r[1]));
+    }
 
-	private boolean genotypeValidator(Genotype<BitGene> x) {
-		int picked = 0;
-		Chromosome<BitGene> chromosome = x.getChromosome();
+    private Integer fitness(ISeq<KnapSackItem> items) {
+        KnapSackItem item = items.stream().collect(toSum());
+        return capacity > item.weight() ? item.value() : capacity - item.weight();
+    }
 
-		for (int i = 0; i < items.length; i++)
-			if (chromosome.getGene(i).booleanValue()) {
-				picked += items[i].weight();
-				if (picked > capacity)
-					return false;
-			}
+    private boolean genotypeValidator(Genotype<BitGene> x) {
+        int picked = 0;
+        Chromosome<BitGene> chromosome = x.getChromosome();
 
-		return true;
-	}
+        for (int i = 0; i < items.length; i++)
+            if (chromosome.getGene(i).booleanValue()) {
+                picked += items[i].weight();
+                if (picked > capacity)
+                    return false;
+            }
 
-	private Phenotype<BitGene, Integer> solve() {
-		Engine<BitGene, Integer> engine = Engine.builder(this::fitness, Codecs.ofSubSet(ISeq.of(items)))
-		                                        .maximizing()
-		                                        .populationSize(1000)
-		                                        .genotypeFactory(() -> Genotype.of(BitChromosome.of(items.length, 0.001)))
-		                                        .survivorsSelector(new TournamentSelector<>(200))
-		                                        .offspringSelector(new RouletteWheelSelector<>())
-		                                        .genotypeValidator(this::genotypeValidator)
-		                                        .alterers(new Mutator<>(0.01),
-		                                                new SinglePointCrossover<>(0.01),
-		                                                new UniformCrossover<>(0.01))
-		                                        .build();
+        return true;
+    }
 
-		EvolutionStatistics<Integer, ?> statistics = ofNumber();
+    private Phenotype<BitGene, Integer> solve() {
+        Engine<BitGene, Integer> engine = Engine.builder(this::fitness, Codecs.ofSubSet(ISeq.of(items)))
+                                                .maximizing()
+                                                .populationSize(1000)
+                                                .genotypeFactory(() -> Genotype.of(BitChromosome.of(items.length, 0.001)))
+                                                .survivorsSelector(new TournamentSelector<>(200))
+                                                .offspringSelector(new RouletteWheelSelector<>())
+                                                .genotypeValidator(this::genotypeValidator)
+                                                .alterers(new Mutator<>(0.01),
+                                                          new SinglePointCrossover<>(0.01),
+                                                          new UniformCrossover<>(0.01))
+                                                .build();
 
-		Phenotype<BitGene, Integer> sol = engine.stream()
-		                                        .limit(bySteadyFitness(100))
-		                                        .limit(500)
-		                                        .peek(statistics)
-		                                        .collect(toBestPhenotype());
+        EvolutionStatistics<Integer, ?> statistics = ofNumber();
 
-		LOGGER.info("\n" + statistics.toString());
+        Phenotype<BitGene, Integer> sol = engine.stream()
+                                                .limit(bySteadyFitness(100))
+                                                .limit(500)
+                                                .peek(statistics)
+                                                .collect(toBestPhenotype());
 
-		return sol;
-	}
+        LOGGER.info("\n" + statistics.toString());
+
+        return sol;
+    }
 
 }

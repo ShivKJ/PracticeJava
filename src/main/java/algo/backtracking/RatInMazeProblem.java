@@ -7,84 +7,84 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RatInMazeProblem {
-	private static final Boolean FREE = true , OCCUPIED = false , BLOCKED = null;
+    private static final Boolean FREE = true, OCCUPIED = false, BLOCKED = null;
 
-	private final Boolean[][]	mat;
-	private final int			endRow , endCol;
+    private final Boolean[][] mat;
+    private final int         endRow, endCol;
 
-	private RatInMazeProblem(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
-		this.mat = new Boolean[blockerMatrix.length][blockerMatrix[0].length];
+    private RatInMazeProblem(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
+        this.mat = new Boolean[blockerMatrix.length][blockerMatrix[0].length];
 
-		for (int i = 0; i < blockerMatrix.length; i++)
-			for (int j = 0; j < blockerMatrix[0].length; j++)
-				this.mat[i][j] = blockerMatrix[i][j] ? BLOCKED : FREE;
+        for (int i = 0; i < blockerMatrix.length; i++)
+            for (int j = 0; j < blockerMatrix[0].length; j++)
+                this.mat[i][j] = blockerMatrix[i][j] ? BLOCKED : FREE;
 
-		this.endRow = endRow;
-		this.endCol = endCol;
-	}
+        this.endRow = endRow;
+        this.endCol = endCol;
+    }
 
-	public static Boolean[][] solution(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
-		RatInMazeProblem ratInMaze = new RatInMazeProblem(blockerMatrix, startRow, startCol, endRow, endCol);
+    public static Boolean[][] solution(boolean[][] blockerMatrix, int startRow, int startCol, int endRow, int endCol) {
+        RatInMazeProblem ratInMaze = new RatInMazeProblem(blockerMatrix, startRow, startCol, endRow, endCol);
 
-		ratInMaze.mat[startRow][startCol] = OCCUPIED;
+        ratInMaze.mat[startRow][startCol] = OCCUPIED;
 
-		if (ratInMaze.hasSol(startRow, startCol))
-			return ratInMaze.mat;
+        if (ratInMaze.hasSol(startRow, startCol))
+            return ratInMaze.mat;
 
-		return new Boolean[0][0];
-	}
+        return new Boolean[0][0];
+    }
 
-	private boolean hasSol(int r, int c) {
-		if (r == endRow && c == endCol)
-			return true;
+    private boolean hasSol(int r, int c) {
+        if (r == endRow && c == endCol)
+            return true;
 
-		for (int[] move : nextMoves(r, c)) {
-			int nextR = move[0] , nextC = move[1];
+        for (int[] move : nextMoves(r, c)) {
+            int nextR = move[0], nextC = move[1];
 
-			mat[nextR][nextC] = OCCUPIED;
+            mat[nextR][nextC] = OCCUPIED;
 
-			if (hasSol(nextR, nextC))
-				return true;
+            if (hasSol(nextR, nextC))
+                return true;
 
-			mat[nextR][nextC] = FREE;
-		}
+            mat[nextR][nextC] = FREE;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private List<int[]> nextMoves(int r, int c) {
-		List<int[]> moves = new LinkedList<>();
+    private List<int[]> nextMoves(int r, int c) {
+        List<int[]> moves = new LinkedList<>();
 
-		if (r + 1 < mat.length && mat[r + 1][c] == FREE)
-			moves.add(new int[] { r + 1, c });
+        if (r + 1 < mat.length && mat[r + 1][c] == FREE)
+            moves.add(new int[] { r + 1, c });
 
-		if (r - 1 >= 0 && mat[r - 1][c] == FREE)
-			moves.add(new int[] { r - 1, c });
+        if (r - 1 >= 0 && mat[r - 1][c] == FREE)
+            moves.add(new int[] { r - 1, c });
 
-		if (c + 1 < mat[0].length && mat[r][c + 1] == FREE)
-			moves.add(new int[] { r, c + 1 });
+        if (c + 1 < mat[0].length && mat[r][c + 1] == FREE)
+            moves.add(new int[] { r, c + 1 });
 
-		if (c - 1 >= 0 && mat[r][c - 1] == FREE)
-			moves.add(new int[] { r, c - 1 });
+        if (c - 1 >= 0 && mat[r][c - 1] == FREE)
+            moves.add(new int[] { r, c - 1 });
 
-		return moves;
-	}
+        return moves;
+    }
 
-	private static String getString(String str) {
-		return format("%-4s", str);
-	}
+    private static String getString(String str) {
+        return format("%-4s", str);
+    }
 
-	public static void print(Boolean[][] sol) {
-		for (Boolean[] row : sol) {
-			for (Boolean block : row)
-				if (block == BLOCKED)
-					out.print(getString("X"));
-				else if (block == OCCUPIED)
-					out.print(getString("*"));
-				else
-					out.print(getString("o"));
-			out.println();
-		}
-	}
+    public static void print(Boolean[][] sol) {
+        for (Boolean[] row : sol) {
+            for (Boolean block : row)
+                if (block == BLOCKED)
+                    out.print(getString("X"));
+                else if (block == OCCUPIED)
+                    out.print(getString("*"));
+                else
+                    out.print(getString("o"));
+            out.println();
+        }
+    }
 
 }

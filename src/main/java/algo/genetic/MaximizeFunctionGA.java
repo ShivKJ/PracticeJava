@@ -21,33 +21,33 @@ import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.util.DoubleRange;
 
 public class MaximizeFunctionGA {
-	private static final Logger			LOGGER	= getLogger(MaximizeFunctionGA.class);
-	private final double				min , max;
-	private final DoubleUnaryOperator	function;
+    private static final Logger       LOGGER = getLogger(MaximizeFunctionGA.class);
+    private final double              min, max;
+    private final DoubleUnaryOperator function;
 
-	public MaximizeFunctionGA(double min, double max, DoubleUnaryOperator function) {
-		this.min = min;
-		this.max = max;
-		this.function = function;
-	}
+    public MaximizeFunctionGA(double min, double max, DoubleUnaryOperator function) {
+        this.min = min;
+        this.max = max;
+        this.function = function;
+    }
 
-	public Phenotype<DoubleGene, Double> solve() {
-		Engine<DoubleGene, Double> engine = Engine.builder(function::applyAsDouble, Codecs.ofScalar(DoubleRange.of(min, max)))
-		                                          .populationSize(3000)
-		                                          .genotypeFactory(() -> Genotype.of(DoubleChromosome.of(min, max)))
-		                                          .maximizing()
-		                                          .alterers(new Mutator<>(0.001), new MeanAlterer<>(0.001))
-		                                          .build();
+    public Phenotype<DoubleGene, Double> solve() {
+        Engine<DoubleGene, Double> engine = Engine.builder(function::applyAsDouble, Codecs.ofScalar(DoubleRange.of(min, max)))
+                                                  .populationSize(3000)
+                                                  .genotypeFactory(() -> Genotype.of(DoubleChromosome.of(min, max)))
+                                                  .maximizing()
+                                                  .alterers(new Mutator<>(0.001), new MeanAlterer<>(0.001))
+                                                  .build();
 
-		EvolutionStatistics<Double, ?> statistics = ofNumber();
+        EvolutionStatistics<Double, ?> statistics = ofNumber();
 
-		Phenotype<DoubleGene, Double> best = engine.stream()
-		                                           .limit(bySteadyFitness(50))
-		                                           .limit(100)
-		                                           .peek(statistics)
-		                                           .collect(toBestPhenotype());
-		LOGGER.info("\n" + statistics.toString());
-		return best;
-	}
+        Phenotype<DoubleGene, Double> best = engine.stream()
+                                                   .limit(bySteadyFitness(50))
+                                                   .limit(100)
+                                                   .peek(statistics)
+                                                   .collect(toBestPhenotype());
+        LOGGER.info("\n" + statistics.toString());
+        return best;
+    }
 
 }

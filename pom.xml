@@ -121,13 +121,6 @@
 			<version>1.2.3</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.ortools</groupId>
-			<artifactId>ortools</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>/home/skj/work/tools/or-tools/lib/com.google.ortools.jar</systemPath>
-		</dependency>
 
 	</dependencies>
 

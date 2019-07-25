@@ -18,140 +18,140 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 public class AdaptableHeapTest {
-	private static final long SEED = 10L;
+    private static final long SEED = 10L;
 
-	private static List<IndexedPNode<String, Integer>> sampleData(long seed) {
-		Random random = new Random(seed);
-		List<IndexedPNode<String, Integer>> list = IntStream.range(65, 80)
-		                                                    .mapToObj(x -> (char) x)
-		                                                    .map(String::valueOf)
-		                                                    .map(x -> new IndexedPNodeImpl<>(x, random.nextInt(100)))
-		                                                    .collect(toList());
-		shuffle(list, random);
-		return list;
-	}
+    private static List<IndexedPNode<String, Integer>> sampleData(long seed) {
+        Random random = new Random(seed);
+        List<IndexedPNode<String, Integer>> list = IntStream.range(65, 80)
+                                                            .mapToObj(x -> (char) x)
+                                                            .map(String::valueOf)
+                                                            .map(x -> new IndexedPNodeImpl<>(x, random.nextInt(100)))
+                                                            .collect(toList());
+        shuffle(list, random);
+        return list;
+    }
 
-	@Test
-	public void testSize() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
-		assertEquals(list.size(), queue.size());
-	}
+    @Test
+    public void testSize() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
+        assertEquals(list.size(), queue.size());
+    }
 
-	@Test
-	public void testIsEmpty() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+    @Test
+    public void testIsEmpty() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
 
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
 
-		List<Integer> sorted = new ArrayList<>(queue.size());
+        List<Integer> sorted = new ArrayList<>(queue.size());
 
-		while (!queue.isEmpty())
-			sorted.add(queue.poll().getPriority());
+        while (!queue.isEmpty())
+            sorted.add(queue.poll().getPriority());
 
-		assertTrue(isInOrder(sorted, comparingInt(x -> x)));
-	}
+        assertTrue(isInOrder(sorted, comparingInt(x -> x)));
+    }
 
-	@Test
-	public void testClear() {
+    @Test
+    public void testClear() {
 
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(sampleData(SEED));
-		queue.clear();
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(sampleData(SEED));
+        queue.clear();
 
-		assertTrue(queue.isEmpty());
-		assertEquals(queue.size(), 0);
-	}
+        assertTrue(queue.isEmpty());
+        assertEquals(queue.size(), 0);
+    }
 
-	@Test
-	public void testArrayPriorityQueue() {
-		try {
-			new ArrayPriorityQueue<>();
-			new ArrayPriorityQueue<>(emptyList());
-			new ArrayPriorityQueue<>(Integer::compare);
-			new ArrayPriorityQueue<>(emptyList(), Integer::compare);
+    @Test
+    public void testArrayPriorityQueue() {
+        try {
+            new ArrayPriorityQueue<>();
+            new ArrayPriorityQueue<>(emptyList());
+            new ArrayPriorityQueue<>(Integer::compare);
+            new ArrayPriorityQueue<>(emptyList(), Integer::compare);
 
-			assertTrue(true);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
+            assertTrue(true);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
-	@Test
-	public void testUpdatePriority() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
-		Random random = new Random();
+    @Test
+    public void testUpdatePriority() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+        Random random = new Random();
 
-		for (int i = 0; i < 2 * list.size(); i++) {
-			shuffle(list);
-			AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
+        for (int i = 0; i < 2 * list.size(); i++) {
+            shuffle(list);
+            AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
 
-			for (int j = 0; j < list.size() / 2; j++)
-				queue.updatePriority(list.get(random.nextInt(list.size())), random.nextInt(100));
+            for (int j = 0; j < list.size() / 2; j++)
+                queue.updatePriority(list.get(random.nextInt(list.size())), random.nextInt(100));
 
-			list = new ArrayList<>(list.size());
+            list = new ArrayList<>(list.size());
 
-			while (!queue.isEmpty())
-				list.add(queue.poll());
+            while (!queue.isEmpty())
+                list.add(queue.poll());
 
-			assertTrue(isInOrder(list, comparingInt(PNode::getPriority)));
-		}
-	}
+            assertTrue(isInOrder(list, comparingInt(PNode::getPriority)));
+        }
+    }
 
-	@Test
-	public void testPoll() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+    @Test
+    public void testPoll() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
 
-		IndexedPNode<String, Integer> node = min(list, comparingInt(PNode::getPriority));
+        IndexedPNode<String, Integer> node = min(list, comparingInt(PNode::getPriority));
 
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
 
-		assertEquals(queue.poll().getPriority(), node.getPriority());
+        assertEquals(queue.poll().getPriority(), node.getPriority());
 
-	}
+    }
 
-	@Test
-	public void testAddE() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list.subList(0, list.size() - 1));
+    @Test
+    public void testAddE() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list.subList(0, list.size() - 1));
 
-		queue.add(list.get(list.size() - 1));
-		assertEquals(queue.size(), list.size());
-	}
+        queue.add(list.get(list.size() - 1));
+        assertEquals(queue.size(), list.size());
+    }
 
-	@Test
-	public void testAddAllCollectionOfQextendsE() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>();
-		queue.addAll(list);
+    @Test
+    public void testAddAllCollectionOfQextendsE() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>();
+        queue.addAll(list);
 
-		assertEquals(queue.size(), list.size());
+        assertEquals(queue.size(), list.size());
 
-		list = new ArrayList<>(queue.size());
+        list = new ArrayList<>(queue.size());
 
-		while (queue.isEmpty())
-			list.add(queue.poll());
+        while (queue.isEmpty())
+            list.add(queue.poll());
 
-		assertTrue(isInOrder(list, comparingInt(PNode::getPriority)));
+        assertTrue(isInOrder(list, comparingInt(PNode::getPriority)));
 
-	}
+    }
 
-	@Test
-	public void testOffer() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list.subList(0, list.size() - 1));
+    @Test
+    public void testOffer() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list.subList(0, list.size() - 1));
 
-		queue.offer(list.get(list.size() - 1));
-		assertEquals(queue.size(), list.size());
-	}
+        queue.offer(list.get(list.size() - 1));
+        assertEquals(queue.size(), list.size());
+    }
 
-	@Test
-	public void testPeek() {
-		List<IndexedPNode<String, Integer>> list = sampleData(SEED);
+    @Test
+    public void testPeek() {
+        List<IndexedPNode<String, Integer>> list = sampleData(SEED);
 
-		IndexedPNode<String, Integer> node = min(list, comparingInt(PNode::getPriority));
+        IndexedPNode<String, Integer> node = min(list, comparingInt(PNode::getPriority));
 
-		AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
+        AdaptablePriorityQueue<IndexedPNode<String, Integer>> queue = new ArrayPriorityQueue<>(list);
 
-		assertEquals(queue.peek().getPriority(), node.getPriority());
-	}
+        assertEquals(queue.peek().getPriority(), node.getPriority());
+    }
 }
