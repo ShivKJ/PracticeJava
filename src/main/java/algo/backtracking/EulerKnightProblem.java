@@ -9,6 +9,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class EulerKnightProblem {
+    private static final int[][] DIRS = {
+        { +1, +2 },
+        { -1, +2 },
+
+        { +2, +1 },
+        { +2, -1 },
+
+        { +1, -2 },
+        { -1, -2 },
+
+        { -2, +1 },
+        { -2, -1 }
+    };
 
     /**
      *
@@ -59,37 +72,22 @@ public class EulerKnightProblem {
         return false;
     }
 
+    private boolean isValid(int i) {
+        return i < N && i > -1;
+    }
+
+    private boolean isValid(int i, int j) {
+        return isValid(i) && isValid(j);
+    }
+
     private List<int[]> nextMoves(int r, int c) {
         List<int[]> moves = new LinkedList<>();
 
-        if (r + 2 < N) {
-            if (c + 1 < N && movement[r + 2][c + 1] == 0)
-                moves.add(new int[] { r + 2, c + 1 });
-            if (c - 1 >= 0 && movement[r + 2][c - 1] == 0)
-                moves.add(new int[] { r + 2, c - 1 });
-        }
+        for (int[] dir : DIRS) {
+            int x = dir[0] + r, y = dir[1] + c;
 
-        if (r - 2 >= 0) {
-            if (c + 1 < N && movement[r - 2][c + 1] == 0)
-                moves.add(new int[] { r - 2, c + 1 });
-
-            if (c - 1 >= 0 && movement[r - 2][c - 1] == 0)
-                moves.add(new int[] { r - 2, c - 1 });
-        }
-
-        if (c + 2 < N) {
-            if (r + 1 < N && movement[r + 1][c + 2] == 0)
-                moves.add(new int[] { r + 1, c + 2 });
-
-            if (r - 1 >= 0 && movement[r - 1][c + 2] == 0)
-                moves.add(new int[] { r - 1, c + 2 });
-        }
-        if (c - 2 >= 0) {
-            if (r + 1 < N && movement[r + 1][c - 2] == 0)
-                moves.add(new int[] { r + 1, c - 2 });
-
-            if (r - 1 >= 0 && movement[r - 1][c - 2] == 0)
-                moves.add(new int[] { r - 1, c - 2 });
+            if (isValid(x, y) && movement[x][y] == 0)
+                moves.add(new int[] { x, y });
         }
 
         return moves;
