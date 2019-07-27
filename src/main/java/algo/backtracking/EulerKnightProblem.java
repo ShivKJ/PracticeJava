@@ -23,10 +23,6 @@ public class EulerKnightProblem {
         { -2, -1 }
     };
 
-    /**
-     *
-     *
-     */
     private final int[][] movement;
     private final int     totalSteps;
     private final int     N;
@@ -36,10 +32,6 @@ public class EulerKnightProblem {
         this.totalSteps = n * n;
         this.movement = new int[n][n];
 
-    }
-
-    public static int[][] solve(int n) {
-        return solve(0, 0, n);
     }
 
     public static int[][] solve(int startRow, int startCol, int n) {
@@ -72,14 +64,6 @@ public class EulerKnightProblem {
         return false;
     }
 
-    private boolean isValid(int i) {
-        return i < N && i > -1;
-    }
-
-    private boolean isValid(int i, int j) {
-        return isValid(i) && isValid(j);
-    }
-
     private List<int[]> nextMoves(int r, int c) {
         List<int[]> moves = new LinkedList<>();
 
@@ -93,8 +77,22 @@ public class EulerKnightProblem {
         return moves;
     }
 
+    private boolean isValid(int i) {
+        return i < N && i > -1;
+    }
+
+    private boolean isValid(int i, int j) {
+        return isValid(i) && isValid(j);
+    }
+
     public static void print(int[][] steps) {
-        stream(steps).map(x -> stream(x).mapToObj(y -> format("%-5d", y)).collect(joining())).forEach(out::println);
+        stream(steps).map(EulerKnightProblem::print)
+                     .forEach(out::println);
+    }
+
+    private static String print(int[] row) {
+        return stream(row).mapToObj(y -> format("%-5d", y))
+                          .collect(joining());
     }
 
 }
