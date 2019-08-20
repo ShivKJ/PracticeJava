@@ -15,8 +15,8 @@ public class SymmetricTree {
 
         List<Integer> l1 = new LinkedList<>(), l2 = new LinkedList<>();
 
-        t1(root.left, l1);
-        t2(root.right, l2);
+        preOrder(root.left, l1);
+        reversePreorder(root.right, l2);
 
         return isEqual(l1, l2);
     }
@@ -41,25 +41,25 @@ public class SymmetricTree {
 
     }
 
-    public static void t1(TreeNode n, List<Integer> nodes) {
+    public static void preOrder(TreeNode n, List<Integer> nodes) {
 
         if (isNull(n))
             nodes.add(null);
         else {
             nodes.add(n.val);
 
-            t1(n.left, nodes);
-            t1(n.right, nodes);
+            preOrder(n.left, nodes);
+            preOrder(n.right, nodes);
         }
     }
 
-    public static void t2(TreeNode n, List<Integer> nodes) {
+    public static void reversePreorder(TreeNode n, List<Integer> nodes) {
         if (isNull(n))
             nodes.add(null);
         else {
             nodes.add(n.val);
-            t2(n.right, nodes);
-            t2(n.left, nodes);
+            reversePreorder(n.right, nodes);
+            reversePreorder(n.left, nodes);
         }
 
     }
