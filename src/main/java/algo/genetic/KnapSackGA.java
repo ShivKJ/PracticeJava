@@ -15,7 +15,6 @@ import java.util.stream.Collector;
 import org.slf4j.Logger;
 
 import algo.dyamic.KnapSack01.KnapSackItem;
-import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
@@ -28,6 +27,7 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Codecs;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionStatistics;
+import io.jenetics.engine.RetryConstraint;
 import io.jenetics.util.ISeq;
 
 public class KnapSackGA {
@@ -83,9 +83,9 @@ public class KnapSackGA {
         return capacity > item.weight() ? item.value() : capacity - item.weight();
     }
 
-    private boolean genotypeValidator(Genotype<BitGene> x) {
+    private boolean validator(Genotype<BitGene> g) {
         int picked = 0;
-        Chromosome<BitGene> chromosome = x.getChromosome();
+        Chromosome<BitGene> chromosome = g.getChromosome();
 
         for (int i = 0; i < items.length; i++)
             if (chromosome.getGene(i).booleanValue()) {
@@ -101,10 +101,9 @@ public class KnapSackGA {
         Engine<BitGene, Integer> engine = Engine.builder(this::fitness, Codecs.ofSubSet(ISeq.of(items)))
                                                 .maximizing()
                                                 .populationSize(1000)
-                                                .genotypeFactory(() -> Genotype.of(BitChromosome.of(items.length, 0.001)))
                                                 .survivorsSelector(new TournamentSelector<>(200))
                                                 .offspringSelector(new RouletteWheelSelector<>())
-                                                .genotypeValidator(this::genotypeValidator)
+                                                .constraint(RetryConstraint.of(p -> validator(p.getGenotype()), 20))
                                                 .alterers(new Mutator<>(0.01),
                                                           new SinglePointCrossover<>(0.01),
                                                           new UniformCrossover<>(0.01))

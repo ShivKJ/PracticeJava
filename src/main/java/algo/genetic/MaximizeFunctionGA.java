@@ -9,9 +9,7 @@ import java.util.function.DoubleUnaryOperator;
 
 import org.slf4j.Logger;
 
-import io.jenetics.DoubleChromosome;
 import io.jenetics.DoubleGene;
-import io.jenetics.Genotype;
 import io.jenetics.MeanAlterer;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -34,7 +32,6 @@ public class MaximizeFunctionGA {
     public Phenotype<DoubleGene, Double> solve() {
         Engine<DoubleGene, Double> engine = Engine.builder(function::applyAsDouble, Codecs.ofScalar(DoubleRange.of(min, max)))
                                                   .populationSize(3000)
-                                                  .genotypeFactory(() -> Genotype.of(DoubleChromosome.of(min, max)))
                                                   .maximizing()
                                                   .alterers(new Mutator<>(0.001), new MeanAlterer<>(0.001))
                                                   .build();

@@ -13,24 +13,27 @@ import java.util.TreeSet;
 import java.util.function.Function;
 
 class MergeAccounts {
-
+    /**
+     * 
+     * @param accounts
+     * @return
+     */
     public static List<List<String>> accountsMerge(List<List<String>> accounts) {
-
         UnionFind uf = new UnionFind(accounts.size());
         Map<String, Integer> emailToIdx = new HashMap<>();
+        
+        for (int g = 0; g < accounts.size(); g++) {
 
-        for (int i = 0; i < accounts.size(); i++) {
+            Iterator<String> itr = accounts.get(g).iterator();
+            itr.next();// skipping name
 
-            Iterator<String> itr = accounts.get(i).iterator();
-            itr.next();
-
-            Function<String, Integer> initializer = initializeParent(i);
+            Function<String, Integer> initializer = initializeParent(g);
 
             while (itr.hasNext()) {
                 int parent = emailToIdx.computeIfAbsent(itr.next(), initializer);
 
-                if (parent != i)
-                    uf.connect(i, parent);
+                if (parent != g)
+                    uf.connect(g, parent);
 
             }
         }
