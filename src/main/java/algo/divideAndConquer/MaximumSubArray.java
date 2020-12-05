@@ -36,7 +36,6 @@ public class MaximumSubArray {
      * @return 
      */
     private int[] maxSubArray(int low, int high) {
-
         if (low == high)
             return new int[] { low, high, A[low] };
 
